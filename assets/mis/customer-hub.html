@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NexRetail Intelligence — Customer Hub</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#f5f3f0;color:#1b1c1c;font-size:13px}
+  :root{--gold:#b8860b;--border:#e0d8cc;--muted:#7f7663}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:#1a1a1a;z-index:100;overflow-y:auto}
+  .sidebar-brand{padding:20px 18px 14px;border-bottom:1px solid #333}
+  .sidebar-brand h1{font-size:15px;font-weight:700;color:#f0c040}
+  .sidebar-brand p{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+  .nav-section{padding:12px 0 4px;font-size:10px;color:#555;letter-spacing:1px;text-transform:uppercase;padding-left:18px}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;color:#aaa;cursor:pointer;font-size:12.5px}
+  .nav-item.active{background:#2d1f00;color:#f0c040;border-right:3px solid #f0c040}
+  .nav-icon{width:16px;text-align:center}
+
+  .topbar{margin-left:220px;background:#fff;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+  .filter-pill{background:#f5f3f0;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11.5px;color:var(--muted);cursor:pointer;margin-right:6px}
+  .filter-pill.active{background:#fef3d0;border-color:#d4a800;color:#745b00;font-weight:600}
+
+  .main{margin-left:220px;padding:24px}
+  .page-title{font-size:20px;font-weight:700;margin-bottom:4px}
+  .page-sub{font-size:12px;color:var(--muted);margin-bottom:20px}
+
+  /* KPI STRIP */
+  .kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}
+  .kpi-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px}
+  .kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;font-weight:600}
+  .kpi-val{font-size:22px;font-weight:700}
+  .kpi-val.green{color:#16a34a}
+  .kpi-val.red{color:#dc2626}
+  .kpi-val.orange{color:#ea580c}
+  .kpi-val.gold{color:#b8860b}
+  .kpi-sub{font-size:10.5px;color:var(--muted);margin-top:4px}
+
+  /* CUSTOMER LIST TABLE */
+  .card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:18px}
+  .card-title{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+  .card-title span{font-size:11px;color:var(--muted);font-weight:400}
+  table{width:100%;border-collapse:collapse}
+  th{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}
+  td{padding:9px 10px;font-size:12px;border-bottom:1px solid #f0ebe3}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#fafaf8;cursor:pointer}
+  .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:600}
+  .badge.green{background:#dcfce7;color:#16a34a}
+  .badge.red{background:#fee2e2;color:#dc2626}
+  .badge.amber{background:#fef3c7;color:#b45309}
+  .badge.blue{background:#dbeafe;color:#1d4ed8}
+  .badge.gray{background:#f0ebe3;color:#7f7663}
+
+  /* CUSTOMER DRILL */
+  .drill-header{background:linear-gradient(135deg,#0c3547,#1a5c7a,#0e7490);border-radius:12px;padding:24px 28px;color:#fff;margin-bottom:18px}
+  .drill-header h2{font-size:24px;font-weight:700}
+  .drill-meta{font-size:12px;opacity:.7;margin-top:6px}
+  .drill-tags{display:flex;gap:8px;margin-top:10px}
+  .drill-tag{background:rgba(255,255,255,.15);padding:3px 10px;border-radius:20px;font-size:11px}
+
+  .kpi-6{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px}
+
+  /* AGING */
+  .aging-wrap{margin-top:10px}
+  .aging-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .aging-label{font-size:11.5px;color:#555;width:90px}
+  .aging-bar-bg{flex:1;background:#f0ebe3;border-radius:4px;height:12px;overflow:hidden}
+  .aging-bar-fill{height:100%;border-radius:4px}
+  .aging-amt{font-size:11.5px;font-weight:600;width:64px;text-align:right}
+  .aging-pct{font-size:10px;color:var(--muted);width:36px;text-align:right}
+
+  /* BOTTOM GRID */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+
+  /* INVOICE TABLE */
+  .inv-badge{display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:600}
+  .inv-badge.paid{background:#dcfce7;color:#16a34a}
+  .inv-badge.partial{background:#fef3c7;color:#b45309}
+  .inv-badge.unpaid{background:#fee2e2;color:#dc2626}
+</style>
+</head>
+<body>
+<nav class="sidebar">
+  <div class="sidebar-brand"><h1>NexRetail MIS</h1><p>The Sovereign Lens</p></div>
+  <div class="nav-section">Enterprise Intelligence</div>
+  <div class="nav-item"><span class="nav-icon">⌂</span> Command Center</div>
+  <div class="nav-item"><span class="nav-icon">📊</span> Analysis</div>
+  <div class="nav-item"><span class="nav-icon">🏷</span> Category</div>
+  <div class="nav-item"><span class="nav-icon">📦</span> Inventory</div>
+  <div class="nav-item"><span class="nav-icon">⏳</span> Pending Breakup</div>
+  <div class="nav-item"><span class="nav-icon">🎯</span> Agent Targets</div>
+  <div class="nav-item"><span class="nav-icon">👤</span> Agent Hub</div>
+  <div class="nav-item"><span class="nav-icon">🗂</span> Category Hub</div>
+  <div class="nav-item"><span class="nav-icon">🛒</span> Order Hub</div>
+  <div class="nav-item active"><span class="nav-icon">👥</span> Customer Hub</div>
+  <div class="nav-section">Operations</div>
+  <div class="nav-item"><span class="nav-icon">🏪</span> Store Sales</div>
+  <div class="nav-section">System</div>
+  <div class="nav-item"><span class="nav-icon">✨</span> BI Studio</div>
+</nav>
+
+<div class="topbar">
+  <div>
+    <span class="filter-pill active">FY 2024-2025 ✕</span>
+    <span class="filter-pill active">Tamil Nadu ✕</span>
+    <span class="filter-pill active">Krishnamurthy ✕</span>
+    <span class="filter-pill">Route ▾</span>
+    <span class="filter-pill">Credit Status ▾</span>
+  </div>
+  <span style="font-size:11px;color:#bbb">● Synced 2h ago</span>
+</div>
+
+<div class="main">
+  <div class="page-title">Customer Hub</div>
+  <div class="page-sub">FY 2024-2025 · Tamil Nadu · Agent: Krishnamurthy</div>
+
+  <!-- KPI Strip -->
+  <div class="kpi-strip">
+    <div class="kpi-card">
+      <div class="kpi-label">Total Customers</div>
+      <div class="kpi-val">87</div>
+      <div class="kpi-sub">in this view</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Dispatchable</div>
+      <div class="kpi-val green">54</div>
+      <div class="kpi-sub">pending + credit active</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Undispatchable</div>
+      <div class="kpi-val red">18</div>
+      <div class="kpi-sub">pending + credit block</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Credit Blocked</div>
+      <div class="kpi-val red">22</div>
+      <div class="kpi-sub">active = false</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total Outstanding</div>
+      <div class="kpi-val orange">₹52.4L</div>
+      <div class="kpi-sub">Ginesys AR balance</div>
+    </div>
+  </div>
+
+  <!-- Customer List -->
+  <div class="card">
+    <div class="card-title">All Customers — Krishnamurthy <span>87 customers · click a row to open</span></div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Customer Name</th><th>Book</th><th>Route</th><th>Agent</th>
+          <th>Credit Limit</th><th>Outstanding</th><th>Pending Qty</th><th>FY Order Qty</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:#f0fff4">
+          <td>1</td><td><b>Abirami Textiles</b></td><td>T-Book</td><td>CBE2</td><td>Krishnamurthy</td>
+          <td>₹10L</td><td style="color:#ea580c">₹8.4L</td><td>1,240</td><td>4,820</td>
+          <td><span class="badge green">Dispatchable</span></td>
+        </tr>
+        <tr>
+          <td>2</td><td><b>Kannan Stores</b></td><td>F-Book</td><td>CBE2</td><td>Krishnamurthy</td>
+          <td>₹5L</td><td style="color:#16a34a">₹2.1L</td><td>640</td><td>2,140</td>
+          <td><span class="badge green">Dispatchable</span></td>
+        </tr>
+        <tr style="background:#fff5f5">
+          <td>3</td><td><b>Sri Lakshmi Collections</b></td><td>D-Book</td><td>CBE1</td><td>Krishnamurthy</td>
+          <td>₹8L</td><td style="color:#dc2626">₹11.2L</td><td>2,100</td><td>3,460</td>
+          <td><span class="badge red">Undispatchable</span></td>
+        </tr>
+        <tr>
+          <td>4</td><td><b>Murugan Traders</b></td><td>T-Book</td><td>CBE2</td><td>Krishnamurthy</td>
+          <td>₹15L</td><td style="color:#16a34a">₹6.8L</td><td>980</td><td>5,200</td>
+          <td><span class="badge green">Dispatchable</span></td>
+        </tr>
+        <tr style="background:#fff5f5">
+          <td>5</td><td><b>Raj Silks</b></td><td>C-Book</td><td>CBE1</td><td>Krishnamurthy</td>
+          <td>₹6L</td><td style="color:#dc2626">₹9.4L</td><td>0</td><td>1,820</td>
+          <td><span class="badge red">Blocked</span></td>
+        </tr>
+        <tr>
+          <td>6</td><td><b>Deepa Fashion House</b></td><td>T-Book</td><td>CBE2</td><td>Krishnamurthy</td>
+          <td>₹12L</td><td style="color:#ea580c">₹5.2L</td><td>320</td><td>3,980</td>
+          <td><span class="badge green">Dispatchable</span></td>
+        </tr>
+        <tr>
+          <td>7</td><td><b>Priya Textiles</b></td><td>F-Book</td><td>CBE2</td><td>Krishnamurthy</td>
+          <td>₹4L</td><td style="color:#16a34a">₹1.4L</td><td>0</td><td>1,240</td>
+          <td><span class="badge gray">No Pending</span></td>
+        </tr>
+        <tr style="background:#fffbeb">
+          <td>8</td><td><b>Selvam Brothers</b></td><td>D-Book</td><td>CBE1</td><td>Krishnamurthy</td>
+          <td>₹20L</td><td style="color:#ea580c">₹18.4L</td><td>1,640</td><td>6,120</td>
+          <td><span class="badge amber">Overdue</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CUSTOMER DRILL: Selvam Brothers -->
+  <div class="drill-header">
+    <div style="font-size:10px;opacity:.6;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Customer Profile</div>
+    <h2>Selvam Brothers</h2>
+    <div class="drill-tags">
+      <span class="drill-tag">D-Book</span>
+      <span class="drill-tag">Route: CBE1</span>
+      <span class="drill-tag">State: Tamil Nadu</span>
+      <span class="drill-tag">Agent: Krishnamurthy</span>
+      <span class="drill-tag" style="background:rgba(234,88,12,.3)">⚠ Overdue</span>
+    </div>
+  </div>
+
+  <!-- 6 KPI Cards for customer -->
+  <div class="kpi-6">
+    <div class="kpi-card">
+      <div class="kpi-label">Credit Limit</div>
+      <div class="kpi-val gold">₹20.0L</div>
+      <div class="kpi-sub">approved ceiling</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Available Credit</div>
+      <div class="kpi-val" style="color:#0891b2">₹1.6L</div>
+      <div class="kpi-sub">billable now</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Outstanding</div>
+      <div class="kpi-val orange">₹18.4L</div>
+      <div class="kpi-sub">Ginesys AR balance</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">FY Order Qty</div>
+      <div class="kpi-val">6,120</div>
+      <div class="kpi-sub">pieces ordered</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">FY Pending Qty</div>
+      <div class="kpi-val orange">1,640</div>
+      <div class="kpi-sub">orders pending</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">FY Dispatch Qty</div>
+      <div class="kpi-val green">4,280</div>
+      <div class="kpi-sub">dispatched FY</div>
+    </div>
+  </div>
+
+  <!-- Credit bar + Aging -->
+  <div class="grid2" style="margin-bottom:18px">
+    <div class="card">
+      <div class="card-title">Credit Health</div>
+      <div style="display:flex;gap:20px;margin-bottom:16px">
+        <div style="flex:1">
+          <div style="font-size:10.5px;color:var(--muted);margin-bottom:6px">Utilisation vs Limit</div>
+          <div style="background:#f0ebe3;border-radius:6px;height:14px;overflow:hidden">
+            <div style="width:92%;background:linear-gradient(to right,#b8860b,#dc2626);height:100%;border-radius:6px"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px">
+            <span>₹0</span><span style="color:#dc2626">₹18.4L used / ₹20L limit</span><span>₹20L</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px">
+        <div style="flex:1;background:#fef3c7;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:#b45309;font-weight:600">STATUS</div>
+          <div style="font-size:16px;font-weight:700;color:#b45309;margin-top:2px">Overdue</div>
+        </div>
+        <div style="flex:1;background:#fee2e2;border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:10px;color:#dc2626;font-weight:600">OVER LIMIT</div>
+          <div style="font-size:16px;font-weight:700;color:#dc2626;margin-top:2px">₹0 avail.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Outstanding Aging <span>Invoice-based (approx.)</span></div>
+      <div class="aging-wrap">
+        <div class="aging-row">
+          <div class="aging-label">0–30 days</div>
+          <div class="aging-bar-bg"><div class="aging-bar-fill" style="width:28%;background:#16a34a"></div></div>
+          <div class="aging-amt">₹5.2L</div>
+          <div class="aging-pct" style="color:#16a34a">28%</div>
+        </div>
+        <div class="aging-row">
+          <div class="aging-label">31–60 days</div>
+          <div class="aging-bar-bg"><div class="aging-bar-fill" style="width:18%;background:#84cc16"></div></div>
+          <div class="aging-amt">₹3.3L</div>
+          <div class="aging-pct" style="color:#84cc16">18%</div>
+        </div>
+        <div class="aging-row">
+          <div class="aging-label">61–90 days</div>
+          <div class="aging-bar-bg"><div class="aging-bar-fill" style="width:14%;background:#ea580c"></div></div>
+          <div class="aging-amt">₹2.6L</div>
+          <div class="aging-pct" style="color:#ea580c">14%</div>
+        </div>
+        <div class="aging-row">
+          <div class="aging-label">91–120 days</div>
+          <div class="aging-bar-bg"><div class="aging-bar-fill" style="width:10%;background:#dc2626"></div></div>
+          <div class="aging-amt">₹1.8L</div>
+          <div class="aging-pct" style="color:#dc2626">10%</div>
+        </div>
+        <div class="aging-row">
+          <div class="aging-label">120+ days</div>
+          <div class="aging-bar-bg"><div class="aging-bar-fill" style="width:30%;background:#7f1d1d"></div></div>
+          <div class="aging-amt">₹5.5L</div>
+          <div class="aging-pct" style="color:#7f1d1d">30%</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding-top:8px;border-top:1px solid #f0ebe3;display:flex;justify-content:space-between;font-size:11px">
+        <span style="color:var(--muted)">Total (computed)</span>
+        <span style="font-weight:700">₹18.4L</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Invoice table + Top Categories -->
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Ginesys Invoices <span>Latest 8 · FY 2024-25</span></div>
+      <table>
+        <thead><tr><th>Invoice No</th><th>Date</th><th>Amount</th><th>Category</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>MSWM/04812/24-25</td><td>15 Jan 2025</td><td>₹1,82,400</td><td>Dhoti</td><td><span class="inv-badge unpaid">Unpaid</span></td></tr>
+          <tr><td>MSWM/04201/24-25</td><td>28 Dec 2024</td><td>₹2,14,600</td><td>Shirt</td><td><span class="inv-badge unpaid">Unpaid</span></td></tr>
+          <tr><td>MSWM/03844/24-25</td><td>12 Dec 2024</td><td>₹98,750</td><td>Dhoti</td><td><span class="inv-badge partial">Partial</span></td></tr>
+          <tr><td>MSWM/03512/24-25</td><td>20 Nov 2024</td><td>₹1,64,200</td><td>Combo</td><td><span class="inv-badge unpaid">Unpaid</span></td></tr>
+          <tr><td>MSWM/03018/24-25</td><td>8 Nov 2024</td><td>₹3,42,000</td><td>Dhoti</td><td><span class="inv-badge paid">Paid</span></td></tr>
+          <tr><td>MSWM/02640/24-25</td><td>14 Oct 2024</td><td>₹87,400</td><td>Shirt</td><td><span class="inv-badge paid">Paid</span></td></tr>
+          <tr><td>MSWM/02210/24-25</td><td>2 Oct 2024</td><td>₹2,18,000</td><td>Dhoti</td><td><span class="inv-badge paid">Paid</span></td></tr>
+          <tr><td>MSWM/01842/24-25</td><td>18 Sep 2024</td><td>₹4,12,800</td><td>Combo</td><td><span class="inv-badge paid">Paid</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Top Categories Ordered</div>
+      <div style="margin-top:4px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <div style="font-size:12px;width:100px">Dhoti</div>
+          <div style="flex:1;background:#f0ebe3;border-radius:4px;height:10px;overflow:hidden">
+            <div style="width:72%;height:100%;background:linear-gradient(to right,#b8860b,#f0c040);border-radius:4px"></div>
+          </div>
+          <div style="font-size:11px;font-weight:600;width:50px;text-align:right">3,208</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <div style="font-size:12px;width:100px">Shirt</div>
+          <div style="flex:1;background:#f0ebe3;border-radius:4px;height:10px;overflow:hidden">
+            <div style="width:44%;height:100%;background:linear-gradient(to right,#1d4ed8,#60a5fa);border-radius:4px"></div>
+          </div>
+          <div style="font-size:11px;font-weight:600;width:50px;text-align:right">1,840</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <div style="font-size:12px;width:100px">Combo</div>
+          <div style="flex:1;background:#f0ebe3;border-radius:4px;height:10px;overflow:hidden">
+            <div style="width:32%;height:100%;background:linear-gradient(to right,#7c3aed,#a78bfa);border-radius:4px"></div>
+          </div>
+          <div style="font-size:11px;font-weight:600;width:50px;text-align:right">780</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="font-size:12px;width:100px">Innerwear</div>
+          <div style="flex:1;background:#f0ebe3;border-radius:4px;height:10px;overflow:hidden">
+            <div style="width:14%;height:100%;background:linear-gradient(to right,#0891b2,#67e8f9);border-radius:4px"></div>
+          </div>
+          <div style="font-size:11px;font-weight:600;width:50px;text-align:right">292</div>
+        </div>
+      </div>
+      <div style="margin-top:18px;padding-top:14px;border-top:1px solid #f0ebe3">
+        <div style="font-size:12px;font-weight:600;margin-bottom:10px">Monthly Order Trend</div>
+        <div style="display:flex;align-items:flex-end;gap:6px;height:60px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1">
+            <div style="flex:1;width:100%;background:linear-gradient(to top,#b8860b,#f0c040);border-radius:2px 2px 0 0;min-height:3px" data-h="55%"></div>
+            <div style="font-size:8.5px;color:var(--muted)">Apr</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1">
+            <div style="height:70%;width:100%;background:linear-gradient(to top,#b8860b,#f0c040);border-radius:2px 2px 0 0"></div>
+            <div style="font-size:8.5px;color:var(--muted)">May</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1">
+            <div style="height:90%;width:100%;background:linear-gradient(to top,#b8860b,#f0c040);border-radius:2px 2px 0 0"></div>
+            <div style="font-size:8.5px;color:var(--muted)">Jun</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1">
+            <div style="height:60%;width:100%;background:linear-gradient(to top,#b8860b,#f0c040);border-radius:2px 2px 0 0"></div>
+            <div style="font-size:8.5px;color:var(--muted)">Jul</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1">
+            <div style="height:100%;width:100%;background:linear-gradient(to top,#b8860b,#f0c040);border-radius:2px 2px 0 0"></div>
+            <div style="font-size:8.5px;color:var(--muted)">Aug</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1">
+            <div style="height:80%;width:100%;background:linear-gradient(to top,#b8860b,#f0c040);border-radius:2px 2px 0 0"></div>
+            <div style="font-size:8.5px;color:var(--muted)">Sep</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1">
+            <div style="height:40%;width:100%;background:#dc2626;border-radius:2px 2px 0 0"></div>
+            <div style="font-size:8.5px;color:var(--muted)">Oct</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1">
+            <div style="height:20%;width:100%;background:#dc2626;border-radius:2px 2px 0 0"></div>
+            <div style="font-size:8.5px;color:var(--muted)">Nov</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1">
+            <div style="height:5%;width:100%;background:#e5e7eb;border-radius:2px 2px 0 0"></div>
+            <div style="font-size:8.5px;color:var(--muted)">Dec</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:4px">Orders dropped after Oct — credit block effect</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

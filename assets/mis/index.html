@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NexRetail Intelligence — Command Center</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#f5f3f0;color:#1b1c1c;font-size:13px}
+  :root{--gold:#b8860b;--dark-gold:#745b00;--maroon:#6b1a1a;--bg:#f5f3f0;--card:#fff;--border:#e0d8cc;--text:#1b1c1c;--muted:#7f7663}
+
+  /* SIDEBAR */
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:#1a1a1a;padding:0;z-index:100;overflow-y:auto}
+  .sidebar-brand{padding:20px 18px 14px;border-bottom:1px solid #333}
+  .sidebar-brand h1{font-size:15px;font-weight:700;color:#f0c040;letter-spacing:.5px}
+  .sidebar-brand p{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+  .nav-section{padding:12px 0 4px;font-size:10px;color:#555;letter-spacing:1px;text-transform:uppercase;padding-left:18px}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;color:#aaa;cursor:pointer;transition:.15s;font-size:12.5px}
+  .nav-item:hover{background:#2a2a2a;color:#fff}
+  .nav-item.active{background:#2d1f00;color:#f0c040;border-right:3px solid #f0c040}
+  .nav-icon{width:16px;text-align:center;font-size:14px}
+
+  /* TOPBAR */
+  .topbar{margin-left:220px;background:#fff;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+  .topbar-left{display:flex;align-items:center;gap:10px}
+  .filter-pill{background:#f5f3f0;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11.5px;color:var(--muted);cursor:pointer}
+  .filter-pill.active{background:#fef3d0;border-color:#d4a800;color:#745b00;font-weight:600}
+  .filter-pill span.x{margin-left:6px;opacity:.6;font-size:10px}
+  .sync-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:6px;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .sync-text{font-size:11px;color:var(--muted)}
+
+  /* MAIN */
+  .main{margin-left:220px;padding:24px}
+  .page-title{font-size:20px;font-weight:700;color:#1b1c1c;margin-bottom:4px}
+  .page-sub{font-size:12px;color:var(--muted);margin-bottom:20px}
+
+  /* KPI STRIP */
+  .kpi-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:20px}
+  .kpi-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+  .kpi-label{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;font-weight:600}
+  .kpi-val{font-size:22px;font-weight:700;color:#1b1c1c}
+  .kpi-val.gold{color:#b8860b}
+  .kpi-val.green{color:#16a34a}
+  .kpi-val.red{color:#dc2626}
+  .kpi-val.orange{color:#ea580c}
+  .kpi-sub{font-size:10.5px;color:var(--muted);margin-top:4px}
+
+  .kpi-strip2{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+
+  /* SECTION GRID */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+  .grid3{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:18px}
+  .card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px}
+  .card-title{font-size:13px;font-weight:700;color:#1b1c1c;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+  .card-title span{font-size:11px;color:var(--muted);font-weight:400}
+
+  /* BAR CHART */
+  .bar-chart{display:flex;align-items:flex-end;gap:8px;height:140px;padding-bottom:20px;position:relative}
+  .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .bar{border-radius:4px 4px 0 0;min-height:4px;transition:.3s;width:100%}
+  .bar.gold{background:linear-gradient(to top,#b8860b,#f0c040)}
+  .bar.maroon{background:linear-gradient(to top,#6b1a1a,#c44)}
+  .bar.blue{background:linear-gradient(to top,#1d4ed8,#60a5fa)}
+  .bar-label{font-size:9.5px;color:var(--muted);white-space:nowrap}
+  .bar-val{font-size:9px;color:#444;font-weight:600}
+
+  /* TABLE */
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:8px 12px;border-bottom:1px solid var(--border)}
+  td{padding:9px 12px;border-bottom:1px solid #f0ebe3;font-size:12px}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#fafaf8}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:600}
+  .badge.green{background:#dcfce7;color:#16a34a}
+  .badge.red{background:#fee2e2;color:#dc2626}
+  .badge.amber{background:#fef3c7;color:#b45309}
+  .badge.blue{background:#dbeafe;color:#1d4ed8}
+
+  /* STATE BAR */
+  .state-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .state-name{width:80px;font-size:11.5px;color:#444}
+  .state-bar-bg{flex:1;background:#f0ebe3;border-radius:4px;height:10px;overflow:hidden}
+  .state-bar-fill{height:100%;border-radius:4px;background:linear-gradient(to right,#b8860b,#f0c040)}
+  .state-amt{font-size:11px;color:#444;width:60px;text-align:right}
+
+  /* DONUT placeholder */
+  .donut-wrap{display:flex;align-items:center;justify-content:center;gap:24px;padding:10px 0}
+  .donut{width:110px;height:110px;border-radius:50%;background:conic-gradient(#16a34a 0deg 198deg,#ea580c 198deg 270deg,#dc2626 270deg 360deg);position:relative}
+  .donut::after{content:'';position:absolute;inset:22px;border-radius:50%;background:#fff}
+  .donut-legend{display:flex;flex-direction:column;gap:8px}
+  .legend-row{display:flex;align-items:center;gap:8px;font-size:11.5px}
+  .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+  .ach-bar-bg{background:#f0ebe3;border-radius:4px;height:7px;overflow:hidden;flex:1}
+  .ach-bar-fill{height:100%;border-radius:4px;background:#b8860b}
+
+  /* FOOTER */
+  footer{margin-left:220px;padding:12px 24px;font-size:10.5px;color:#bbb;border-top:1px solid var(--border);background:#fff}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <h1>NexRetail MIS</h1>
+    <p>The Sovereign Lens</p>
+  </div>
+  <div class="nav-section">Enterprise Intelligence</div>
+  <div class="nav-item active"><span class="nav-icon">⌂</span> Command Center</div>
+  <div class="nav-item"><span class="nav-icon">📊</span> Analysis</div>
+  <div class="nav-item"><span class="nav-icon">🏷</span> Category</div>
+  <div class="nav-item"><span class="nav-icon">📦</span> Inventory</div>
+  <div class="nav-item"><span class="nav-icon">⏳</span> Pending Breakup</div>
+  <div class="nav-item"><span class="nav-icon">🎯</span> Agent Targets</div>
+  <div class="nav-item"><span class="nav-icon">👤</span> Agent Hub</div>
+  <div class="nav-item"><span class="nav-icon">🗂</span> Category Hub</div>
+  <div class="nav-item"><span class="nav-icon">🛒</span> Order Hub</div>
+  <div class="nav-item"><span class="nav-icon">👥</span> Customer Hub</div>
+  <div class="nav-item"><span class="nav-icon">❌</span> Cancel Analysis</div>
+  <div class="nav-item"><span class="nav-icon">📈</span> Growth Analysis</div>
+  <div class="nav-section">Operations</div>
+  <div class="nav-item"><span class="nav-icon">🏪</span> Store Sales</div>
+  <div class="nav-item"><span class="nav-icon">🔍</span> Customer Master</div>
+  <div class="nav-section">System</div>
+  <div class="nav-item"><span class="nav-icon">✨</span> BI Studio</div>
+  <div class="nav-item"><span class="nav-icon">⚙</span> Admin</div>
+</nav>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="filter-pill active">FY 2024-2025 <span class="x">✕</span></div>
+    <div class="filter-pill active">Tamil Nadu <span class="x">✕</span></div>
+    <div class="filter-pill">Month ▾</div>
+    <div class="filter-pill">Category ▾</div>
+    <div class="filter-pill">Agent ▾</div>
+  </div>
+  <div>
+    <span class="sync-dot"></span>
+    <span class="sync-text">Synced 2h ago · NexRetail Intelligence v2.4</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="page-title">Command Center</div>
+  <div class="page-sub">FY 2024-2025 · All States · Real-time ETL from ERP</div>
+
+  <!-- KPI Strip 1 -->
+  <div class="kpi-strip">
+    <div class="kpi-card">
+      <div class="kpi-label">Target</div>
+      <div class="kpi-val gold">₹4,812L</div>
+      <div class="kpi-sub">FY target</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Net Achievement</div>
+      <div class="kpi-val green">₹3,947L</div>
+      <div class="kpi-sub">82.0% of target</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Achievement %</div>
+      <div class="kpi-val" style="color:#16a34a">82.0%</div>
+      <div class="kpi-sub">vs 74.3% last FY</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Agents</div>
+      <div class="kpi-val">124</div>
+      <div class="kpi-sub">all states</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Dispatch Qty</div>
+      <div class="kpi-val green">17,84,620</div>
+      <div class="kpi-sub">pieces dispatched FY</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Pending Qty</div>
+      <div class="kpi-val orange">6,32,140</div>
+      <div class="kpi-sub">orders pending</div>
+    </div>
+  </div>
+
+  <!-- KPI Strip 2 -->
+  <div class="kpi-strip2">
+    <div class="kpi-card">
+      <div class="kpi-label">Invoiced Qty</div>
+      <div class="kpi-val">18,23,450</div>
+      <div class="kpi-sub">gross pieces billed</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Return Qty</div>
+      <div class="kpi-val red">98,340</div>
+      <div class="kpi-sub">pieces returned</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Collection</div>
+      <div class="kpi-val" style="color:#1d4ed8">₹11.24L</div>
+      <div class="kpi-sub">VR receipts FY</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Outstanding</div>
+      <div class="kpi-val orange">₹148.62L</div>
+      <div class="kpi-sub">uncollected FY invoices</div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="grid3">
+    <!-- Monthly trend -->
+    <div class="card">
+      <div class="card-title">Monthly Achievement vs Target <span>FY 2024-25</span></div>
+      <div class="bar-chart">
+        <div class="bar-wrap">
+          <div class="bar-val">₹312L</div>
+          <div class="bar gold" style="height:65%"></div>
+          <div class="bar-label">Apr</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">₹398L</div>
+          <div class="bar gold" style="height:83%"></div>
+          <div class="bar-label">May</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">₹451L</div>
+          <div class="bar gold" style="height:94%"></div>
+          <div class="bar-label">Jun</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">₹378L</div>
+          <div class="bar gold" style="height:79%"></div>
+          <div class="bar-label">Jul</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">₹425L</div>
+          <div class="bar gold" style="height:89%"></div>
+          <div class="bar-label">Aug</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">₹502L</div>
+          <div class="bar gold" style="height:100%"></div>
+          <div class="bar-label">Sep</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">₹344L</div>
+          <div class="bar maroon" style="height:72%"></div>
+          <div class="bar-label">Oct</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">₹468L</div>
+          <div class="bar gold" style="height:98%"></div>
+          <div class="bar-label">Nov</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">₹389L</div>
+          <div class="bar gold" style="height:81%"></div>
+          <div class="bar-label">Dec</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">₹280L</div>
+          <div class="bar maroon" style="height:58%"></div>
+          <div class="bar-label">Jan</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">₹0L</div>
+          <div class="bar blue" style="height:5%"></div>
+          <div class="bar-label">Feb</div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-val">₹0L</div>
+          <div class="bar blue" style="height:5%"></div>
+          <div class="bar-label">Mar</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- State breakdown -->
+    <div class="card">
+      <div class="card-title">Achievement by State</div>
+      <div style="padding:4px 0">
+        <div class="state-row">
+          <div class="state-name">Tamil Nadu</div>
+          <div class="state-bar-bg"><div class="state-bar-fill" style="width:88%"></div></div>
+          <div class="state-amt">₹1,482L</div>
+        </div>
+        <div class="state-row">
+          <div class="state-name">Kerala</div>
+          <div class="state-bar-bg"><div class="state-bar-fill" style="width:72%;background:linear-gradient(to right,#1d4ed8,#60a5fa)"></div></div>
+          <div class="state-amt">₹812L</div>
+        </div>
+        <div class="state-row">
+          <div class="state-name">AP</div>
+          <div class="state-bar-bg"><div class="state-bar-fill" style="width:64%;background:linear-gradient(to right,#7c3aed,#a78bfa)"></div></div>
+          <div class="state-amt">₹640L</div>
+        </div>
+        <div class="state-row">
+          <div class="state-name">Telangana</div>
+          <div class="state-bar-bg"><div class="state-bar-fill" style="width:55%;background:linear-gradient(to right,#0891b2,#67e8f9)"></div></div>
+          <div class="state-amt">₹524L</div>
+        </div>
+        <div class="state-row">
+          <div class="state-name">Karnataka</div>
+          <div class="state-bar-bg"><div class="state-bar-fill" style="width:42%;background:linear-gradient(to right,#15803d,#4ade80)"></div></div>
+          <div class="state-amt">₹389L</div>
+        </div>
+        <div class="state-row">
+          <div class="state-name">Pothys EBO</div>
+          <div class="state-bar-bg"><div class="state-bar-fill" style="width:100%;background:linear-gradient(to right,#b45309,#fcd34d)"></div></div>
+          <div class="state-amt">₹100L</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Row -->
+  <div class="grid2">
+    <!-- Top agents -->
+    <div class="card">
+      <div class="card-title">Top Agents — Performance <span>All States · FY 2024-25</span></div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Agent</th><th>Target</th><th>Achievement</th><th>Ach %</th><th>Collection</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td><b>Krishnamurthy</b></td><td>₹58L</td><td>₹142L</td><td><span class="badge green">244%</span></td><td>₹18.2L</td></tr>
+          <tr><td>2</td><td><b>Ranjith Kumar</b></td><td>₹72L</td><td>₹138L</td><td><span class="badge green">191%</span></td><td>₹9.4L</td></tr>
+          <tr><td>3</td><td><b>Muraleedharan</b></td><td>₹95L</td><td>₹131L</td><td><span class="badge green">137%</span></td><td>₹22.1L</td></tr>
+          <tr><td>4</td><td><b>Anbarasan</b></td><td>₹88L</td><td>₹128L</td><td><span class="badge green">145%</span></td><td>₹14.7L</td></tr>
+          <tr><td>5</td><td><b>Sudheesh</b></td><td>₹110L</td><td>₹108L</td><td><span class="badge amber">98%</span></td><td>₹8.3L</td></tr>
+          <tr><td>6</td><td><b>Venkatesan</b></td><td>₹120L</td><td>₹106L</td><td><span class="badge amber">88%</span></td><td>₹16.9L</td></tr>
+          <tr><td>7</td><td><b>Prabhakaran</b></td><td>₹95L</td><td>₹98L</td><td><span class="badge green">103%</span></td><td>₹7.2L</td></tr>
+          <tr><td>8</td><td><b>Govindarajan</b></td><td>₹140L</td><td>₹86L</td><td><span class="badge red">61%</span></td><td>₹4.1L</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Category split -->
+    <div class="card">
+      <div class="card-title">Category Split <span>Order Qty</span></div>
+      <div class="donut-wrap">
+        <div class="donut"></div>
+        <div class="donut-legend">
+          <div class="legend-row"><div class="legend-dot" style="background:#16a34a"></div><span>Dhoti (55%)</span></div>
+          <div class="legend-row"><div class="legend-dot" style="background:#ea580c"></div><span>Shirt (20%)</span></div>
+          <div class="legend-row"><div class="legend-dot" style="background:#dc2626"></div><span>Others (25%)</span></div>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:12px">Dhoti</span>
+          <div style="display:flex;align-items:center;gap:8px;flex:1;margin-left:12px">
+            <div class="ach-bar-bg"><div class="ach-bar-fill" style="width:82%"></div></div>
+            <span style="font-size:11px;width:40px">₹2,180L</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:12px">Shirt</span>
+          <div style="display:flex;align-items:center;gap:8px;flex:1;margin-left:12px">
+            <div class="ach-bar-bg"><div class="ach-bar-fill" style="width:48%"></div></div>
+            <span style="font-size:11px;width:40px">₹792L</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:12px">Combo</span>
+          <div style="display:flex;align-items:center;gap:8px;flex:1;margin-left:12px">
+            <div class="ach-bar-bg"><div class="ach-bar-fill" style="width:36%"></div></div>
+            <span style="font-size:11px;width:40px">₹560L</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:12px">Innerwear</span>
+          <div style="display:flex;align-items:center;gap:8px;flex:1;margin-left:12px">
+            <div class="ach-bar-bg"><div class="ach-bar-fill" style="width:24%"></div></div>
+            <span style="font-size:11px;width:40px">₹415L</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>NexRetail Intelligence · Built with custom ETL + FastAPI + React · Portfolio Demo</footer>
+</body>
+</html>

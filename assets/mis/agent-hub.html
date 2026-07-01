@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NexRetail Intelligence — Agent Hub</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#f5f3f0;color:#1b1c1c;font-size:13px}
+  :root{--gold:#b8860b;--maroon:#6b1a1a;--border:#e0d8cc;--muted:#7f7663}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:#1a1a1a;z-index:100;overflow-y:auto}
+  .sidebar-brand{padding:20px 18px 14px;border-bottom:1px solid #333}
+  .sidebar-brand h1{font-size:15px;font-weight:700;color:#f0c040}
+  .sidebar-brand p{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+  .nav-section{padding:12px 0 4px;font-size:10px;color:#555;letter-spacing:1px;text-transform:uppercase;padding-left:18px}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;color:#aaa;cursor:pointer;font-size:12.5px}
+  .nav-item:hover{background:#2a2a2a;color:#fff}
+  .nav-item.active{background:#2d1f00;color:#f0c040;border-right:3px solid #f0c040}
+  .nav-icon{width:16px;text-align:center;font-size:14px}
+  .topbar{margin-left:220px;background:#fff;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+  .filter-pill{background:#f5f3f0;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11.5px;color:var(--muted);cursor:pointer;margin-right:6px}
+  .filter-pill.active{background:#fef3d0;border-color:#d4a800;color:#745b00;font-weight:600}
+  .main{margin-left:220px;padding:24px}
+
+  /* AGENT SELECTOR */
+  .agent-bar{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+  .fy-sel{padding:6px 12px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#fff}
+  .agent-search{padding:6px 14px;border:1px solid var(--border);border-radius:6px;font-size:12px;width:180px;color:#999}
+  .agent-dd{padding:6px 14px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#fff;min-width:200px}
+  .back-btn{padding:6px 14px;border:1px solid var(--border);border-radius:6px;font-size:12px;background:#f5f3f0;cursor:pointer;color:#555}
+
+  /* PROFILE HEADER */
+  .profile-header{background:linear-gradient(135deg,#4a0e0e 0%,#8b2020 60%,#a0522d 100%);border-radius:12px;padding:28px 32px;color:#fff;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+  .profile-header h2{font-size:28px;font-weight:700;letter-spacing:.5px}
+  .profile-sub{font-size:13px;opacity:.75;margin-top:4px}
+  .profile-meta{font-size:11.5px;opacity:.6;margin-top:6px}
+  .grade-circle{width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.15);border:3px solid rgba(255,255,255,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .grade-letter{font-size:32px;font-weight:700;color:#f0c040}
+  .grade-label{font-size:9px;opacity:.8;margin-top:2px}
+  .grade-score{font-size:11px;font-weight:600;margin-top:1px}
+
+  /* KPI CARDS */
+  .kpi-6{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px}
+  .kpi-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px}
+  .kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;font-weight:600}
+  .kpi-val{font-size:20px;font-weight:700}
+  .kpi-val.gold{color:#b8860b}
+  .kpi-val.green{color:#16a34a}
+  .kpi-val.orange{color:#ea580c}
+  .kpi-val.red{color:#dc2626}
+  .kpi-sub{font-size:10px;color:var(--muted);margin-top:4px}
+
+  /* BOTTOM GRID */
+  .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px}
+  .card-title{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+  .card-title span{font-size:11px;color:var(--muted);font-weight:400}
+
+  /* GRADE DIMENSIONS */
+  .kpi-row{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f5f0e8}
+  .kpi-row:last-child{border-bottom:none}
+  .kpi-name{font-size:12px}
+  .kpi-actual{font-size:11.5px;color:#555;text-align:right}
+  .kpi-score{font-size:13px;font-weight:700;color:#b8860b;text-align:right;width:45px}
+  .kpi-wt{font-size:10.5px;color:#bbb;text-align:right;width:35px}
+  .kpi-bar-bg{height:5px;background:#f0ebe3;border-radius:3px;margin-top:3px;overflow:hidden}
+  .kpi-bar-fill{height:100%;border-radius:3px;background:#b8860b}
+
+  /* CREDIT HEALTH */
+  .credit-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:12px;border-bottom:1px solid #f5f0e8}
+  .credit-row:last-child{border-bottom:none}
+  .credit-label{color:var(--muted)}
+  .credit-val{font-weight:600}
+  .credit-bar-bg{background:#f0ebe3;border-radius:4px;height:8px;overflow:hidden;margin:6px 0}
+  .credit-bar-fill{height:100%;border-radius:4px}
+
+  /* TREND CHART */
+  .bar-chart{display:flex;align-items:flex-end;gap:10px;height:120px;padding-bottom:20px}
+  .bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+  .bar{border-radius:4px 4px 0 0;width:100%}
+  .bar.gold{background:linear-gradient(to top,#b8860b,#f0c040)}
+  .bar.maroon{background:linear-gradient(to top,#6b1a1a,#c44)}
+  .bar-label{font-size:9.5px;color:var(--muted)}
+  .bar-val{font-size:9px;font-weight:600;color:#555}
+
+  /* CUSTOMERS TABLE */
+  table{width:100%;border-collapse:collapse}
+  th{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;padding:6px 10px;border-bottom:1px solid var(--border);text-align:left}
+  td{padding:8px 10px;font-size:12px;border-bottom:1px solid #f0ebe3}
+  tr:last-child td{border-bottom:none}
+  .badge{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+  .badge.green{background:#dcfce7;color:#16a34a}
+  .badge.red{background:#fee2e2;color:#dc2626}
+  .badge.amber{background:#fef3c7;color:#b45309}
+
+  /* ALL AGENTS TABLE */
+  .agents-section{margin-bottom:20px}
+  .section-title{font-size:16px;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+  .csv-btn{padding:5px 14px;border:1px solid var(--border);border-radius:6px;font-size:11px;background:#fff;cursor:pointer}
+</style>
+</head>
+<body>
+<nav class="sidebar">
+  <div class="sidebar-brand"><h1>NexRetail MIS</h1><p>The Sovereign Lens</p></div>
+  <div class="nav-section">Enterprise Intelligence</div>
+  <div class="nav-item"><span class="nav-icon">⌂</span> Command Center</div>
+  <div class="nav-item"><span class="nav-icon">📊</span> Analysis</div>
+  <div class="nav-item"><span class="nav-icon">🏷</span> Category</div>
+  <div class="nav-item"><span class="nav-icon">📦</span> Inventory</div>
+  <div class="nav-item"><span class="nav-icon">⏳</span> Pending Breakup</div>
+  <div class="nav-item"><span class="nav-icon">🎯</span> Agent Targets</div>
+  <div class="nav-item active"><span class="nav-icon">👤</span> Agent Hub</div>
+  <div class="nav-item"><span class="nav-icon">🗂</span> Category Hub</div>
+  <div class="nav-item"><span class="nav-icon">🛒</span> Order Hub</div>
+  <div class="nav-item"><span class="nav-icon">👥</span> Customer Hub</div>
+  <div class="nav-item"><span class="nav-icon">❌</span> Cancel Analysis</div>
+  <div class="nav-item"><span class="nav-icon">📈</span> Growth Analysis</div>
+  <div class="nav-section">Operations</div>
+  <div class="nav-item"><span class="nav-icon">🏪</span> Store Sales</div>
+  <div class="nav-section">System</div>
+  <div class="nav-item"><span class="nav-icon">✨</span> BI Studio</div>
+</nav>
+
+<div class="topbar">
+  <div>
+    <span class="filter-pill active">FY 2024-2025 ✕</span>
+    <span class="filter-pill active">Tamil Nadu ✕</span>
+    <span class="filter-pill">Month ▾</span>
+    <span class="filter-pill">Category ▾</span>
+  </div>
+  <span style="font-size:11px;color:#bbb">● Synced 2h ago</span>
+</div>
+
+<div class="main">
+  <!-- Agent selector bar -->
+  <div class="agent-bar">
+    <select class="fy-sel"><option>FY: 2024-2025</option></select>
+    <input class="agent-search" placeholder="🔍 Search agent..." />
+    <select class="agent-dd"><option>Krishnamurthy</option></select>
+    <button class="back-btn">← All Agents</button>
+  </div>
+
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div>
+      <div style="font-size:11px;opacity:.6;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">NexRetail — Agent Scorecard</div>
+      <h2>Krishnamurthy</h2>
+      <div class="profile-sub">TN · Route CBE2</div>
+      <div class="profile-meta">2024-2025 · Generated: 10/1/2025</div>
+    </div>
+    <div class="grade-circle">
+      <div class="grade-letter">A</div>
+      <div class="grade-label">Excellent</div>
+      <div class="grade-score">Score: 92</div>
+    </div>
+  </div>
+
+  <!-- 6 KPI Cards -->
+  <div class="kpi-6">
+    <div class="kpi-card">
+      <div class="kpi-label">Net Sales Value</div>
+      <div class="kpi-val green">₹142.8L</div>
+      <div class="kpi-sub">246.2% of target</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Target</div>
+      <div class="kpi-val gold">₹58.00L</div>
+      <div class="kpi-sub">FY 2024-25</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Order Qty</div>
+      <div class="kpi-val">28,640</div>
+      <div class="kpi-sub">total ordered FY</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Dispatch Qty</div>
+      <div class="kpi-val green">24,180</div>
+      <div class="kpi-sub">dispatched FY</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Pending Qty</div>
+      <div class="kpi-val orange">3,920</div>
+      <div class="kpi-sub">orders pending</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Cancel Rate</div>
+      <div class="kpi-val green">1.8%</div>
+      <div class="kpi-sub">420 cancelled</div>
+    </div>
+  </div>
+
+  <!-- Bottom grid -->
+  <div class="bottom-grid">
+    <!-- Grade Dimensions -->
+    <div class="card">
+      <div class="card-title">Grade Dimensions <span>6 KPIs</span></div>
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">Sales Achievement</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:100%"></div></div>
+        </div>
+        <div class="kpi-actual">246% of target</div>
+        <div class="kpi-score">50.0</div>
+        <div class="kpi-wt">/ 50</div>
+      </div>
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">LTL Growth</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:78%"></div></div>
+        </div>
+        <div class="kpi-actual">+18.4% growth</div>
+        <div class="kpi-score">13.2</div>
+        <div class="kpi-wt">/ 15</div>
+      </div>
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">Outlet Coverage</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:68%"></div></div>
+        </div>
+        <div class="kpi-actual">108 outlets</div>
+        <div class="kpi-score">7.2</div>
+        <div class="kpi-wt">/ 10</div>
+      </div>
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">90+ Collection</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:55%"></div></div>
+        </div>
+        <div class="kpi-actual">34% collected</div>
+        <div class="kpi-score">9.8</div>
+        <div class="kpi-wt">/ 15</div>
+      </div>
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">Check-In Days</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:90%"></div></div>
+        </div>
+        <div class="kpi-actual">22 days</div>
+        <div class="kpi-score">9.0</div>
+        <div class="kpi-wt">/ 10</div>
+      </div>
+      <div class="kpi-row">
+        <div>
+          <div class="kpi-name">Mid-Month Sales</div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" style="width:100%"></div></div>
+        </div>
+        <div class="kpi-actual">132% of target</div>
+        <div class="kpi-score">10.0</div>
+        <div class="kpi-wt">/ 10</div>
+      </div>
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid #f0ebe3;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;font-weight:600">Total · Excellent</span>
+        <span style="font-size:16px;font-weight:700;color:#b8860b">92.2 / 110</span>
+      </div>
+    </div>
+
+    <!-- Customer Credit Health -->
+    <div class="card">
+      <div class="card-title">Customer Credit Health</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+        <div>
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px">Customers</div>
+          <div style="font-size:20px;font-weight:700">87</div>
+          <div style="font-size:10px;color:var(--muted)">distinct this period</div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px">Collection</div>
+          <div style="font-size:20px;font-weight:700;color:#1d4ed8">₹18.24L</div>
+          <div style="font-size:10px;color:var(--muted)">VR receipts FY</div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px">Outstanding</div>
+          <div style="font-size:20px;font-weight:700;color:#ea580c">₹52.4L</div>
+          <div style="font-size:10px;color:var(--muted)">uncollected FY</div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:600;margin-bottom:4px">Stuck</div>
+          <div style="font-size:20px;font-weight:700;color:#dc2626">₹8.2L</div>
+          <div style="font-size:10px;color:var(--muted)">overdue + block</div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #f0ebe3;padding-top:12px">
+        <div class="credit-row"><span class="credit-label">Active (within limit)</span><span class="credit-val" style="color:#16a34a">62</span></div>
+        <div class="credit-row"><span class="credit-label">Overdue</span><span class="credit-val" style="color:#ea580c">18</span></div>
+        <div class="credit-row"><span class="credit-label">Credit Block</span><span class="credit-val" style="color:#dc2626">7</span></div>
+      </div>
+      <div style="margin-top:12px">
+        <div style="font-size:10.5px;color:var(--muted);margin-bottom:6px">Credit utilisation across customers</div>
+        <div class="credit-bar-bg">
+          <div style="display:flex;height:100%">
+            <div style="width:71%;background:#16a34a;border-radius:4px 0 0 4px"></div>
+            <div style="width:21%;background:#ea580c"></div>
+            <div style="width:8%;background:#dc2626;border-radius:0 4px 4px 0"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:6px;font-size:10px;color:var(--muted)">
+          <span>🟢 Active 71%</span><span>🟠 Overdue 21%</span><span>🔴 Blocked 8%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly Trend -->
+    <div class="card">
+      <div class="card-title">Monthly Target vs Achievement <span>FY 2024-25</span></div>
+      <div class="bar-chart">
+        <div class="bar-wrap"><div class="bar-val">₹14L</div><div class="bar gold" style="height:72%"></div><div class="bar-label">Apr</div></div>
+        <div class="bar-wrap"><div class="bar-val">₹18L</div><div class="bar gold" style="height:90%"></div><div class="bar-label">May</div></div>
+        <div class="bar-wrap"><div class="bar-val">₹21L</div><div class="bar gold" style="height:100%"></div><div class="bar-label">Jun</div></div>
+        <div class="bar-wrap"><div class="bar-val">₹16L</div><div class="bar gold" style="height:80%"></div><div class="bar-label">Jul</div></div>
+        <div class="bar-wrap"><div class="bar-val">₹19L</div><div class="bar gold" style="height:95%"></div><div class="bar-label">Aug</div></div>
+        <div class="bar-wrap"><div class="bar-val">₹22L</div><div class="bar gold" style="height:100%"></div><div class="bar-label">Sep</div></div>
+        <div class="bar-wrap"><div class="bar-val">₹12L</div><div class="bar maroon" style="height:60%"></div><div class="bar-label">Oct</div></div>
+        <div class="bar-wrap"><div class="bar-val">₹8L</div><div class="bar maroon" style="height:40%"></div><div class="bar-label">Nov</div></div>
+        <div class="bar-wrap"><div class="bar-val">₹13L</div><div class="bar gold" style="height:65%"></div><div class="bar-label">Dec</div></div>
+      </div>
+    </div>
+
+    <!-- Top Categories -->
+    <div class="card">
+      <div class="card-title">Top Categories <span>by Order Qty</span></div>
+      <table>
+        <thead><tr><th>Category</th><th>Order Qty</th><th>Dispatch %</th><th>Pending</th></tr></thead>
+        <tbody>
+          <tr><td><b>Dhoti</b></td><td>12,480</td><td><span class="badge green">88%</span></td><td>1,498</td></tr>
+          <tr><td><b>Shirt</b></td><td>7,240</td><td><span class="badge green">82%</span></td><td>1,303</td></tr>
+          <tr><td><b>Colour Combo</b></td><td>4,620</td><td><span class="badge amber">71%</span></td><td>1,340</td></tr>
+          <tr><td><b>Innerwear</b></td><td>2,840</td><td><span class="badge green">94%</span></td><td>170</td></tr>
+          <tr><td><b>Kids</b></td><td>1,460</td><td><span class="badge amber">68%</span></td><td>467</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>
