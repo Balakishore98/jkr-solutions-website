@@ -3,543 +3,1054 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>JKR Solutions | Dashboards, Automation & Software for Growing Businesses</title>
+<title>JKR Solutions | Dashboards · Automation · Software · Web · Media</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#1C1814', paper: '#FAF7F2',
+          brass: '#B07A2E', 'brass-light': '#D4A24C',
+          muted: '#6B6258', surface: '#F2EDE6'
+        },
+        fontFamily: { display: ['Fraunces','serif'], sans: ['Manrope','sans-serif'] }
+      }
+    }
+  }
+</script>
 <style>
-  :root{ --ink:#1C1814; --paper:#FAF7F2; --brass:#B07A2E; --brass-light:#D4A24C; }
-  body { font-family: 'Manrope', sans-serif; background: var(--paper); color: var(--ink); }
-  .font-display { font-family: 'Fraunces', serif; }
-  .brass { color: var(--brass); }
-  .bg-brass { background-color: var(--brass); }
-  .border-brass { border-color: var(--brass); }
+:root{ --ink:#1C1814; --paper:#FAF7F2; --brass:#B07A2E; --brass-light:#D4A24C; }
+body { font-family:'Manrope',sans-serif; background:var(--paper); color:var(--ink); }
+.font-display { font-family:'Fraunces',serif; }
 
-  /* ambient animated background */
-  .ambient { position:absolute; inset:0; overflow:hidden; z-index:0; }
-  .blob { position:absolute; border-radius:9999px; filter:blur(70px); opacity:.35; animation: drift 22s ease-in-out infinite; }
-  .blob1 { width:520px; height:520px; background:radial-gradient(circle,var(--brass-light),transparent 70%); top:-140px; left:-120px; animation-duration:26s; }
-  .blob2 { width:420px; height:420px; background:radial-gradient(circle,var(--brass),transparent 70%); bottom:-160px; right:-100px; animation-duration:30s; animation-delay:-8s; }
-  .blob3 { width:300px; height:300px; background:radial-gradient(circle,#1C1814,transparent 70%); top:30%; right:18%; opacity:.06; animation-duration:34s; animation-delay:-4s; }
-  @keyframes drift {
-    0%,100% { transform: translate(0,0) scale(1); }
-    33% { transform: translate(40px,-30px) scale(1.08); }
-    66% { transform: translate(-30px,25px) scale(0.96); }
-  }
-  .grain { background-image: radial-gradient(circle, rgba(28,24,20,0.06) 1px, transparent 1px); background-size: 22px 22px; }
+/* ── HERO ── */
+.hero-bg {
+  background: var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg::before {
+  content:'';
+  position:absolute; inset:0;
+  background: radial-gradient(ellipse 70% 60% at 20% 50%, rgba(176,122,46,0.18) 0%, transparent 70%),
+              radial-gradient(ellipse 50% 70% at 80% 20%, rgba(212,162,76,0.12) 0%, transparent 60%);
+  pointer-events:none;
+}
+.mesh-grid {
+  position:absolute; inset:0;
+  background-image: linear-gradient(rgba(176,122,46,0.06) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(176,122,46,0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: mesh-drift 40s linear infinite;
+}
+@keyframes mesh-drift {
+  0%   { transform: translate(0,0); }
+  100% { transform: translate(48px,48px); }
+}
+.orb { position:absolute; border-radius:9999px; filter:blur(80px); pointer-events:none; }
+.orb1 { width:500px;height:500px; background:radial-gradient(circle,rgba(176,122,46,0.22),transparent 70%); top:-200px;left:-150px; animation:orb-drift 28s ease-in-out infinite; }
+.orb2 { width:400px;height:400px; background:radial-gradient(circle,rgba(212,162,76,0.14),transparent 70%); bottom:-160px;right:-100px; animation:orb-drift 34s ease-in-out infinite reverse; }
+.orb3 { width:250px;height:250px; background:radial-gradient(circle,rgba(176,122,46,0.1),transparent 70%); top:40%;right:20%; animation:orb-drift 22s ease-in-out infinite; }
+@keyframes orb-drift {
+  0%,100% { transform:translate(0,0) scale(1); }
+  33%     { transform:translate(40px,-30px) scale(1.1); }
+  66%     { transform:translate(-25px,20px) scale(0.92); }
+}
 
-  /* scroll reveal */
-  .reveal { opacity:0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
-  .reveal.visible { opacity:1; transform:none; }
-  .reveal-delay-1.visible { transition-delay:.08s; }
-  .reveal-delay-2.visible { transition-delay:.16s; }
-  .reveal-delay-3.visible { transition-delay:.24s; }
+/* ── SCROLL REVEAL ── */
+.reveal { opacity:0; transform:translateY(30px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+.reveal.visible { opacity:1; transform:none; }
+.reveal-delay-1.visible { transition-delay:.08s; }
+.reveal-delay-2.visible { transition-delay:.16s; }
+.reveal-delay-3.visible { transition-delay:.24s; }
+.reveal-delay-4.visible { transition-delay:.32s; }
+.reveal-delay-5.visible { transition-delay:.40s; }
 
-  /* card hover */
-  .lift { transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease, border-color .35s ease; }
-  .lift:hover { transform: translateY(-6px); box-shadow: 0 24px 48px -20px rgba(28,24,20,0.25); }
+/* ── LIFT HOVER ── */
+.lift { transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease; }
+.lift:hover { transform:translateY(-5px); box-shadow:0 20px 40px -16px rgba(28,24,20,0.22); }
 
-  /* nav scroll state */
-  nav.scrolled { box-shadow: 0 1px 0 rgba(28,24,20,0.08); }
+/* ── NAV ── */
+nav.scrolled { background: rgba(250,247,242,0.97) !important; box-shadow: 0 1px 0 rgba(28,24,20,0.08); }
+.nav-link { position:relative; }
+.nav-link::after { content:''; position:absolute; left:0; bottom:-3px; width:0; height:1.5px; background:var(--brass); transition:width .25s; }
+.nav-link:hover::after { width:100%; }
 
-  details > summary { list-style:none; cursor:pointer; }
-  details > summary::-webkit-details-marker { display:none; }
-  details[open] summary .chev { transform: rotate(180deg); }
-  .nav-link { position:relative; }
-  .nav-link::after { content:''; position:absolute; left:0; bottom:-4px; width:0; height:1px; background:var(--brass); transition:width .25s; }
-  .nav-link:hover::after { width:100%; }
+/* ── MARQUEE ── */
+.marquee-track { display:flex; gap:3rem; white-space:nowrap; will-change:transform; }
 
-  /* marquee */
-  .marquee-track { display:flex; gap:3rem; white-space:nowrap; will-change:transform; }
+/* ── SERVICE CARDS ── */
+.svc-dark { background:var(--ink); color:var(--paper); }
+.svc-light { background:#FEFBF6; color:var(--ink); border:1px solid rgba(28,24,20,0.08); }
+.svc-number { font-family:'Fraunces',serif; font-size:5rem; font-weight:700; line-height:1; opacity:.08; position:absolute; top:12px; right:20px; }
+.svc-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; }
 
-  /* mockup browser chrome */
-  .chrome-dot { width:9px; height:9px; border-radius:9999px; }
+/* ── CAROUSEL ── */
+.carousel { position:relative; height:15rem; background:#0d0d0d; overflow:hidden; border-radius:0; }
+@media (min-width:768px){ .carousel { height:17.5rem; } }
+.carousel-slide { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top; opacity:0; pointer-events:none; cursor:zoom-in; }
+.carousel-slide.active { pointer-events:auto; animation: fisheye-in .85s cubic-bezier(.16,1,.3,1) forwards; }
+.carousel-slide.exiting { animation: fisheye-out .55s ease-in forwards; }
+@keyframes fisheye-in {
+  0%   { opacity:0; transform:scale(1.42); filter:blur(14px) brightness(1.25); }
+  55%  { opacity:1; filter:blur(1.5px) brightness(1.04); }
+  100% { opacity:1; transform:scale(1); filter:blur(0) brightness(1); }
+}
+@keyframes fisheye-out {
+  0%   { opacity:1; transform:scale(1); filter:blur(0) brightness(1); }
+  100% { opacity:0; transform:scale(0.65); filter:blur(14px) brightness(1.45); }
+}
+.carousel-dots { position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:10; }
+.carousel-dots button { width:6px; height:6px; border-radius:9999px; background:rgba(255,255,255,0.4); transition:all .25s; padding:0; border:0; cursor:pointer; }
+.carousel-dots button.active { background:#D4A24C; width:18px; }
+.carousel-arrow { position:absolute; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:9999px; background:rgba(28,24,20,0.55); color:#fff; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .25s, background .25s; z-index:10; font-size:16px; cursor:pointer; border:0; }
+.carousel:hover .carousel-arrow { opacity:1; }
+.carousel-arrow:hover { background:rgba(176,122,46,0.85); }
+.carousel-arrow.prev { left:10px; } .carousel-arrow.next { right:10px; }
+.carousel-expand { position:absolute; top:10px; right:10px; width:30px; height:30px; border-radius:9999px; background:rgba(28,24,20,0.55); color:#fff; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .25s; z-index:10; font-size:14px; pointer-events:none; }
+.carousel:hover .carousel-expand { opacity:1; }
 
-  /* work carousel */
-  .carousel { position:relative; height:15rem; background:#0d0d0d; overflow:hidden; }
-  @media (min-width:768px){ .carousel { height:17rem; } }
-  .carousel-slide { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top; opacity:0; pointer-events:none; cursor:zoom-in; }
-  .carousel-slide.active { pointer-events:auto; animation: fisheye-in .85s cubic-bezier(.16,1,.3,1) forwards; }
-  .carousel-slide.exiting { animation: fisheye-out .55s ease-in forwards; }
-  @keyframes fisheye-in {
-    0%   { opacity:0; transform:scale(1.42); filter:blur(14px) brightness(1.25); }
-    55%  { opacity:1; filter:blur(1.5px) brightness(1.04); }
-    100% { opacity:1; transform:scale(1);   filter:blur(0) brightness(1); }
-  }
-  @keyframes fisheye-out {
-    0%   { opacity:1; transform:scale(1);    filter:blur(0) brightness(1); }
-    100% { opacity:0; transform:scale(0.65); filter:blur(14px) brightness(1.45); }
-  }
-  .carousel-dots { position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:10; }
-  .carousel-dots button { width:6px; height:6px; border-radius:9999px; background:rgba(255,255,255,0.4); transition:all .25s ease; padding:0; border:0; cursor:pointer; }
-  .carousel-dots button.active { background:#D4A24C; width:18px; }
-  .carousel-arrow { position:absolute; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:9999px; background:rgba(28,24,20,0.55); color:#fff; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .25s ease, background .25s ease; z-index:10; font-size:16px; cursor:pointer; border:0; }
-  .carousel:hover .carousel-arrow { opacity:1; }
-  .carousel-arrow:hover { background:rgba(176,122,46,0.85); }
-  .carousel-arrow.prev { left:10px; } .carousel-arrow.next { right:10px; }
-  .carousel-expand { position:absolute; top:10px; right:10px; width:30px; height:30px; border-radius:9999px; background:rgba(28,24,20,0.55); color:#fff; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .25s ease; z-index:10; font-size:14px; pointer-events:none; }
-  .carousel:hover .carousel-expand { opacity:1; }
-  .stat-chip { font-size:11px; font-weight:600; background:rgba(176,122,46,0.1); color:var(--brass); padding:4px 10px; border-radius:9999px; }
+/* ── LIGHTBOX ── */
+#lightbox { position:fixed; inset:0; background:rgba(13,11,9,0.96); z-index:200; display:flex; align-items:center; justify-content:center; }
+#lightbox.hidden { display:none; }
+.lb-viewport { position:relative; width:min(92vw,1100px); aspect-ratio:16/10; overflow:hidden; border-radius:12px; }
+.lb-track { display:flex; height:100%; transition:transform .5s cubic-bezier(.16,1,.3,1); }
+.lb-track img { width:100%; height:100%; object-fit:contain; flex-shrink:0; background:#0d0d0d; }
+.lb-close { position:absolute; top:18px; right:18px; width:40px; height:40px; border-radius:9999px; background:rgba(255,255,255,0.08); color:#FAF7F2; font-size:18px; border:0; cursor:pointer; z-index:210; display:flex; align-items:center; justify-content:center; }
+.lb-close:hover { background:rgba(176,122,46,0.6); }
+.lb-arrow { position:absolute; top:50%; transform:translateY(-50%); width:46px; height:46px; border-radius:9999px; background:rgba(255,255,255,0.08); color:#FAF7F2; font-size:22px; border:0; cursor:pointer; z-index:210; display:flex; align-items:center; justify-content:center; }
+.lb-arrow:hover { background:rgba(176,122,46,0.7); }
+.lb-arrow.prev { left:-60px; } .lb-arrow.next { right:-60px; }
+@media (max-width:900px){ .lb-arrow.prev{ left:8px; } .lb-arrow.next{ right:8px; } }
+.lb-dots { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:10; }
+.lb-dots button { width:7px; height:7px; border-radius:9999px; background:rgba(255,255,255,0.35); border:0; cursor:pointer; padding:0; }
+.lb-dots button.active { background:#D4A24C; width:20px; }
 
-  /* lightbox */
-  #lightbox { position:fixed; inset:0; background:rgba(13,11,9,0.96); z-index:200; display:flex; align-items:center; justify-content:center; }
-  #lightbox.hidden { display:none; }
-  .lb-viewport { position:relative; width:min(92vw,1100px); aspect-ratio:16/10; overflow:hidden; border-radius:12px; }
-  .lb-track { display:flex; height:100%; transition: transform .5s cubic-bezier(.16,1,.3,1); }
-  .lb-track img { width:100%; height:100%; object-fit:contain; flex-shrink:0; background:#0d0d0d; }
-  .lb-close { position:absolute; top:18px; right:18px; width:40px; height:40px; border-radius:9999px; background:rgba(255,255,255,0.08); color:#FAF7F2; font-size:18px; border:0; cursor:pointer; z-index:210; }
-  .lb-close:hover { background:rgba(176,122,46,0.6); }
-  .lb-arrow { position:absolute; top:50%; transform:translateY(-50%); width:46px; height:46px; border-radius:9999px; background:rgba(255,255,255,0.08); color:#FAF7F2; font-size:22px; border:0; cursor:pointer; z-index:210; }
-  .lb-arrow:hover { background:rgba(176,122,46,0.7); }
-  .lb-arrow.prev { left:-60px; } .lb-arrow.next { right:-60px; }
-  @media (max-width:900px){ .lb-arrow.prev{ left:8px; } .lb-arrow.next{ right:8px; } }
-  .lb-caption { position:absolute; bottom:-40px; left:0; right:0; text-align:center; color:#FAF7F2cc; font-size:13px; }
-  .lb-dots { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:10; }
-  .lb-dots button { width:7px; height:7px; border-radius:9999px; background:rgba(255,255,255,0.35); border:0; cursor:pointer; padding:0; }
-  .lb-dots button.active { background:#D4A24C; width:20px; }
+/* ── PRICING TABS ── */
+.ptab-btn { cursor:pointer; padding:10px 22px; border-radius:9999px; font-size:14px; font-weight:600; border:0; background:transparent; color:var(--muted,#6B6258); transition:background .2s, color .2s; }
+.ptab-btn.active { background:var(--ink); color:var(--paper); }
+.ptab-pane { display:none; }
+.ptab-pane.active { display:block; }
+.price-card { border-radius:16px; padding:28px; position:relative; }
+.price-card.featured { background:var(--ink); color:var(--paper); }
+.price-card.plain { background:#FEFBF6; border:1px solid rgba(28,24,20,0.1); }
+.feature-row { display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid rgba(28,24,20,0.06); font-size:14px; }
+.feature-row:last-child { border-bottom:0; }
+.check { color:var(--brass); font-size:16px; flex-shrink:0; }
 
-  /* gradient text */
-  .grad-text { background: linear-gradient(100deg, var(--ink) 30%, var(--brass) 60%, var(--brass-light) 80%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+/* ── FAQ ── */
+details > summary { list-style:none; cursor:pointer; }
+details > summary::-webkit-details-marker { display:none; }
+details[open] summary .chev { transform: rotate(180deg); }
+.chev { transition: transform .25s; }
+
+/* ── GRAD TEXT ── */
+.grad-text { background:linear-gradient(100deg,var(--ink) 20%,var(--brass) 55%,var(--brass-light) 80%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+/* ── STEP LINE ── */
+.step-line { position:absolute; top:24px; left:calc(50% + 24px); right:calc(-50% + 24px); height:1px; background:linear-gradient(90deg,var(--brass),transparent); }
+
+/* ── BADGE ── */
+.badge { font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:3px 10px; border-radius:9999px; }
+.badge-brass { background:rgba(176,122,46,0.12); color:var(--brass); }
+.badge-green { background:rgba(34,197,94,0.1); color:#16a34a; }
+.badge-ink { background:var(--ink); color:var(--paper); }
+
+/* ── ADDONS TABLE ── */
+.addon-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(28,24,20,0.07); font-size:14px; }
+.addon-row:last-child { border-bottom:0; }
+
+/* ── STAT COUNTER ── */
+.stat-val { font-family:'Fraunces',serif; }
 </style>
 </head>
-<body class="overflow-x-hidden">
+<body class="overflow-x-hidden" id="top">
 
-<!-- Nav -->
-<nav id="mainNav" class="fixed top-0 w-full z-50 bg-[#FAF7F2]/90 backdrop-blur-md transition-shadow duration-300">
+<!-- ═══════════════════ LIGHTBOX ═══════════════════ -->
+<div id="lightbox" class="hidden" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="lb-close" id="lbClose">✕</button>
+  <div style="position:relative;">
+    <div class="lb-viewport">
+      <div class="lb-track" id="lbTrack"></div>
+    </div>
+    <button class="lb-arrow prev" id="lbPrev">‹</button>
+    <button class="lb-arrow next" id="lbNext">›</button>
+    <div class="lb-dots" id="lbDots"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ NAV ═══════════════════ -->
+<nav id="mainNav" class="fixed top-0 w-full z-50 bg-[#FAF7F2]/90 backdrop-blur-md transition-all duration-300">
   <div class="max-w-6xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
     <a href="#top" class="font-display text-xl font-semibold tracking-tight">JKR Solutions</a>
     <div class="hidden md:flex items-center gap-8 text-sm font-medium">
       <a href="#services" class="nav-link">Services</a>
       <a href="#work" class="nav-link">Our Work</a>
-      <a href="#how-it-works" class="nav-link">How it Works</a>
+      <a href="#process" class="nav-link">Process</a>
       <a href="#pricing" class="nav-link">Pricing</a>
-      <a href="#contact" class="bg-[#1C1814] text-[#FAF7F2] px-5 py-2.5 rounded-full hover:bg-brass transition-colors">Get a Free Audit</a>
+      <a href="#contact" class="bg-[#1C1814] text-[#FAF7F2] px-5 py-2.5 rounded-full hover:bg-[#B07A2E] transition-colors text-sm font-semibold">Get a Free Audit</a>
     </div>
-    <button id="menuBtn" class="md:hidden flex flex-col gap-1.5 p-2" aria-label="Open menu" aria-expanded="false">
-      <span class="w-6 h-0.5 bg-[#1C1814]"></span>
-      <span class="w-6 h-0.5 bg-[#1C1814]"></span>
+    <button id="menuBtn" class="md:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu" aria-expanded="false">
+      <span class="w-6 h-0.5 bg-[#1C1814] transition-all"></span>
+      <span class="w-6 h-0.5 bg-[#1C1814] transition-all"></span>
     </button>
   </div>
   <div id="mobileMenu" class="hidden md:hidden bg-[#FAF7F2] border-t border-[#1C1814]/10 px-6 py-6 flex flex-col gap-5 text-base font-medium">
     <a href="#services" class="mobile-link">Services</a>
     <a href="#work" class="mobile-link">Our Work</a>
-    <a href="#how-it-works" class="mobile-link">How it Works</a>
+    <a href="#process" class="mobile-link">Process</a>
     <a href="#pricing" class="mobile-link">Pricing</a>
-    <a href="#contact" class="mobile-link bg-[#1C1814] text-[#FAF7F2] px-5 py-3 rounded-full text-center">Get a Free Audit</a>
+    <a href="#contact" class="mobile-link mt-2 bg-[#1C1814] text-[#FAF7F2] px-5 py-3 rounded-full text-center">Get a Free Audit</a>
   </div>
 </nav>
 
-<!-- Hero -->
-<header id="top" class="relative pt-36 pb-24 md:pt-48 md:pb-32 grain overflow-hidden">
-  <div class="ambient"><div class="blob blob1"></div><div class="blob blob2"></div><div class="blob blob3"></div></div>
-  <div class="relative z-10 max-w-6xl mx-auto px-6 md:px-10">
-    <span class="reveal inline-block text-xs font-semibold tracking-widest uppercase brass border border-brass/40 bg-brass/5 rounded-full px-3 py-1 mb-6">Software & Systems Studio</span>
-    <h1 class="reveal reveal-delay-1 font-display text-4xl md:text-6xl font-semibold leading-[1.1] max-w-3xl mb-6">
-      We build the <span class="grad-text">software your business actually runs on.</span>
-    </h1>
-    <p class="reveal reveal-delay-2 text-lg md:text-xl text-[#1C1814]/70 max-w-2xl mb-10 leading-relaxed">
-      JKR Solutions designs and ships dashboards, automation, and custom tools for businesses that have outgrown Excel — engineered by someone who runs production software for real operations, not a generic dev shop.
-    </p>
-    <div class="reveal reveal-delay-3 flex flex-col sm:flex-row gap-4">
-      <a href="#contact" class="bg-[#1C1814] text-[#FAF7F2] px-7 py-4 rounded-full font-semibold hover:bg-brass transition-all hover:shadow-xl hover:-translate-y-0.5 text-center">Get a Free Audit</a>
-      <a href="#work" class="border border-[#1C1814]/30 px-7 py-4 rounded-full font-semibold hover:border-brass hover:text-[#B07A2E] transition-all text-center">See Real Software We've Shipped</a>
-    </div>
-  </div>
-</header>
-
-<!-- Credibility strip -->
-<section class="bg-[#1C1814] text-[#FAF7F2] py-5 overflow-hidden">
-  <div class="max-w-6xl mx-auto px-6 md:px-10">
-    <div class="marquee-track text-sm" id="marqueeTrack">
-      <span class="text-[#FAF7F2]/80">Runs the daily BI platform for a multi-state retail chain</span>
-      <span class="brass">●</span>
-      <span class="text-[#FAF7F2]/80">Built a desktop worship presentation suite used in live services</span>
-      <span class="brass">●</span>
-      <span class="text-[#FAF7F2]/80">Shipped an AI video editing tool for Tamil sermon content</span>
-      <span class="brass">●</span>
-      <span class="text-[#FAF7F2]/80">Nightly ERP/POS sync pipelines, production since 2025</span>
-      <span class="brass">●</span>
-      <span class="text-[#FAF7F2]/80">Runs the daily BI platform for a multi-state retail chain</span>
-      <span class="brass">●</span>
-      <span class="text-[#FAF7F2]/80">Built a desktop worship presentation suite used in live services</span>
-      <span class="brass">●</span>
-      <span class="text-[#FAF7F2]/80">Shipped an AI video editing tool for Tamil sermon content</span>
-      <span class="brass">●</span>
-      <span class="text-[#FAF7F2]/80">Nightly ERP/POS sync pipelines, production since 2025</span>
-    </div>
-  </div>
-</section>
-
-<!-- Problem / Solution -->
-<section class="py-20 md:py-28">
-  <div class="max-w-6xl mx-auto px-6 md:px-10">
-    <div class="reveal text-center mb-16 max-w-2xl mx-auto">
-      <h2 class="font-display text-3xl md:text-4xl font-semibold mb-4">The cost of running on guesswork</h2>
-      <p class="text-[#1C1814]/65 text-lg">Every week without clean data is a week of decisions made on gut feel instead of fact.</p>
-    </div>
-    <div class="grid md:grid-cols-2 gap-6">
-      <div class="reveal lift bg-white border border-[#1C1814]/10 rounded-2xl p-8">
-        <p class="text-xs font-bold tracking-widest uppercase text-red-700/80 mb-5">Today</p>
-        <ul class="space-y-5">
-          <li><p class="font-semibold text-lg">10+ Excel files, no version control</p><p class="text-[#1C1814]/60 mt-1">Different numbers in every sheet, nobody sure which one is current.</p></li>
-          <li><p class="font-semibold text-lg">Manual re-entry from WhatsApp &amp; invoices</p><p class="text-[#1C1814]/60 mt-1">Hours lost every week typing the same data twice.</p></li>
-          <li><p class="font-semibold text-lg">Reports that arrive two weeks late</p><p class="text-[#1C1814]/60 mt-1">By the time you see the margin, the month is already over.</p></li>
-        </ul>
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero-bg min-h-screen flex flex-col justify-center pt-20">
+  <div class="mesh-grid"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="max-w-6xl mx-auto px-6 md:px-10 py-24 md:py-32 relative z-10">
+    <div class="max-w-4xl">
+      <div class="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full border border-[#B07A2E]/30 bg-[#B07A2E]/10">
+        <span class="w-2 h-2 rounded-full bg-[#D4A24C] animate-pulse"></span>
+        <span class="text-[#D4A24C] text-sm font-semibold tracking-wide">Chennai · India</span>
       </div>
-      <div class="reveal reveal-delay-1 lift bg-white border border-brass/30 rounded-2xl p-8 shadow-[0_8px_30px_-12px_rgba(176,122,46,0.25)]">
-        <p class="text-xs font-bold tracking-widest uppercase brass mb-5">With JKR Solutions</p>
-        <ul class="space-y-5">
-          <li><p class="font-semibold text-lg">One dashboard, synced nightly</p><p class="text-[#1C1814]/60 mt-1">Sales, stock and collections pulled straight from your ERP/POS.</p></li>
-          <li><p class="font-semibold text-lg">Zero manual data entry</p><p class="text-[#1C1814]/60 mt-1">Automated extraction from invoices, orders and messaging apps.</p></li>
-          <li><p class="font-semibold text-lg">Same-day visibility</p><p class="text-[#1C1814]/60 mt-1">Know today's numbers today, not next month.</p></li>
-        </ul>
+      <h1 class="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.0] text-[#FAF7F2] mb-8">
+        Build Smarter.<br>
+        <span style="background:linear-gradient(95deg,#D4A24C,#B07A2E);-webkit-background-clip:text;background-clip:text;color:transparent;">Scale Faster.</span>
+      </h1>
+      <p class="text-lg md:text-xl text-[#FAF7F2]/65 max-w-2xl leading-relaxed mb-10">
+        We design, build, and run dashboards, automation, websites, custom software, and content tools — so your business runs on data, not guesswork.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a href="#contact" class="inline-flex items-center justify-center gap-2 bg-[#B07A2E] text-[#FAF7F2] px-8 py-4 rounded-full font-semibold text-base hover:bg-[#D4A24C] transition-colors">
+          Get a Free Audit →
+        </a>
+        <a href="#work" class="inline-flex items-center justify-center gap-2 border border-[#FAF7F2]/20 text-[#FAF7F2]/80 px-8 py-4 rounded-full font-semibold text-base hover:border-[#B07A2E]/50 hover:text-[#D4A24C] transition-colors">
+          See Our Work
+        </a>
+      </div>
+    </div>
+    <!-- Stats row -->
+    <div class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 pt-10 border-t border-[#FAF7F2]/08">
+      <div>
+        <div class="stat-val text-4xl font-bold text-[#D4A24C]"><span class="counter" data-target="50">0</span>+</div>
+        <div class="text-sm text-[#FAF7F2]/50 mt-1 font-medium">Reports Automated</div>
+      </div>
+      <div>
+        <div class="stat-val text-4xl font-bold text-[#D4A24C]"><span class="counter" data-target="3">0</span></div>
+        <div class="text-sm text-[#FAF7F2]/50 mt-1 font-medium">Shipped Products</div>
+      </div>
+      <div>
+        <div class="stat-val text-4xl font-bold text-[#D4A24C]"><span class="counter" data-target="5">0</span></div>
+        <div class="text-sm text-[#FAF7F2]/50 mt-1 font-medium">Service Pillars</div>
+      </div>
+      <div>
+        <div class="stat-val text-4xl font-bold text-[#D4A24C]">₹0</div>
+        <div class="text-sm text-[#FAF7F2]/50 mt-1 font-medium">Audit Cost</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Services -->
-<section id="services" class="py-20 md:py-28 bg-white border-y border-[#1C1814]/10">
+<!-- ═══════════════════ MARQUEE STRIP ═══════════════════ -->
+<div class="bg-[#B07A2E] py-4 overflow-hidden" aria-hidden="true">
+  <div class="marquee-track" id="marqueeTrack">
+    <!-- content duplicated in JS -->
+    <span class="text-[#FAF7F2] text-sm font-bold tracking-widest uppercase">BI Dashboards</span>
+    <span class="text-[#FAF7F2]/50 text-lg">◆</span>
+    <span class="text-[#FAF7F2] text-sm font-bold tracking-widest uppercase">Workflow Automation</span>
+    <span class="text-[#FAF7F2]/50 text-lg">◆</span>
+    <span class="text-[#FAF7F2] text-sm font-bold tracking-widest uppercase">Website Design</span>
+    <span class="text-[#FAF7F2]/50 text-lg">◆</span>
+    <span class="text-[#FAF7F2] text-sm font-bold tracking-widest uppercase">Custom Software</span>
+    <span class="text-[#FAF7F2]/50 text-lg">◆</span>
+    <span class="text-[#FAF7F2] text-sm font-bold tracking-widest uppercase">Content & Media</span>
+    <span class="text-[#FAF7F2]/50 text-lg">◆</span>
+    <span class="text-[#FAF7F2] text-sm font-bold tracking-widest uppercase">Chennai · India</span>
+    <span class="text-[#FAF7F2]/50 text-lg">◆</span>
+  </div>
+</div>
+
+<!-- ═══════════════════ SERVICES ═══════════════════ -->
+<section id="services" class="py-24 md:py-32">
   <div class="max-w-6xl mx-auto px-6 md:px-10">
-    <p class="reveal text-xs font-bold tracking-widest uppercase brass mb-3">What we build</p>
-    <h2 class="reveal font-display text-3xl md:text-4xl font-semibold mb-14 max-w-xl">Two services, built around how your business actually runs</h2>
-    <div class="grid md:grid-cols-2 gap-6">
-      <div class="reveal lift border border-[#1C1814]/10 rounded-2xl p-8 hover:border-brass/50">
-        <h3 class="font-display text-2xl font-semibold mb-3">Custom Dashboards</h3>
-        <p class="text-[#1C1814]/65 mb-6 leading-relaxed">Your sales, stock, collections and targets pulled into one source of truth — built on top of the systems you already use (Tally, Ginesys, Excel, your POS).</p>
-        <p class="text-sm font-semibold brass">₹25,000 onwards to build · ₹3,000–15,000/month upkeep</p>
+    <div class="mb-16 reveal">
+      <span class="badge badge-brass mb-4 inline-block">What We Do</span>
+      <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">Five ways we grow<br>your business</h2>
+      <p class="text-[#6B6258] max-w-xl text-base leading-relaxed">From raw data to live dashboards, from manual tasks to zero-touch pipelines — we handle the technical heavy lifting.</p>
+    </div>
+
+    <!-- Top row: 2 dark cards -->
+    <div class="grid md:grid-cols-2 gap-5 mb-5">
+      <!-- Dashboards -->
+      <div class="svc-dark rounded-2xl p-8 relative overflow-hidden lift reveal reveal-delay-1">
+        <div class="svc-number">01</div>
+        <div class="svc-icon bg-[#B07A2E]/20 mb-6">📊</div>
+        <h3 class="font-display text-2xl font-bold text-[#FAF7F2] mb-3">BI Dashboards</h3>
+        <p class="text-[#FAF7F2]/60 text-sm leading-relaxed mb-6">Live KPI dashboards that pull data from your ERP, Excel, or GST portal. See sales, inventory, collections, and agent performance at a glance — no more manual MIS.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="text-xs bg-[#FAF7F2]/08 text-[#D4A24C] px-3 py-1 rounded-full font-semibold">Power BI</span>
+          <span class="text-xs bg-[#FAF7F2]/08 text-[#FAF7F2]/60 px-3 py-1 rounded-full font-semibold">Excel → Live</span>
+          <span class="text-xs bg-[#FAF7F2]/08 text-[#FAF7F2]/60 px-3 py-1 rounded-full font-semibold">Custom HTML</span>
+          <span class="text-xs bg-[#FAF7F2]/08 text-[#FAF7F2]/60 px-3 py-1 rounded-full font-semibold">Multi-branch</span>
+        </div>
       </div>
-      <div class="reveal reveal-delay-1 lift bg-[#1C1814] text-[#FAF7F2] rounded-2xl p-8">
-        <h3 class="font-display text-2xl font-semibold mb-3">Workflow Automation</h3>
-        <p class="text-[#FAF7F2]/65 mb-6 leading-relaxed">Repetitive tasks — invoice follow-ups, stock reorder alerts, reminder messages — handled automatically so your team spends time on customers, not data entry.</p>
-        <p class="text-sm font-semibold brass">₹20,000 onwards to build · ₹5,000–25,000/month upkeep</p>
+      <!-- Automation -->
+      <div class="svc-dark rounded-2xl p-8 relative overflow-hidden lift reveal reveal-delay-2">
+        <div class="svc-number">02</div>
+        <div class="svc-icon bg-[#B07A2E]/20 mb-6">⚡</div>
+        <h3 class="font-display text-2xl font-bold text-[#FAF7F2] mb-3">Workflow Automation</h3>
+        <p class="text-[#FAF7F2]/60 text-sm leading-relaxed mb-6">Automate your daily reports, WhatsApp alerts, invoice generation, and data entry. Tasks that take hours get done in seconds — every day, without you lifting a finger.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="text-xs bg-[#FAF7F2]/08 text-[#D4A24C] px-3 py-1 rounded-full font-semibold">Python Scripts</span>
+          <span class="text-xs bg-[#FAF7F2]/08 text-[#FAF7F2]/60 px-3 py-1 rounded-full font-semibold">WhatsApp Bots</span>
+          <span class="text-xs bg-[#FAF7F2]/08 text-[#FAF7F2]/60 px-3 py-1 rounded-full font-semibold">Email Reports</span>
+          <span class="text-xs bg-[#FAF7F2]/08 text-[#FAF7F2]/60 px-3 py-1 rounded-full font-semibold">Scheduled Jobs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom row: 3 light cards -->
+    <div class="grid md:grid-cols-3 gap-5">
+      <!-- Website Design -->
+      <div class="svc-light rounded-2xl p-7 relative overflow-hidden lift reveal reveal-delay-1">
+        <div class="svc-number text-[#1C1814]">03</div>
+        <div class="svc-icon bg-[#B07A2E]/10 mb-5">🌐</div>
+        <h3 class="font-display text-xl font-bold mb-3">Website Design</h3>
+        <p class="text-[#6B6258] text-sm leading-relaxed mb-5">Professional business websites built to convert visitors into customers — landing pages, service sites, and full e-commerce stores.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="text-xs bg-[#1C1814]/06 text-[#B07A2E] px-3 py-1 rounded-full font-semibold">Landing Pages</span>
+          <span class="text-xs bg-[#1C1814]/06 text-[#6B6258] px-3 py-1 rounded-full font-semibold">E-commerce</span>
+          <span class="text-xs bg-[#1C1814]/06 text-[#6B6258] px-3 py-1 rounded-full font-semibold">Razorpay</span>
+        </div>
+      </div>
+      <!-- Custom Software -->
+      <div class="svc-light rounded-2xl p-7 relative overflow-hidden lift reveal reveal-delay-2">
+        <div class="svc-number text-[#1C1814]">04</div>
+        <div class="svc-icon bg-[#B07A2E]/10 mb-5">💻</div>
+        <h3 class="font-display text-xl font-bold mb-3">Custom Software</h3>
+        <p class="text-[#6B6258] text-sm leading-relaxed mb-5">Desktop apps, browser tools, and internal platforms tailored to your exact workflow — inventory management, church media tools, or anything in between.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="text-xs bg-[#1C1814]/06 text-[#B07A2E] px-3 py-1 rounded-full font-semibold">Desktop Apps</span>
+          <span class="text-xs bg-[#1C1814]/06 text-[#6B6258] px-3 py-1 rounded-full font-semibold">Web Tools</span>
+          <span class="text-xs bg-[#1C1814]/06 text-[#6B6258] px-3 py-1 rounded-full font-semibold">Electron</span>
+        </div>
+      </div>
+      <!-- Content & Media -->
+      <div class="svc-light rounded-2xl p-7 relative overflow-hidden lift reveal reveal-delay-3">
+        <div class="svc-number text-[#1C1814]">05</div>
+        <div class="svc-icon bg-[#B07A2E]/10 mb-5">🎬</div>
+        <h3 class="font-display text-xl font-bold mb-3">Content & Media</h3>
+        <p class="text-[#6B6258] text-sm leading-relaxed mb-5">Sermon edits, YouTube shorts, event recaps, and social media creatives — fast turnaround, clean production, designed for churches and ministries.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="text-xs bg-[#1C1814]/06 text-[#B07A2E] px-3 py-1 rounded-full font-semibold">Video Editing</span>
+          <span class="text-xs bg-[#1C1814]/06 text-[#6B6258] px-3 py-1 rounded-full font-semibold">Shorts / Reels</span>
+          <span class="text-xs bg-[#1C1814]/06 text-[#6B6258] px-3 py-1 rounded-full font-semibold">Posters</span>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Our Work -->
-<section id="work" class="py-20 md:py-28">
+<!-- ═══════════════════ OUR WORK ═══════════════════ -->
+<section id="work" class="py-24 md:py-32 bg-[#F2EDE6]">
   <div class="max-w-6xl mx-auto px-6 md:px-10">
-    <p class="reveal text-xs font-bold tracking-widest uppercase brass mb-3">Engineered in-house, end to end</p>
-    <h2 class="reveal font-display text-3xl md:text-4xl font-semibold mb-4 max-w-2xl">One team shipping production software across three completely different domains</h2>
-    <p class="reveal text-[#1C1814]/65 max-w-2xl mb-10">An enterprise BI platform, broadcast-grade desktop software, and an AI editing tool — designed, built, and running in the real world. Click any screen to view it full-size.</p>
-
-    <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 border-y border-[#1C1814]/10 py-8">
-      <div class="text-center"><p class="counter font-display text-4xl font-semibold brass" data-target="3">0</p><p class="text-[11px] uppercase tracking-widest text-[#1C1814]/50 mt-2 font-semibold">Production Products Shipped</p></div>
-      <div class="text-center"><p class="counter font-display text-4xl font-semibold brass" data-target="124">0</p><p class="text-[11px] uppercase tracking-widest text-[#1C1814]/50 mt-2 font-semibold">Sales Agents Tracked Daily</p></div>
-      <div class="text-center"><p class="counter font-display text-4xl font-semibold brass" data-target="5">0</p><p class="text-[11px] uppercase tracking-widest text-[#1C1814]/50 mt-2 font-semibold">States Synced Nightly</p></div>
-      <div class="text-center"><p class="counter font-display text-4xl font-semibold brass" data-target="66">0</p><p class="text-[11px] uppercase tracking-widest text-[#1C1814]/50 mt-2 font-semibold">Bible Books Searchable Instantly</p></div>
+    <div class="mb-16 reveal">
+      <span class="badge badge-brass mb-4 inline-block">Portfolio</span>
+      <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">Products we've shipped</h2>
+      <p class="text-[#6B6258] max-w-xl text-base leading-relaxed">Real tools, real users — not mockups. Every product here runs in production.</p>
     </div>
-
     <div class="grid md:grid-cols-3 gap-6">
+
       <!-- NexRetail Intelligence -->
-      <div class="reveal lift bg-white border border-[#1C1814]/10 rounded-2xl overflow-hidden">
-        <div class="carousel" data-carousel>
-          <img class="carousel-slide active" src="assets/work/nexretail-1.png" alt="NexRetail Intelligence — Command Center dashboard">
-          <img class="carousel-slide" src="assets/work/nexretail-2.png" alt="NexRetail Intelligence — Agent Hub">
-          <img class="carousel-slide" src="assets/work/nexretail-3.png" alt="NexRetail Intelligence — Customer Hub">
-          <button class="carousel-arrow prev" aria-label="Previous slide">‹</button>
-          <button class="carousel-arrow next" aria-label="Next slide">›</button>
+      <div class="bg-white rounded-2xl overflow-hidden lift reveal reveal-delay-1" style="box-shadow:0 2px 20px -8px rgba(28,24,20,0.12);">
+        <div class="carousel" data-carousel="nexretail">
+          <img class="carousel-slide active" src="assets/work/nexretail-1.png" alt="NexRetail Command Center" data-lb-index="0" data-lb-group="nexretail"/>
+          <img class="carousel-slide" src="assets/work/nexretail-2.png" alt="NexRetail Agent Hub" data-lb-index="1" data-lb-group="nexretail"/>
+          <img class="carousel-slide" src="assets/work/nexretail-3.png" alt="NexRetail Customer Hub" data-lb-index="2" data-lb-group="nexretail"/>
+          <button class="carousel-arrow prev" aria-label="Previous">‹</button>
+          <button class="carousel-arrow next" aria-label="Next">›</button>
+          <div class="carousel-dots">
+            <button class="active" aria-label="Slide 1"></button>
+            <button aria-label="Slide 2"></button>
+            <button aria-label="Slide 3"></button>
+          </div>
           <div class="carousel-expand">⤢</div>
-          <div class="carousel-dots"></div>
         </div>
-        <div class="p-7">
-          <span class="text-xs font-bold tracking-widest uppercase text-[#1C1814]/40 mb-2 block">Internal BI Platform</span>
-          <h3 class="font-display text-xl font-semibold mb-2">NexRetail Intelligence</h3>
-          <p class="text-[#1C1814]/65 text-sm leading-relaxed mb-4">A preview of the exact kind of command-center dashboard we build — order fulfilment, agent performance, store sales and inventory aging, synced nightly from the live ERP.</p>
-          <div class="flex flex-wrap gap-2"><span class="stat-chip">124 Agents Tracked</span><span class="stat-chip">5 States</span><span class="stat-chip">Nightly ERP Sync</span></div>
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <h3 class="font-display text-lg font-bold">NexRetail Intelligence</h3>
+            <span class="badge badge-brass flex-shrink-0">Dashboard</span>
+          </div>
+          <p class="text-[#6B6258] text-sm leading-relaxed">Full-stack MIS platform for garment retail — live sales KPIs, agent performance tracking, customer segmentation, and multi-branch reporting.</p>
         </div>
       </div>
+
       <!-- RhemaPresenter -->
-      <div class="reveal reveal-delay-1 lift bg-white border border-[#1C1814]/10 rounded-2xl overflow-hidden">
-        <div class="carousel" data-carousel>
-          <img class="carousel-slide active" src="assets/work/rhema-control.png" alt="RhemaPresenter live control panel">
-          <img class="carousel-slide" src="assets/work/rhema-bible.png" alt="RhemaPresenter Bible browser">
-          <img class="carousel-slide" src="assets/work/rhema-design.png" alt="RhemaPresenter design and theme editor">
-          <img class="carousel-slide" src="assets/work/rhema-ndi.png" alt="RhemaPresenter NDI lower-third broadcast output">
-          <button class="carousel-arrow prev" aria-label="Previous slide">‹</button>
-          <button class="carousel-arrow next" aria-label="Next slide">›</button>
+      <div class="bg-white rounded-2xl overflow-hidden lift reveal reveal-delay-2" style="box-shadow:0 2px 20px -8px rgba(28,24,20,0.12);">
+        <div class="carousel" data-carousel="rhema">
+          <img class="carousel-slide active" src="assets/work/rhema-control.png" alt="RhemaPresenter Control" data-lb-index="0" data-lb-group="rhema"/>
+          <img class="carousel-slide" src="assets/work/rhema-bible.png" alt="RhemaPresenter Bible" data-lb-index="1" data-lb-group="rhema"/>
+          <img class="carousel-slide" src="assets/work/rhema-design.png" alt="RhemaPresenter Design" data-lb-index="2" data-lb-group="rhema"/>
+          <img class="carousel-slide" src="assets/work/rhema-ndi.png" alt="RhemaPresenter NDI" data-lb-index="3" data-lb-group="rhema"/>
+          <button class="carousel-arrow prev" aria-label="Previous">‹</button>
+          <button class="carousel-arrow next" aria-label="Next">›</button>
+          <div class="carousel-dots">
+            <button class="active" aria-label="Slide 1"></button>
+            <button aria-label="Slide 2"></button>
+            <button aria-label="Slide 3"></button>
+            <button aria-label="Slide 4"></button>
+          </div>
           <div class="carousel-expand">⤢</div>
-          <div class="carousel-dots"></div>
         </div>
-        <div class="p-7">
-          <span class="text-xs font-bold tracking-widest uppercase text-[#1C1814]/40 mb-2 block">Desktop App · Electron</span>
-          <h3 class="font-display text-xl font-semibold mb-2">RhemaPresenter</h3>
-          <p class="text-[#1C1814]/65 text-sm leading-relaxed mb-4">Worship presentation software driving live sanctuary screens, stage monitors, and a separate NDI broadcast feed from one operator console — built-in Bible browser, song library, and live lower-third graphics.</p>
-          <div class="flex flex-wrap gap-2"><span class="stat-chip">66-Book Bible Engine</span><span class="stat-chip">Dual NDI Outputs</span><span class="stat-chip">Mobile Remote Control</span></div>
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <h3 class="font-display text-lg font-bold">RhemaPresenter</h3>
+            <span class="badge badge-ink flex-shrink-0">Desktop App</span>
+          </div>
+          <p class="text-[#6B6258] text-sm leading-relaxed">Church presentation software built on Electron — live Bible display, slide design, NDI output for broadcast, and real-time operator controls.</p>
         </div>
       </div>
+
       <!-- SermonCut AI -->
-      <div class="reveal reveal-delay-2 lift bg-white border border-[#1C1814]/10 rounded-2xl overflow-hidden">
-        <div class="carousel" data-carousel>
-          <img class="carousel-slide active" src="assets/work/sermoncut-hero.png" alt="SermonCut AI overview">
-          <img class="carousel-slide" src="assets/work/sermoncut-app.png" alt="SermonCut AI desktop app">
-          <img class="carousel-slide" src="assets/work/sermoncut-features.png" alt="SermonCut AI feature grid">
-          <img class="carousel-slide" src="assets/work/sermoncut-export.png" alt="SermonCut AI final export">
-          <button class="carousel-arrow prev" aria-label="Previous slide">‹</button>
-          <button class="carousel-arrow next" aria-label="Next slide">›</button>
+      <div class="bg-white rounded-2xl overflow-hidden lift reveal reveal-delay-3" style="box-shadow:0 2px 20px -8px rgba(28,24,20,0.12);">
+        <div class="carousel" data-carousel="sermoncut">
+          <img class="carousel-slide active" src="assets/work/sermoncut-hero.png" alt="SermonCut AI Hero" data-lb-index="0" data-lb-group="sermoncut"/>
+          <img class="carousel-slide" src="assets/work/sermoncut-app.png" alt="SermonCut AI App" data-lb-index="1" data-lb-group="sermoncut"/>
+          <img class="carousel-slide" src="assets/work/sermoncut-features.png" alt="SermonCut Features" data-lb-index="2" data-lb-group="sermoncut"/>
+          <img class="carousel-slide" src="assets/work/sermoncut-export.png" alt="SermonCut Export" data-lb-index="3" data-lb-group="sermoncut"/>
+          <button class="carousel-arrow prev" aria-label="Previous">‹</button>
+          <button class="carousel-arrow next" aria-label="Next">›</button>
+          <div class="carousel-dots">
+            <button class="active" aria-label="Slide 1"></button>
+            <button aria-label="Slide 2"></button>
+            <button aria-label="Slide 3"></button>
+            <button aria-label="Slide 4"></button>
+          </div>
           <div class="carousel-expand">⤢</div>
-          <div class="carousel-dots"></div>
         </div>
-        <div class="p-7">
-          <span class="text-xs font-bold tracking-widest uppercase text-[#1C1814]/40 mb-2 block">AI Tool · Adobe Premiere Panel</span>
-          <h3 class="font-display text-xl font-semibold mb-2">SermonCut AI</h3>
-          <p class="text-[#1C1814]/65 text-sm leading-relaxed mb-4">Turns raw Tamil sermon footage into a finished edit automatically — auto-cuts filler words, false starts and dead air, generates Tamil &amp; English captions, exports Reels-ready shorts straight into Premiere Pro.</p>
-          <div class="flex flex-wrap gap-2"><span class="stat-chip">Auto Tamil + English Captions</span><span class="stat-chip">Premiere Panel + Desktop App</span><span class="stat-chip">AI-Powered Cuts</span></div>
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <h3 class="font-display text-lg font-bold">SermonCut AI</h3>
+            <span class="badge badge-brass flex-shrink-0">Media Tool</span>
+          </div>
+          <p class="text-[#6B6258] text-sm leading-relaxed">Tamil sermon editing tool that auto-detects highlight clips, generates YouTube shorts, and exports captioned reels — cutting hours of manual editing to minutes.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- How it works -->
-<section id="how-it-works" class="py-20 md:py-28 bg-white border-y border-[#1C1814]/10">
+<!-- ═══════════════════ TRUST STRIP ═══════════════════ -->
+<div class="bg-[#1C1814] py-16">
   <div class="max-w-6xl mx-auto px-6 md:px-10">
-    <p class="reveal text-xs font-bold tracking-widest uppercase brass mb-3">The process</p>
-    <h2 class="reveal font-display text-3xl md:text-4xl font-semibold mb-14 max-w-xl">From chaos to a working system in four steps</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div class="reveal reveal-delay-1">
+        <div class="stat-val text-3xl md:text-4xl font-bold text-[#D4A24C]"><span class="counter" data-target="50">0</span>+</div>
+        <div class="text-sm text-[#FAF7F2]/50 mt-2 font-medium">Reports Automated</div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="stat-val text-3xl md:text-4xl font-bold text-[#D4A24C]"><span class="counter" data-target="3">0</span></div>
+        <div class="text-sm text-[#FAF7F2]/50 mt-2 font-medium">Live Products</div>
+      </div>
+      <div class="reveal reveal-delay-3">
+        <div class="stat-val text-3xl md:text-4xl font-bold text-[#D4A24C]"><span class="counter" data-target="100">0</span>%</div>
+        <div class="text-sm text-[#FAF7F2]/50 mt-2 font-medium">Indian Market Focused</div>
+      </div>
+      <div class="reveal reveal-delay-4">
+        <div class="stat-val text-3xl md:text-4xl font-bold text-[#D4A24C]">₹0</div>
+        <div class="text-sm text-[#FAF7F2]/50 mt-2 font-medium">Audit Cost</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PROCESS ═══════════════════ -->
+<section id="process" class="py-24 md:py-32">
+  <div class="max-w-6xl mx-auto px-6 md:px-10">
+    <div class="mb-16 reveal">
+      <span class="badge badge-brass mb-4 inline-block">How It Works</span>
+      <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">From audit to live<br>in four steps</h2>
+      <p class="text-[#6B6258] max-w-xl text-base leading-relaxed">We start by understanding your business — not by pitching. If we can't add real value, we'll tell you.</p>
+    </div>
     <div class="grid md:grid-cols-4 gap-6">
-      <div class="reveal"><p class="font-display text-3xl brass mb-3">01</p><h3 class="font-semibold text-lg mb-2">The Audit</h3><p class="text-[#1C1814]/60 text-sm leading-relaxed">We map your current tools and find exactly where time and data get lost.</p></div>
-      <div class="reveal reveal-delay-1"><p class="font-display text-3xl brass mb-3">02</p><h3 class="font-semibold text-lg mb-2">The Build</h3><p class="text-[#1C1814]/60 text-sm leading-relaxed">We design and connect your dashboard or automation to your real data sources.</p></div>
-      <div class="reveal reveal-delay-2"><p class="font-display text-3xl brass mb-3">03</p><h3 class="font-semibold text-lg mb-2">The Launch</h3><p class="text-[#1C1814]/60 text-sm leading-relaxed">We migrate you over and train your team — zero downtime to your operations.</p></div>
-      <div class="reveal reveal-delay-3"><p class="font-display text-3xl brass mb-3">04</p><h3 class="font-semibold text-lg mb-2">The Partnership</h3><p class="text-[#1C1814]/60 text-sm leading-relaxed">Monthly fixes, improvements and new modules as your business grows.</p></div>
+      <div class="reveal reveal-delay-1">
+        <div class="w-12 h-12 rounded-xl bg-[#1C1814] text-[#D4A24C] flex items-center justify-center font-display font-bold text-xl mb-5">1</div>
+        <h3 class="font-display font-bold text-lg mb-2">Free Audit Call</h3>
+        <p class="text-[#6B6258] text-sm leading-relaxed">We map your current workflow, find the biggest time-wasters, and suggest where automation or dashboards will have the highest ROI.</p>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="w-12 h-12 rounded-xl bg-[#1C1814] text-[#D4A24C] flex items-center justify-center font-display font-bold text-xl mb-5">2</div>
+        <h3 class="font-display font-bold text-lg mb-2">Scoped Proposal</h3>
+        <p class="text-[#6B6258] text-sm leading-relaxed">You get a clear document: what gets built, timeline, and an honest price — no hidden charges. Upfront split available on all projects.</p>
+      </div>
+      <div class="reveal reveal-delay-3">
+        <div class="w-12 h-12 rounded-xl bg-[#1C1814] text-[#D4A24C] flex items-center justify-center font-display font-bold text-xl mb-5">3</div>
+        <h3 class="font-display font-bold text-lg mb-2">Build & Review</h3>
+        <p class="text-[#6B6258] text-sm leading-relaxed">We build in sprints with regular check-ins. You see progress, give feedback, and we adjust — no "big reveal" at the end.</p>
+      </div>
+      <div class="reveal reveal-delay-4">
+        <div class="w-12 h-12 rounded-xl bg-[#1C1814] text-[#D4A24C] flex items-center justify-center font-display font-bold text-xl mb-5">4</div>
+        <h3 class="font-display font-bold text-lg mb-2">Launch & Support</h3>
+        <p class="text-[#6B6258] text-sm leading-relaxed">Go live with training for your team. Ongoing upkeep available — we stay in the loop so your tools keep working as your business grows.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Pricing -->
-<section id="pricing" class="py-20 md:py-28">
+<!-- ═══════════════════ PRICING ═══════════════════ -->
+<section id="pricing" class="py-24 md:py-32 bg-[#F2EDE6]">
   <div class="max-w-6xl mx-auto px-6 md:px-10">
-    <div class="reveal text-center mb-14 max-w-xl mx-auto">
-      <p class="text-xs font-bold tracking-widest uppercase brass mb-3">Pricing</p>
-      <h2 class="font-display text-3xl md:text-4xl font-semibold mb-4">Simple, transparent, no per-seat fees</h2>
-      <p class="text-[#1C1814]/65">One build cost, one flat monthly upkeep. No licensing surprises.</p>
+    <div class="mb-12 reveal">
+      <span class="badge badge-brass mb-4 inline-block">Transparent Pricing</span>
+      <h2 class="font-display text-4xl md:text-5xl font-bold mb-4">Honest prices, no surprises</h2>
+      <p class="text-[#6B6258] max-w-xl text-base leading-relaxed">All prices in INR. Projects split into ₹5k upfront + balance on delivery. Monthly retainer optional — cancel anytime.</p>
     </div>
-    <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-      <div class="reveal lift border border-[#1C1814]/10 rounded-2xl p-8 bg-white">
-        <p class="text-xs font-bold tracking-widest uppercase text-[#1C1814]/50 mb-4">One-time</p>
-        <h3 class="font-display text-2xl font-semibold mb-2">The Build</h3>
-        <p class="text-[#1C1814]/60 mb-6 text-sm">Architecture, integration, and a working dashboard or automation, trained to your team.</p>
-        <p class="font-display text-4xl font-semibold mb-1">₹20,000<span class="text-base font-sans font-normal text-[#1C1814]/50"> onwards</span></p>
+
+    <!-- Tab buttons -->
+    <div class="flex flex-wrap gap-2 mb-10 bg-[#FAF7F2] p-2 rounded-full w-fit reveal">
+      <button class="ptab-btn active" data-tab="dashboards">📊 Dashboards</button>
+      <button class="ptab-btn" data-tab="automation">⚡ Automation</button>
+      <button class="ptab-btn" data-tab="websites">🌐 Websites</button>
+      <button class="ptab-btn" data-tab="software">💻 Software</button>
+      <button class="ptab-btn" data-tab="media">🎬 Media</button>
+    </div>
+
+    <!-- ── TAB: Dashboards ── -->
+    <div class="ptab-pane active" id="tab-dashboards">
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="price-card plain reveal reveal-delay-1">
+          <span class="badge badge-brass mb-4 inline-block">Starter</span>
+          <div class="flex items-end gap-2 mb-1">
+            <span class="font-display text-4xl font-bold">₹10,000</span>
+            <span class="text-[#6B6258] text-sm mb-1">one-time build</span>
+          </div>
+          <div class="text-sm text-[#6B6258] mb-6">+ ₹2,000 /month upkeep <span class="text-xs">(optional)</span></div>
+          <div class="text-xs text-[#B07A2E] font-semibold mb-6">₹5,000 upfront · balance on delivery</div>
+          <div class="space-y-1 mb-8">
+            <div class="feature-row"><span class="check">✓</span><span>Up to 5 KPI widgets</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>Single data source (Excel / GST portal)</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>Mobile-friendly web dashboard</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>2 revisions included</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>30-day support</span></div>
+          </div>
+          <a href="#contact" class="block text-center bg-[#1C1814] text-[#FAF7F2] py-3 rounded-full font-semibold text-sm hover:bg-[#B07A2E] transition-colors">Get Started</a>
+        </div>
+        <div class="price-card featured reveal reveal-delay-2">
+          <div class="flex items-start justify-between mb-4">
+            <span class="badge badge-brass">Full Platform</span>
+            <span class="text-xs text-[#D4A24C] font-semibold">Most Popular</span>
+          </div>
+          <div class="flex items-end gap-2 mb-1">
+            <span class="font-display text-4xl font-bold text-[#FAF7F2]">₹25,000+</span>
+            <span class="text-[#FAF7F2]/50 text-sm mb-1">one-time build</span>
+          </div>
+          <div class="text-sm text-[#FAF7F2]/50 mb-6">+ ₹3,000–₹15,000 /month upkeep</div>
+          <div class="text-xs text-[#D4A24C] font-semibold mb-6">₹5,000 upfront · balance on delivery</div>
+          <div class="space-y-1 mb-8">
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Unlimited KPI widgets & charts</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Multi-source data (ERP + Excel + API)</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Multi-branch / department views</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Role-based access (owner vs. manager)</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Scheduled email/WhatsApp reports</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Ongoing upkeep as data changes</span></div>
+          </div>
+          <a href="#contact" class="block text-center bg-[#B07A2E] text-[#FAF7F2] py-3 rounded-full font-semibold text-sm hover:bg-[#D4A24C] transition-colors">Book a Free Audit</a>
+        </div>
       </div>
-      <div class="reveal reveal-delay-1 lift border-2 border-brass rounded-2xl p-8 bg-[#1C1814] text-[#FAF7F2] relative">
-        <span class="absolute -top-3 left-8 bg-brass text-[#1C1814] text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full">Ongoing</span>
-        <p class="text-xs font-bold tracking-widest uppercase brass mb-4">Monthly</p>
-        <h3 class="font-display text-2xl font-semibold mb-2">The Support</h3>
-        <p class="text-[#FAF7F2]/65 mb-6 text-sm">Fixes, updates, and new modules as your business and data needs grow.</p>
-        <p class="font-display text-4xl font-semibold mb-1">₹3,000–25,000<span class="text-base font-sans font-normal text-[#FAF7F2]/50"> /month</span></p>
+      <div class="bg-white rounded-2xl p-6 text-sm text-[#6B6258] reveal">
+        <strong class="text-[#1C1814]">ROI snapshot:</strong> A typical retail business with 5 staff spends ~8 hrs/week on manual MIS reports. At ₹200/hr that's ₹6,400/month wasted. A ₹25k dashboard pays for itself in 4 months — and gives you better data on top.
+      </div>
+    </div>
+
+    <!-- ── TAB: Automation ── -->
+    <div class="ptab-pane" id="tab-automation">
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="price-card plain reveal reveal-delay-1">
+          <span class="badge badge-brass mb-4 inline-block">Single Automation</span>
+          <div class="flex items-end gap-2 mb-1">
+            <span class="font-display text-4xl font-bold">₹20,000+</span>
+            <span class="text-[#6B6258] text-sm mb-1">per automation</span>
+          </div>
+          <div class="text-sm text-[#6B6258] mb-6">+ ₹5,000 /month maintenance</div>
+          <div class="text-xs text-[#B07A2E] font-semibold mb-6">₹5,000 upfront · balance on delivery</div>
+          <div class="space-y-1 mb-8">
+            <div class="feature-row"><span class="check">✓</span><span>One workflow end-to-end</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>e.g. daily report → WhatsApp group</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>Error alerts if something breaks</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>60-day free bug fixes</span></div>
+          </div>
+          <a href="#contact" class="block text-center bg-[#1C1814] text-[#FAF7F2] py-3 rounded-full font-semibold text-sm hover:bg-[#B07A2E] transition-colors">Get Started</a>
+        </div>
+        <div class="price-card featured reveal reveal-delay-2">
+          <span class="badge badge-brass mb-4 inline-block">Automation Suite</span>
+          <div class="flex items-end gap-2 mb-1">
+            <span class="font-display text-4xl font-bold text-[#FAF7F2]">Custom</span>
+          </div>
+          <div class="text-sm text-[#FAF7F2]/50 mb-6">₹5,000–₹25,000 /month retainer</div>
+          <div class="text-xs text-[#D4A24C] font-semibold mb-6">Ideal for 3+ workflows</div>
+          <div class="space-y-1 mb-8">
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Multiple automations bundled</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Invoice generation, stock alerts</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Customer follow-up sequences</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Priority support & monthly calls</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">New automations as business grows</span></div>
+          </div>
+          <a href="#contact" class="block text-center bg-[#B07A2E] text-[#FAF7F2] py-3 rounded-full font-semibold text-sm hover:bg-[#D4A24C] transition-colors">Book a Free Audit</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Websites ── -->
+    <div class="ptab-pane" id="tab-websites">
+      <div class="grid md:grid-cols-3 gap-5 mb-6">
+        <div class="price-card plain reveal reveal-delay-1">
+          <span class="badge badge-brass mb-4 inline-block">Landing Page</span>
+          <div class="flex items-end gap-2 mb-1">
+            <span class="font-display text-3xl font-bold">₹4,000</span>
+            <span class="text-[#6B6258] text-sm mb-1">– ₹7,000</span>
+          </div>
+          <div class="text-xs text-[#B07A2E] font-semibold mb-5">One-time · domain/hosting extra</div>
+          <div class="space-y-1 mb-6">
+            <div class="feature-row"><span class="check">✓</span><span>1-page design</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>Mobile responsive</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>Contact form</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>Google Maps embed</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>WhatsApp chat button</span></div>
+          </div>
+          <a href="#contact" class="block text-center bg-[#1C1814] text-[#FAF7F2] py-3 rounded-full font-semibold text-sm hover:bg-[#B07A2E] transition-colors">Enquire</a>
+        </div>
+        <div class="price-card featured reveal reveal-delay-2">
+          <span class="badge badge-brass mb-4 inline-block">Business Site</span>
+          <div class="flex items-end gap-2 mb-1">
+            <span class="font-display text-3xl font-bold text-[#FAF7F2]">₹8,000</span>
+            <span class="text-[#FAF7F2]/50 text-sm mb-1">– ₹18,000</span>
+          </div>
+          <div class="text-xs text-[#D4A24C] font-semibold mb-5">One-time · domain/hosting extra</div>
+          <div class="space-y-1 mb-6">
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Multi-page (Home, About, Services, Contact)</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Gallery / portfolio section</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Blog / news module</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Basic SEO setup</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">2 rounds of revisions</span></div>
+          </div>
+          <a href="#contact" class="block text-center bg-[#B07A2E] text-[#FAF7F2] py-3 rounded-full font-semibold text-sm hover:bg-[#D4A24C] transition-colors">Enquire</a>
+        </div>
+        <div class="price-card plain reveal reveal-delay-3">
+          <span class="badge badge-ink mb-4 inline-block">E-commerce Store</span>
+          <div class="flex items-end gap-2 mb-1">
+            <span class="font-display text-3xl font-bold">₹20,000</span>
+            <span class="text-[#6B6258] text-sm mb-1">– ₹45,000</span>
+          </div>
+          <div class="text-xs text-[#B07A2E] font-semibold mb-5">One-time · domain/hosting extra</div>
+          <div class="space-y-1 mb-6">
+            <div class="feature-row"><span class="check">✓</span><span>WooCommerce or Shopify</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>Product catalog (up to 100 items)</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>Razorpay payment gateway</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>Order management dashboard</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>Inventory alerts</span></div>
+          </div>
+          <a href="#contact" class="block text-center bg-[#1C1814] text-[#FAF7F2] py-3 rounded-full font-semibold text-sm hover:bg-[#B07A2E] transition-colors">Enquire</a>
+        </div>
+      </div>
+      <!-- Add-ons table -->
+      <div class="bg-white rounded-2xl p-6 reveal">
+        <h4 class="font-display font-bold text-base mb-4">Add-ons & integrations</h4>
+        <div class="addon-row"><span>Domain registration (1 year)</span><span class="text-[#B07A2E] font-semibold">₹800 – ₹1,500</span></div>
+        <div class="addon-row"><span>Hosting setup (shared, 1 year)</span><span class="text-[#B07A2E] font-semibold">₹2,000 – ₹5,000</span></div>
+        <div class="addon-row"><span>SSL certificate</span><span class="text-[#B07A2E] font-semibold">Free (Let's Encrypt)</span></div>
+        <div class="addon-row"><span>Razorpay payment integration</span><span class="text-[#B07A2E] font-semibold">₹3,000 + 2% per txn</span></div>
+        <div class="addon-row"><span>WhatsApp Business API</span><span class="text-[#B07A2E] font-semibold">₹2,000 setup + usage</span></div>
+        <div class="addon-row"><span>Monthly maintenance retainer</span><span class="text-[#B07A2E] font-semibold">₹2,000 – ₹6,000</span></div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Software ── -->
+    <div class="ptab-pane" id="tab-software">
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="price-card plain reveal reveal-delay-1">
+          <span class="badge badge-brass mb-4 inline-block">Simple Tool</span>
+          <div class="flex items-end gap-2 mb-1">
+            <span class="font-display text-4xl font-bold">₹15,000</span>
+            <span class="text-[#6B6258] text-sm mb-1">– ₹35,000</span>
+          </div>
+          <div class="text-sm text-[#6B6258] mb-6">+ ₹3,000–₹8,000 /month support</div>
+          <div class="text-xs text-[#B07A2E] font-semibold mb-6">₹5,000 upfront · balance on delivery</div>
+          <div class="space-y-1 mb-8">
+            <div class="feature-row"><span class="check">✓</span><span>Single-purpose desktop or web tool</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>e.g. invoice generator, attendance tracker</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>Admin panel for data management</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>PDF/Excel export</span></div>
+            <div class="feature-row"><span class="check">✓</span><span>60-day bug-fix warranty</span></div>
+          </div>
+          <a href="#contact" class="block text-center bg-[#1C1814] text-[#FAF7F2] py-3 rounded-full font-semibold text-sm hover:bg-[#B07A2E] transition-colors">Get a Quote</a>
+        </div>
+        <div class="price-card featured reveal reveal-delay-2">
+          <span class="badge badge-brass mb-4 inline-block">Full Platform</span>
+          <div class="flex items-end gap-2 mb-1">
+            <span class="font-display text-4xl font-bold text-[#FAF7F2]">₹35,000</span>
+            <span class="text-[#FAF7F2]/50 text-sm mb-1">– ₹75,000+</span>
+          </div>
+          <div class="text-sm text-[#FAF7F2]/50 mb-6">+ ₹5,000–₹12,000 /month support</div>
+          <div class="text-xs text-[#D4A24C] font-semibold mb-6">₹5,000 upfront · balance on delivery</div>
+          <div class="space-y-1 mb-8">
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Multi-module application</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">User roles & permissions</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Database with reporting</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">API integrations (payment, SMS, ERP)</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Training & handover documentation</span></div>
+          </div>
+          <a href="#contact" class="block text-center bg-[#B07A2E] text-[#FAF7F2] py-3 rounded-full font-semibold text-sm hover:bg-[#D4A24C] transition-colors">Book a Free Audit</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: Media ── -->
+    <div class="ptab-pane" id="tab-media">
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div class="price-card plain reveal reveal-delay-1">
+          <span class="badge badge-brass mb-4 inline-block">Per Piece</span>
+          <div class="space-y-1 mb-8">
+            <div class="addon-row"><span class="font-semibold">Sermon edit (full length)</span><span class="text-[#B07A2E] font-semibold">₹800 – ₹1,500</span></div>
+            <div class="addon-row"><span class="font-semibold">YouTube short / reel</span><span class="text-[#B07A2E] font-semibold">₹300 – ₹600</span></div>
+            <div class="addon-row"><span class="font-semibold">Event recap video</span><span class="text-[#B07A2E] font-semibold">₹1,500 – ₹3,000</span></div>
+            <div class="addon-row"><span class="font-semibold">Social media poster (per post)</span><span class="text-[#B07A2E] font-semibold">₹200 – ₹500</span></div>
+            <div class="addon-row"><span class="font-semibold">Lyric video / worship visual</span><span class="text-[#B07A2E] font-semibold">₹1,000 – ₹2,500</span></div>
+          </div>
+          <a href="#contact" class="block text-center bg-[#1C1814] text-[#FAF7F2] py-3 rounded-full font-semibold text-sm hover:bg-[#B07A2E] transition-colors">Enquire</a>
+        </div>
+        <div class="price-card featured reveal reveal-delay-2">
+          <span class="badge badge-brass mb-4 inline-block">Monthly Retainer</span>
+          <div class="flex items-end gap-2 mb-1">
+            <span class="font-display text-4xl font-bold text-[#FAF7F2]">₹5,000</span>
+            <span class="text-[#FAF7F2]/50 text-sm mb-1">– ₹15,000/mo</span>
+          </div>
+          <div class="text-xs text-[#D4A24C] font-semibold mb-5">Best for churches & weekly content</div>
+          <div class="space-y-1 mb-8">
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Weekly sermon edits</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">4–8 shorts / reels per month</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Event & special occasion videos</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Social media post design</span></div>
+            <div class="feature-row border-[#FAF7F2]/08"><span class="check">✓</span><span class="text-[#FAF7F2]/80">Priority 48-hr turnaround</span></div>
+          </div>
+          <a href="#contact" class="block text-center bg-[#B07A2E] text-[#FAF7F2] py-3 rounded-full font-semibold text-sm hover:bg-[#D4A24C] transition-colors">Start a Retainer</a>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FAQ -->
-<section id="faq" class="py-20 md:py-28 bg-white border-y border-[#1C1814]/10">
+<!-- ═══════════════════ FAQ ═══════════════════ -->
+<section class="py-24 md:py-32">
   <div class="max-w-3xl mx-auto px-6 md:px-10">
-    <h2 class="reveal font-display text-3xl md:text-4xl font-semibold mb-12 text-center">Common questions</h2>
+    <div class="mb-12 reveal">
+      <span class="badge badge-brass mb-4 inline-block">FAQ</span>
+      <h2 class="font-display text-4xl md:text-5xl font-bold">Common questions</h2>
+    </div>
     <div class="space-y-3">
-      <details class="reveal border border-[#1C1814]/10 rounded-xl px-6 py-4">
-        <summary class="flex items-center justify-between font-semibold">Is my business data safe?<span class="chev transition-transform">▾</span></summary>
-        <p class="text-[#1C1814]/65 mt-3 text-sm leading-relaxed">Yes — your data stays in your own systems and a private database we set up for you. We never share or resell client data.</p>
+      <details class="bg-[#F2EDE6] rounded-2xl p-6 reveal">
+        <summary class="flex items-center justify-between gap-4 font-semibold text-base">
+          Do I need technical knowledge to use what you build?
+          <span class="chev text-[#B07A2E] text-lg flex-shrink-0">▾</span>
+        </summary>
+        <p class="mt-4 text-[#6B6258] text-sm leading-relaxed">No. Everything we build is designed for non-technical owners and managers. We provide training when we hand over, and a user guide. If anything feels confusing, we fix it.</p>
       </details>
-      <details class="reveal border border-[#1C1814]/10 rounded-xl px-6 py-4">
-        <summary class="flex items-center justify-between font-semibold">How long does a build take?<span class="chev transition-transform">▾</span></summary>
-        <p class="text-[#1C1814]/65 mt-3 text-sm leading-relaxed">Most dashboards go live in 2–4 weeks depending on how many data sources need connecting.</p>
+      <details class="bg-[#F2EDE6] rounded-2xl p-6 reveal">
+        <summary class="flex items-center justify-between gap-4 font-semibold text-base">
+          How long does a dashboard or automation take to build?
+          <span class="chev text-[#B07A2E] text-lg flex-shrink-0">▾</span>
+        </summary>
+        <p class="mt-4 text-[#6B6258] text-sm leading-relaxed">Starter dashboard: 5–10 working days. Full platform: 3–6 weeks. Automations: 1–3 weeks per workflow. Timeline depends on data complexity and how quickly we can get sample data from you.</p>
       </details>
-      <details class="reveal border border-[#1C1814]/10 rounded-xl px-6 py-4">
-        <summary class="flex items-center justify-between font-semibold">Do I need to hire technical staff?<span class="chev transition-transform">▾</span></summary>
-        <p class="text-[#1C1814]/65 mt-3 text-sm leading-relaxed">No. The monthly support plan covers fixes and updates — we act as your fractional tech team.</p>
+      <details class="bg-[#F2EDE6] rounded-2xl p-6 reveal">
+        <summary class="flex items-center justify-between gap-4 font-semibold text-base">
+          What if my data is in an old accounting system or multiple Excel files?
+          <span class="chev text-[#B07A2E] text-lg flex-shrink-0">▾</span>
+        </summary>
+        <p class="mt-4 text-[#6B6258] text-sm leading-relaxed">That's our speciality. We've worked with Tally, Busy, custom ERPs, and dozens of Excel formats. We clean and connect your data so it flows into a single live view.</p>
+      </details>
+      <details class="bg-[#F2EDE6] rounded-2xl p-6 reveal">
+        <summary class="flex items-center justify-between gap-4 font-semibold text-base">
+          For e-commerce, do I need AWS or a server?
+          <span class="chev text-[#B07A2E] text-lg flex-shrink-0">▾</span>
+        </summary>
+        <p class="mt-4 text-[#6B6258] text-sm leading-relaxed">No. We use WooCommerce or Shopify on shared hosting (₹2,000–₹5,000/year). AWS is only needed at high traffic/volume — we'll recommend it if and when you reach that stage. Razorpay handles payments at 2% per transaction.</p>
+      </details>
+      <details class="bg-[#F2EDE6] rounded-2xl p-6 reveal">
+        <summary class="flex items-center justify-between gap-4 font-semibold text-base">
+          Can I cancel the monthly retainer?
+          <span class="chev text-[#B07A2E] text-lg flex-shrink-0">▾</span>
+        </summary>
+        <p class="mt-4 text-[#6B6258] text-sm leading-relaxed">Yes — monthly, no lock-in. We just ask for 15 days' notice. The one-time build fee is separate from the retainer, so you own what was built even if you stop the monthly plan.</p>
       </details>
     </div>
   </div>
 </section>
 
-<!-- Final CTA -->
-<section id="contact" class="py-20 md:py-28 relative overflow-hidden">
-  <div class="ambient opacity-60"><div class="blob blob1" style="top:auto;bottom:-200px;left:10%;"></div></div>
-  <div class="relative z-10 max-w-3xl mx-auto px-6 md:px-10 text-center">
-    <h2 class="reveal font-display text-3xl md:text-5xl font-semibold mb-6">Stop reacting. Start scaling.</h2>
-    <p class="reveal text-[#1C1814]/65 text-lg mb-10">Book a free 30-minute audit. We'll show you exactly where you're losing time and money — no obligation.</p>
-    <div class="reveal flex flex-col sm:flex-row gap-4 justify-center">
-      <a href="mailto:hello@jkrsolutions.in" class="bg-[#1C1814] text-[#FAF7F2] px-8 py-4 rounded-full font-semibold hover:bg-brass transition-all hover:-translate-y-0.5">Email Us</a>
-      <a href="https://wa.me/917358182892" target="_blank" class="border border-[#1C1814]/30 px-8 py-4 rounded-full font-semibold hover:border-brass transition-all">WhatsApp Us</a>
+<!-- ═══════════════════ CTA ═══════════════════ -->
+<section id="contact" class="bg-[#1C1814] py-24 md:py-32 relative overflow-hidden">
+  <div class="orb orb1" style="opacity:.15;"></div>
+  <div class="orb orb2" style="opacity:.1;"></div>
+  <div class="max-w-4xl mx-auto px-6 md:px-10 text-center relative z-10">
+    <span class="badge mb-6 inline-block" style="background:rgba(176,122,46,0.15);color:#D4A24C;">Free · No commitment</span>
+    <h2 class="font-display text-4xl md:text-6xl font-bold text-[#FAF7F2] mb-6 leading-tight reveal">
+      Ready to stop guessing<br>and start knowing?
+    </h2>
+    <p class="text-[#FAF7F2]/55 text-lg max-w-xl mx-auto mb-10 reveal">
+      Book a free 30-minute audit. We'll map your workflow, find the biggest bottleneck, and tell you honestly what it would take to fix it.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center reveal">
+      <a href="mailto:balakishore21111998@gmail.com?subject=Free%20Audit%20Request&body=Hi%2C%20I%27d%20like%20to%20book%20a%20free%20audit%20call."
+         class="inline-flex items-center justify-center gap-2 bg-[#B07A2E] text-[#FAF7F2] px-8 py-4 rounded-full font-semibold text-base hover:bg-[#D4A24C] transition-colors">
+        📧 Send an Email
+      </a>
+      <a href="https://wa.me/919XXXXXXXXX?text=Hi%2C%20I%27d%20like%20a%20free%20audit%20from%20JKR%20Solutions."
+         class="inline-flex items-center justify-center gap-2 border border-[#FAF7F2]/20 text-[#FAF7F2]/80 px-8 py-4 rounded-full font-semibold text-base hover:border-[#B07A2E]/50 hover:text-[#D4A24C] transition-colors">
+        💬 WhatsApp Us
+      </a>
     </div>
+    <p class="text-[#FAF7F2]/30 text-sm mt-8">Chennai, India · Response within 24 hours</p>
   </div>
 </section>
 
-<!-- Footer -->
-<footer class="bg-[#1C1814] text-[#FAF7F2]/70 py-12">
-  <div class="max-w-6xl mx-auto px-6 md:px-10 flex flex-col md:flex-row justify-between items-center gap-6 text-sm">
-    <p class="font-display text-[#FAF7F2] text-lg font-semibold">JKR Solutions</p>
-    <div class="flex gap-6">
-      <a href="#services" class="hover:text-[#D4A24C]">Services</a>
-      <a href="#work" class="hover:text-[#D4A24C]">Our Work</a>
-      <a href="#pricing" class="hover:text-[#D4A24C]">Pricing</a>
-      <a href="#contact" class="hover:text-[#D4A24C]">Contact</a>
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer class="bg-[#141210] py-16">
+  <div class="max-w-6xl mx-auto px-6 md:px-10">
+    <div class="grid md:grid-cols-4 gap-10 mb-12">
+      <div class="md:col-span-1">
+        <div class="font-display text-lg font-semibold text-[#FAF7F2] mb-3">JKR Solutions</div>
+        <p class="text-[#FAF7F2]/35 text-sm leading-relaxed">Dashboards, automation, software, and media tools for growing Indian businesses.</p>
+      </div>
+      <div>
+        <div class="text-xs font-bold text-[#FAF7F2]/35 tracking-widest uppercase mb-4">Services</div>
+        <ul class="space-y-3 text-sm text-[#FAF7F2]/55">
+          <li><a href="#services" class="hover:text-[#D4A24C] transition-colors">BI Dashboards</a></li>
+          <li><a href="#services" class="hover:text-[#D4A24C] transition-colors">Workflow Automation</a></li>
+          <li><a href="#services" class="hover:text-[#D4A24C] transition-colors">Website Design</a></li>
+          <li><a href="#services" class="hover:text-[#D4A24C] transition-colors">Custom Software</a></li>
+          <li><a href="#services" class="hover:text-[#D4A24C] transition-colors">Content & Media</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="text-xs font-bold text-[#FAF7F2]/35 tracking-widest uppercase mb-4">Products</div>
+        <ul class="space-y-3 text-sm text-[#FAF7F2]/55">
+          <li><a href="#work" class="hover:text-[#D4A24C] transition-colors">NexRetail Intelligence</a></li>
+          <li><a href="#work" class="hover:text-[#D4A24C] transition-colors">RhemaPresenter</a></li>
+          <li><a href="#work" class="hover:text-[#D4A24C] transition-colors">SermonCut AI</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="text-xs font-bold text-[#FAF7F2]/35 tracking-widest uppercase mb-4">Contact</div>
+        <ul class="space-y-3 text-sm text-[#FAF7F2]/55">
+          <li><a href="mailto:balakishore21111998@gmail.com" class="hover:text-[#D4A24C] transition-colors">balakishore21111998@gmail.com</a></li>
+          <li><span>Chennai, Tamil Nadu, India</span></li>
+          <li><a href="#contact" class="hover:text-[#D4A24C] transition-colors">Book a Free Audit →</a></li>
+        </ul>
+      </div>
     </div>
-    <p>© 2026 JKR Solutions · Built in Chennai, serving businesses across India.</p>
+    <div class="border-t border-[#FAF7F2]/08 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <span class="text-[#FAF7F2]/25 text-xs">© 2026 JKR Solutions. All rights reserved.</span>
+      <span class="text-[#FAF7F2]/25 text-xs">Part of the JKR group · Chennai · India</span>
+    </div>
   </div>
 </footer>
 
-<!-- Lightbox -->
-<div id="lightbox" class="hidden">
-  <div class="lb-viewport">
-    <div class="lb-track" id="lbTrack"></div>
-    <button class="lb-arrow prev" id="lbPrev" aria-label="Previous">‹</button>
-    <button class="lb-arrow next" id="lbNext" aria-label="Next">›</button>
-    <div class="lb-dots" id="lbDots"></div>
-    <p class="lb-caption" id="lbCaption"></p>
-  </div>
-  <button class="lb-close" id="lbClose" aria-label="Close">✕</button>
-</div>
-
 <script>
-  // mobile menu
+/* ═══ MARQUEE ═══ */
+(function(){
+  const track = document.getElementById('marqueeTrack');
+  if (!track) return;
+  track.innerHTML += track.innerHTML;
+  let x = 0;
+  const hw = track.scrollWidth / 2;
+  (function tick(){
+    x += 0.55;
+    if (x >= hw) x -= hw;
+    track.style.transform = 'translateX(-' + x + 'px)';
+    requestAnimationFrame(tick);
+  })();
+})();
+
+/* ═══ NAV ═══ */
+(function(){
+  const nav = document.getElementById('mainNav');
   const menuBtn = document.getElementById('menuBtn');
   const mobileMenu = document.getElementById('mobileMenu');
-  menuBtn.addEventListener('click', () => {
-    const isOpen = !mobileMenu.classList.contains('hidden');
-    mobileMenu.classList.toggle('hidden');
-    menuBtn.setAttribute('aria-expanded', String(!isOpen));
-  });
-  document.querySelectorAll('#mobileMenu a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.add('hidden')));
-
-  // nav shadow on scroll
-  const nav = document.getElementById('mainNav');
   window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 8);
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, {passive: true});
+  menuBtn.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('hidden') === false;
+    menuBtn.setAttribute('aria-expanded', open);
   });
+  mobileMenu.querySelectorAll('.mobile-link').forEach(l => {
+    l.addEventListener('click', () => { mobileMenu.classList.add('hidden'); menuBtn.setAttribute('aria-expanded','false'); });
+  });
+})();
 
-  // scroll reveal
-  const revealEls = document.querySelectorAll('.reveal');
+/* ═══ SCROLL REVEAL + COUNTERS ═══ */
+(function(){
+  const els = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        io.unobserve(entry.target);
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
       }
     });
-  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-  revealEls.forEach(el => io.observe(el));
+  }, { threshold: 0.12 });
+  els.forEach(el => io.observe(el));
 
-  // work carousels
-  document.querySelectorAll('[data-carousel]').forEach(carousel => {
-    const slides = Array.from(carousel.querySelectorAll('.carousel-slide'));
-    const dotsWrap = carousel.querySelector('.carousel-dots');
-    const prevBtn = carousel.querySelector('.carousel-arrow.prev');
-    const nextBtn = carousel.querySelector('.carousel-arrow.next');
-    let index = 0, timer;
-
-    slides.forEach((_, i) => {
-      const dot = document.createElement('button');
-      if (i === 0) dot.classList.add('active');
-      dot.addEventListener('click', () => goTo(i));
-      dotsWrap.appendChild(dot);
-    });
-    const dots = Array.from(dotsWrap.children);
-
-    function goTo(i) {
-      const prev = index;
-      slides[prev].classList.add('exiting');
-      slides[prev].classList.remove('active');
-      setTimeout(() => slides[prev].classList.remove('exiting'), 650);
-      dots[prev].classList.remove('active');
-      index = (i + slides.length) % slides.length;
-      slides[index].classList.add('active');
-      dots[index].classList.add('active');
-    }
-    function next() { goTo(index + 1); }
-    function prev() { goTo(index - 1); }
-    function start() { timer = setInterval(next, 3800); }
-    function stop() { clearInterval(timer); }
-
-    nextBtn.addEventListener('click', () => { next(); stop(); start(); });
-    prevBtn.addEventListener('click', () => { prev(); stop(); start(); });
-    carousel.addEventListener('mouseenter', stop);
-    carousel.addEventListener('mouseleave', start);
-    start();
-
-    slides.forEach((img, i) => img.addEventListener('click', () => openLightbox(slides, i)));
-  });
-
-  // lightbox
-  const lightbox = document.getElementById('lightbox');
-  const lbTrack = document.getElementById('lbTrack');
-  const lbDots = document.getElementById('lbDots');
-  const lbCaption = document.getElementById('lbCaption');
-  let lbIndex = 0, lbSlides = [];
-
-  function openLightbox(slides, startIndex) {
-    lbSlides = slides;
-    lbIndex = startIndex;
-    lbTrack.innerHTML = '';
-    lbDots.innerHTML = '';
-    slides.forEach((s, i) => {
-      const img = document.createElement('img');
-      img.src = s.src; img.alt = s.alt;
-      lbTrack.appendChild(img);
-      const dot = document.createElement('button');
-      if (i === startIndex) dot.classList.add('active');
-      dot.addEventListener('click', () => lbGoTo(i));
-      lbDots.appendChild(dot);
-    });
-    lightbox.classList.remove('hidden');
-    lbUpdate();
-    document.body.style.overflow = 'hidden';
-  }
-  function lbUpdate() {
-    lbTrack.style.transform = `translateX(-${lbIndex * 100}%)`;
-    Array.from(lbDots.children).forEach((d, i) => d.classList.toggle('active', i === lbIndex));
-    lbCaption.textContent = lbSlides[lbIndex]?.alt || '';
-  }
-  function lbGoTo(i) { lbIndex = (i + lbSlides.length) % lbSlides.length; lbUpdate(); }
-  function closeLightbox() { lightbox.classList.add('hidden'); document.body.style.overflow = ''; }
-
-  document.getElementById('lbNext').addEventListener('click', () => lbGoTo(lbIndex + 1));
-  document.getElementById('lbPrev').addEventListener('click', () => lbGoTo(lbIndex - 1));
-  document.getElementById('lbClose').addEventListener('click', closeLightbox);
-  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
-  document.addEventListener('keydown', (e) => {
-    if (lightbox.classList.contains('hidden')) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowRight') lbGoTo(lbIndex + 1);
-    if (e.key === 'ArrowLeft') lbGoTo(lbIndex - 1);
-  });
-
-  // animated stat counters
-  function animateCounter(el) {
-    const target = +el.dataset.target;
-    const duration = 1200;
-    let start = null;
-    function step(ts) {
-      if (!start) start = ts;
-      const progress = Math.min((ts - start) / duration, 1);
-      el.textContent = Math.floor(progress * target);
-      if (progress < 1) requestAnimationFrame(step); else el.textContent = target;
-    }
-    requestAnimationFrame(step);
-  }
-  const counterIO = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) { animateCounter(entry.target); counterIO.unobserve(entry.target); }
+  // counters
+  const countersDone = new WeakSet();
+  const cio = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting || countersDone.has(e.target)) return;
+      countersDone.add(e.target);
+      const target = parseInt(e.target.dataset.target, 10);
+      const dur = 1400;
+      const start = performance.now();
+      (function update(now){
+        const t = Math.min((now - start) / dur, 1);
+        const ease = 1 - Math.pow(1 - t, 3);
+        e.target.textContent = Math.round(ease * target);
+        if (t < 1) requestAnimationFrame(update);
+      })(performance.now());
     });
   }, { threshold: 0.5 });
-  document.querySelectorAll('.counter').forEach(el => counterIO.observe(el));
+  document.querySelectorAll('.counter').forEach(c => cio.observe(c));
+})();
 
-  // continuous pixel-perfect marquee via rAF
-  const marqueeTrack = document.getElementById('marqueeTrack');
-  if (marqueeTrack) {
-    let scrolled = 0;
-    const speed = 0.45;
-    function tickMarquee() {
-      scrolled += speed;
-      const halfW = marqueeTrack.scrollWidth / 2;
-      if (scrolled >= halfW) scrolled -= halfW;
-      marqueeTrack.style.transform = 'translateX(-' + scrolled + 'px)';
-      requestAnimationFrame(tickMarquee);
+/* ═══ CAROUSEL ═══ */
+(function(){
+  document.querySelectorAll('[data-carousel]').forEach(container => {
+    const slides = Array.from(container.querySelectorAll('.carousel-slide'));
+    const dots = Array.from(container.querySelectorAll('.carousel-dots button'));
+    const prevBtn = container.querySelector('.carousel-arrow.prev');
+    const nextBtn = container.querySelector('.carousel-arrow.next');
+    let idx = 0, timer;
+
+    function goTo(i) {
+      const prev = idx;
+      slides[prev].classList.add('exiting');
+      slides[prev].classList.remove('active');
+      setTimeout(() => slides[prev].classList.remove('exiting'), 700);
+      dots[prev].classList.remove('active');
+      idx = (i + slides.length) % slides.length;
+      slides[idx].classList.add('active');
+      dots[idx].classList.add('active');
     }
-    requestAnimationFrame(tickMarquee);
-  }
+
+    function startAuto() {
+      clearInterval(timer);
+      timer = setInterval(() => goTo(idx + 1), 3800);
+    }
+
+    startAuto();
+    container.addEventListener('mouseenter', () => clearInterval(timer));
+    container.addEventListener('mouseleave', startAuto);
+
+    prevBtn.addEventListener('click', e => { e.stopPropagation(); goTo(idx - 1); startAuto(); });
+    nextBtn.addEventListener('click', e => { e.stopPropagation(); goTo(idx + 1); startAuto(); });
+    dots.forEach((d, i) => d.addEventListener('click', e => { e.stopPropagation(); goTo(i); startAuto(); }));
+
+    // open lightbox on slide click
+    slides.forEach(slide => {
+      slide.addEventListener('click', () => {
+        const group = slide.dataset.lbGroup;
+        const startIdx = parseInt(slide.dataset.lbIndex || '0', 10);
+        openLightbox(group, startIdx);
+      });
+    });
+  });
+})();
+
+/* ═══ LIGHTBOX ═══ */
+const lbImages = {
+  nexretail: [
+    {src:'assets/work/nexretail-1.png', alt:'NexRetail Command Center'},
+    {src:'assets/work/nexretail-2.png', alt:'NexRetail Agent Hub'},
+    {src:'assets/work/nexretail-3.png', alt:'NexRetail Customer Hub'}
+  ],
+  rhema: [
+    {src:'assets/work/rhema-control.png', alt:'RhemaPresenter – Control'},
+    {src:'assets/work/rhema-bible.png', alt:'RhemaPresenter – Bible'},
+    {src:'assets/work/rhema-design.png', alt:'RhemaPresenter – Design'},
+    {src:'assets/work/rhema-ndi.png', alt:'RhemaPresenter – NDI'}
+  ],
+  sermoncut: [
+    {src:'assets/work/sermoncut-hero.png', alt:'SermonCut AI Hero'},
+    {src:'assets/work/sermoncut-app.png', alt:'SermonCut AI App'},
+    {src:'assets/work/sermoncut-features.png', alt:'SermonCut Features'},
+    {src:'assets/work/sermoncut-export.png', alt:'SermonCut Export'}
+  ]
+};
+
+let lbGroup = null, lbIdx = 0;
+const lb = document.getElementById('lightbox');
+const lbTrack = document.getElementById('lbTrack');
+const lbDots = document.getElementById('lbDots');
+
+function openLightbox(group, startIdx) {
+  lbGroup = group;
+  lbIdx = startIdx;
+  const imgs = lbImages[group] || [];
+  lbTrack.innerHTML = imgs.map(i => `<img src="${i.src}" alt="${i.alt}">`).join('');
+  lbDots.innerHTML = imgs.map((_,i) => `<button aria-label="Slide ${i+1}"></button>`).join('');
+  lbDots.querySelectorAll('button').forEach((b,i) => b.addEventListener('click', () => lbNav(i)));
+  lb.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  lbRender();
+}
+
+function lbNav(i) {
+  const imgs = lbImages[lbGroup] || [];
+  lbIdx = (i + imgs.length) % imgs.length;
+  lbRender();
+}
+
+function lbRender() {
+  const imgs = lbImages[lbGroup] || [];
+  lbTrack.style.transform = `translateX(-${lbIdx * 100}%)`;
+  lbDots.querySelectorAll('button').forEach((b,i) => b.classList.toggle('active', i === lbIdx));
+}
+
+function closeLightbox() {
+  lb.classList.add('hidden');
+  document.body.style.overflow = '';
+  lbGroup = null;
+}
+
+document.getElementById('lbClose').addEventListener('click', closeLightbox);
+document.getElementById('lbPrev').addEventListener('click', () => lbNav(lbIdx - 1));
+document.getElementById('lbNext').addEventListener('click', () => lbNav(lbIdx + 1));
+lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+document.addEventListener('keydown', e => {
+  if (lb.classList.contains('hidden')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') lbNav(lbIdx - 1);
+  if (e.key === 'ArrowRight') lbNav(lbIdx + 1);
+});
+
+/* ═══ PRICING TABS ═══ */
+(function(){
+  const btns = document.querySelectorAll('.ptab-btn');
+  const panes = document.querySelectorAll('.ptab-pane');
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      panes.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const pane = document.getElementById('tab-' + btn.dataset.tab);
+      if (pane) pane.classList.add('active');
+    });
+  });
+})();
 </script>
 </body>
 </html>
