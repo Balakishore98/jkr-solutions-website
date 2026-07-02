@@ -4,7 +4,6 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>JKR Solutions | Dashboards · Automation · Software · Web · Media</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -18,12 +17,33 @@ body{ font-family:'Manrope',sans-serif; background:var(--ink); color:var(--paper
 #cg{ position:fixed; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle,rgba(176,122,46,0.07) 0%,transparent 65%); pointer-events:none; z-index:1; transform:translate(-50%,-50%); transition:opacity .3s; }
 @media(hover:none){#cg{display:none;}}
 
-/* hero canvas */
-#hc{ position:absolute; inset:0; width:100%; height:100%; display:block; }
-
-/* rings */
-.ring{ position:absolute; border-radius:50%; border:1px solid rgba(212,162,76,0.08); pointer-events:none; animation:ring-p 8s ease-in-out infinite; }
-@keyframes ring-p{ 0%,100%{opacity:.08;} 50%{opacity:.18;} }
+/* ── HERO BACKGROUND LAYERS ── */
+/* 1. dot grid */
+.hero-dots{
+  position:absolute; inset:0; pointer-events:none;
+  background-image: radial-gradient(circle, rgba(176,122,46,0.38) 1px, transparent 1px);
+  background-size: 30px 30px;
+  /* spotlight mask — dots only show where light "hits" */
+  -webkit-mask-image: radial-gradient(ellipse 65% 75% at 80% 40%, black 0%, black 25%, transparent 70%);
+  mask-image: radial-gradient(ellipse 65% 75% at 80% 40%, black 0%, black 25%, transparent 70%);
+}
+/* 2. animated gradient blobs */
+.hero-blob{
+  position:absolute; border-radius:50%; pointer-events:none; filter:blur(90px);
+}
+.hb1{ width:700px; height:700px; background:radial-gradient(circle,rgba(176,122,46,0.22),transparent 65%); top:-180px; right:-120px; animation:hb-drift 22s ease-in-out infinite; }
+.hb2{ width:500px; height:500px; background:radial-gradient(circle,rgba(212,162,76,0.14),transparent 65%); bottom:-100px; right:15%; animation:hb-drift 28s ease-in-out infinite reverse; }
+.hb3{ width:350px; height:350px; background:radial-gradient(circle,rgba(176,122,46,0.1),transparent 65%); top:30%; left:-80px; animation:hb-drift 18s ease-in-out infinite; animation-delay:-7s; }
+@keyframes hb-drift{
+  0%,100%{ transform:translate(0,0) scale(1); }
+  33%{ transform:translate(-35px,25px) scale(1.08); }
+  66%{ transform:translate(28px,-20px) scale(0.94); }
+}
+/* 3. sharp radial spotlight (no blur) — illuminates the dot grid edge */
+.hero-spot{
+  position:absolute; inset:0; pointer-events:none;
+  background: radial-gradient(ellipse 55% 65% at 78% 38%, rgba(212,162,76,0.08) 0%, transparent 65%);
+}
 
 /* glass */
 .glass{
@@ -181,14 +201,14 @@ details[open] summary .chev{ transform:rotate(180deg); }
 
 <!-- ══ HERO ══ -->
 <section style="position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;background:var(--ink);">
-  <canvas id="hc"></canvas>
-
-  <!-- decorative rings (right side) -->
-  <div class="ring" style="width:700px;height:700px;top:50%;left:65%;transform:translate(-50%,-50%);"></div>
-  <div class="ring" style="width:480px;height:480px;top:50%;left:65%;transform:translate(-50%,-50%);animation-delay:-2.5s;"></div>
-  <div class="ring" style="width:260px;height:260px;top:50%;left:65%;transform:translate(-50%,-50%);animation-delay:-5s;"></div>
-  <!-- center glow -->
-  <div style="position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(176,122,46,0.09),transparent 65%);top:50%;left:65%;transform:translate(-50%,-50%);pointer-events:none;filter:blur(40px);"></div>
+  <!-- dot grid with spotlight mask -->
+  <div class="hero-dots"></div>
+  <!-- animated blobs -->
+  <div class="hero-blob hb1"></div>
+  <div class="hero-blob hb2"></div>
+  <div class="hero-blob hb3"></div>
+  <!-- sharp spotlight -->
+  <div class="hero-spot"></div>
 
   <div class="max-w-6xl mx-auto px-6 md:px-10 py-28 md:py-36 relative z-10 w-full">
     <div class="max-w-2xl">
@@ -792,105 +812,6 @@ details[open] summary .chev{ transform:rotate(180deg); }
 </footer>
 
 <script>
-/* ═══ THREE.JS PARTICLE NETWORK ═══ */
-(function(){
-  const canvas = document.getElementById('hc');
-  const heroSection = canvas.parentElement;
-  let W = heroSection.clientWidth, H = heroSection.clientHeight;
-
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
-  renderer.setSize(W, H);
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(60, W/H, 0.1, 100);
-  camera.position.z = 6;
-
-  const group = new THREE.Group();
-  scene.add(group);
-
-  const N = 220;
-  const pts = [];
-  for(let i=0;i<N;i++){
-    pts.push(new THREE.Vector3(
-      (Math.random()-.5)*16,
-      (Math.random()-.5)*10,
-      (Math.random()-.5)*7
-    ));
-  }
-
-  // main particles — bright gold dots
-  const pGeo = new THREE.BufferGeometry().setFromPoints(pts);
-  const pMat = new THREE.PointsMaterial({ color:0xFFD980, size:0.09, transparent:true, opacity:.95 });
-  group.add(new THREE.Points(pGeo, pMat));
-
-  // accent particles — slightly larger, amber
-  const accentPts = [];
-  for(let i=0;i<40;i++){
-    accentPts.push(new THREE.Vector3(
-      (Math.random()-.5)*14, (Math.random()-.5)*9, (Math.random()-.5)*5
-    ));
-  }
-  const aGeo = new THREE.BufferGeometry().setFromPoints(accentPts);
-  const aMat = new THREE.PointsMaterial({ color:0xD4A24C, size:0.14, transparent:true, opacity:.8 });
-  group.add(new THREE.Points(aGeo, aMat));
-
-  // connection lines — clearly visible
-  const linePos = [];
-  const THRESH = 3.0;
-  for(let i=0;i<N;i++){
-    for(let j=i+1;j<N;j++){
-      if(pts[i].distanceTo(pts[j]) < THRESH){
-        linePos.push(pts[i].x,pts[i].y,pts[i].z, pts[j].x,pts[j].y,pts[j].z);
-      }
-    }
-  }
-  const lGeo = new THREE.BufferGeometry();
-  lGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePos, 3));
-  const lMat = new THREE.LineBasicMaterial({ color:0xD4A24C, transparent:true, opacity:.22 });
-  group.add(new THREE.LineSegments(lGeo, lMat));
-
-  // wireframe icosahedron as centrepiece (right side)
-  const icoGeo = new THREE.IcosahedronGeometry(1.9, 1);
-  const icoMat = new THREE.MeshBasicMaterial({ color:0xD4A24C, wireframe:true, transparent:true, opacity:.22 });
-  const ico = new THREE.Mesh(icoGeo, icoMat);
-  ico.position.set(3.5, 0, 0);
-  group.add(ico);
-
-  // outer wireframe sphere
-  const sGeo = new THREE.IcosahedronGeometry(2.8, 1);
-  const sMat = new THREE.MeshBasicMaterial({ color:0xB07A2E, wireframe:true, transparent:true, opacity:.07 });
-  const sph = new THREE.Mesh(sGeo, sMat);
-  sph.position.set(3.5, 0, 0);
-  group.add(sph);
-
-  // mouse parallax
-  let mx=0, my=0;
-  document.addEventListener('mousemove', e => {
-    mx = (e.clientX/W - .5) * 2;
-    my = (e.clientY/H - .5) * 2;
-  });
-
-  let t = 0;
-  (function animate(){
-    requestAnimationFrame(animate);
-    t += 0.003;
-    group.rotation.y = t * 0.18 + mx * 0.07;
-    group.rotation.x = Math.sin(t*0.25)*0.06 + my * 0.04;
-    ico.rotation.x += 0.004;
-    ico.rotation.y += 0.007;
-    sph.rotation.x -= 0.002;
-    sph.rotation.z += 0.003;
-    renderer.render(scene, camera);
-  })();
-
-  window.addEventListener('resize', () => {
-    W = heroSection.clientWidth; H = heroSection.clientHeight;
-    camera.aspect = W/H;
-    camera.updateProjectionMatrix();
-    renderer.setSize(W, H);
-  });
-})();
 
 /* ═══ CURSOR GLOW ═══ */
 (function(){
