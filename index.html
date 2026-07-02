@@ -132,7 +132,7 @@ details[open] summary .chev{ transform:rotate(180deg); }
 .step-n{ width:52px; height:52px; border-radius:16px; background:rgba(176,122,46,0.1); border:1px solid rgba(212,162,76,0.2); display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:22px; font-weight:700; color:var(--bl); box-shadow:0 0 20px rgba(176,122,46,0.1); }
 
 /* grad text */
-.gt{ background:linear-gradient(100deg,#FAF7F2 20%,#D4A24C 58%,#B07A2E 88%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.gt{ background:linear-gradient(110deg,#FFE5A0 0%,#D4A24C 45%,#FF9E2A 75%,#B07A2E 100%); -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 0 40px rgba(212,162,76,0.55)); }
 
 /* stat */
 .sv{ font-family:'Fraunces',serif; }
@@ -197,12 +197,12 @@ details[open] summary .chev{ transform:rotate(180deg); }
         <span style="color:var(--bl);font-size:13px;font-weight:700;letter-spacing:.06em;">CHENNAI · INDIA</span>
       </div>
 
-      <h1 class="font-display font-bold leading-none mb-8" style="font-size:clamp(2.8rem,7vw,5.5rem);color:var(--paper);">
+      <h1 class="font-display font-bold mb-8" style="font-size:clamp(3.2rem,8.5vw,7rem);color:var(--paper);line-height:1.0;letter-spacing:-0.02em;">
         Build Smarter.<br>
-        <span class="gt">Scale Faster.</span>
+        <span class="gt" style="display:inline-block;">Scale Faster.</span>
       </h1>
 
-      <p style="font-size:1.1rem;color:rgba(250,247,242,0.55);max-width:480px;line-height:1.75;margin-bottom:2.5rem;">
+      <p style="font-size:1.1rem;color:rgba(250,247,242,0.72);max-width:480px;line-height:1.75;margin-bottom:2.5rem;">
         Dashboards, automation, websites, custom software, and media tools — we handle the technical heavy lifting so you can focus on growing.
       </p>
 
@@ -809,24 +809,35 @@ details[open] summary .chev{ transform:rotate(180deg); }
   const group = new THREE.Group();
   scene.add(group);
 
-  const N = 160;
+  const N = 220;
   const pts = [];
   for(let i=0;i<N;i++){
     pts.push(new THREE.Vector3(
-      (Math.random()-.5)*14,
-      (Math.random()-.5)*9,
-      (Math.random()-.5)*6
+      (Math.random()-.5)*16,
+      (Math.random()-.5)*10,
+      (Math.random()-.5)*7
     ));
   }
 
-  // particles
+  // main particles — bright gold dots
   const pGeo = new THREE.BufferGeometry().setFromPoints(pts);
-  const pMat = new THREE.PointsMaterial({ color:0xD4A24C, size:0.04, transparent:true, opacity:.65 });
+  const pMat = new THREE.PointsMaterial({ color:0xFFD980, size:0.09, transparent:true, opacity:.95 });
   group.add(new THREE.Points(pGeo, pMat));
 
-  // connection lines
+  // accent particles — slightly larger, amber
+  const accentPts = [];
+  for(let i=0;i<40;i++){
+    accentPts.push(new THREE.Vector3(
+      (Math.random()-.5)*14, (Math.random()-.5)*9, (Math.random()-.5)*5
+    ));
+  }
+  const aGeo = new THREE.BufferGeometry().setFromPoints(accentPts);
+  const aMat = new THREE.PointsMaterial({ color:0xD4A24C, size:0.14, transparent:true, opacity:.8 });
+  group.add(new THREE.Points(aGeo, aMat));
+
+  // connection lines — clearly visible
   const linePos = [];
-  const THRESH = 2.4;
+  const THRESH = 3.0;
   for(let i=0;i<N;i++){
     for(let j=i+1;j<N;j++){
       if(pts[i].distanceTo(pts[j]) < THRESH){
@@ -836,8 +847,22 @@ details[open] summary .chev{ transform:rotate(180deg); }
   }
   const lGeo = new THREE.BufferGeometry();
   lGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePos, 3));
-  const lMat = new THREE.LineBasicMaterial({ color:0xB07A2E, transparent:true, opacity:.1 });
+  const lMat = new THREE.LineBasicMaterial({ color:0xD4A24C, transparent:true, opacity:.22 });
   group.add(new THREE.LineSegments(lGeo, lMat));
+
+  // wireframe icosahedron as centrepiece (right side)
+  const icoGeo = new THREE.IcosahedronGeometry(1.9, 1);
+  const icoMat = new THREE.MeshBasicMaterial({ color:0xD4A24C, wireframe:true, transparent:true, opacity:.22 });
+  const ico = new THREE.Mesh(icoGeo, icoMat);
+  ico.position.set(3.5, 0, 0);
+  group.add(ico);
+
+  // outer wireframe sphere
+  const sGeo = new THREE.IcosahedronGeometry(2.8, 1);
+  const sMat = new THREE.MeshBasicMaterial({ color:0xB07A2E, wireframe:true, transparent:true, opacity:.07 });
+  const sph = new THREE.Mesh(sGeo, sMat);
+  sph.position.set(3.5, 0, 0);
+  group.add(sph);
 
   // mouse parallax
   let mx=0, my=0;
@@ -850,8 +875,12 @@ details[open] summary .chev{ transform:rotate(180deg); }
   (function animate(){
     requestAnimationFrame(animate);
     t += 0.003;
-    group.rotation.y = t * 0.25 + mx * 0.08;
-    group.rotation.x = Math.sin(t*0.3)*0.06 + my * 0.04;
+    group.rotation.y = t * 0.18 + mx * 0.07;
+    group.rotation.x = Math.sin(t*0.25)*0.06 + my * 0.04;
+    ico.rotation.x += 0.004;
+    ico.rotation.y += 0.007;
+    sph.rotation.x -= 0.002;
+    sph.rotation.z += 0.003;
     renderer.render(scene, camera);
   })();
 
