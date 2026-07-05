@@ -16,6 +16,13 @@ body{ font-family:'Manrope',sans-serif; background:var(--paper); color:#1C1814; 
 /* ── WEBGL CANVASES ── */
 .fx{ position:absolute; inset:0; width:100%; height:100%; display:block; }
 
+/* ── HERO VIDEO ── */
+.hero-vid{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transform:scaleX(-1); filter:brightness(.8); }
+.hero-shade{ position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(90deg, rgba(10,8,6,.93) 0%, rgba(10,8,6,.7) 42%, rgba(10,8,6,.28) 100%),
+             linear-gradient(0deg, var(--ink) 0%, transparent 22%);
+}
+
 /* ── NAV ── */
 #mainNav{ background:transparent; }
 #mainNav .nav-link{ position:relative; color:rgba(250,247,242,.6); transition:color .2s; }
@@ -172,6 +179,10 @@ details[open] summary .chev{ transform:rotate(180deg); }
 
 <!-- ══ HERO (DARK · CHAOS→ORDER) ══ -->
 <section style="position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;background:var(--ink);">
+  <video class="hero-vid" autoplay muted loop playsinline poster="assets/hero-poster.jpg">
+    <source src="assets/hero-bg.mp4" type="video/mp4">
+  </video>
+  <div class="hero-shade"></div>
   <canvas class="fx" data-fx="chaos"></canvas>
 
   <div class="max-w-6xl mx-auto px-6 md:px-10 py-28 md:py-36 relative z-10 w-full" style="pointer-events:none;">
@@ -925,10 +936,7 @@ chaos: COMMON + `
 void main(){
   vec2 uv=gl_FragCoord.xy/u_res;
   float aspect=u_res.x/u_res.y;
-  vec3 col=INK;
-  // soft corner glow
-  col+=BRASS*exp(-length((uv-vec2(.8,.75))*vec2(aspect,1.))*2.)*.05;
-  // chaos → order dots
+  // transparent layer: interactive dots only, video shows through
   float d=distance(gl_FragCoord.xy,u_mouse)/u_res.y;
   float order=exp(-d*d*7.);
   vec2 gp=uv*vec2(aspect,1.)*24.;
@@ -938,11 +946,10 @@ void main(){
   jit*=(1.-order);
   float dd=length(fp-.5-jit*.45);
   float dot_=smoothstep(.1,.05,dd);
-  col+=mix(BRASS*.4,CHAMP,order)*dot_*mix(.3,1.,order);
-  col+=CHAMP*exp(-d*4.)*.05;
-  float vig=1.-length(uv-vec2(.42,.5))*.75;
-  col*=.5+.5*clamp(vig,0.,1.);
-  gl_FragColor=vec4(col,1.);
+  vec3 col=mix(BRASS*.45,CHAMP,order)*dot_*mix(.18,.95,order);
+  col+=CHAMP*exp(-d*4.)*.04;
+  float a=clamp(max(max(col.r,col.g),col.b)*1.15,0.,1.);
+  gl_FragColor=vec4(col,a);
 }`,
 
 terrain: COMMON + `
