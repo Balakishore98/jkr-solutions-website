@@ -8,160 +8,131 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{ --ink:#0A0806; --ink2:#0E0C09; --paper:#FAF7F2; --brass:#B07A2E; --bl:#D4A24C; }
+:root{ --ink:#0A0806; --ink2:#0E0C09; --paper:#FAF7F2; --surface:#F2EDE6; --brass:#B07A2E; --bl:#D4A24C; --muted:#6B6258; }
 *{ box-sizing:border-box; }
-body{ font-family:'Manrope',sans-serif; background:var(--ink); color:var(--paper); overflow-x:hidden; }
+body{ font-family:'Manrope',sans-serif; background:var(--paper); color:#1C1814; overflow-x:hidden; }
 .font-display{ font-family:'Fraunces',serif; }
 
-/* cursor glow */
-#cg{ position:fixed; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle,rgba(176,122,46,0.07) 0%,transparent 65%); pointer-events:none; z-index:1; transform:translate(-50%,-50%); transition:opacity .3s; }
-@media(hover:none){#cg{display:none;}}
+/* ── WEBGL CANVASES ── */
+.fx{ position:absolute; inset:0; width:100%; height:100%; display:block; }
 
-/* ── HERO BACKGROUND LAYERS ── */
-/* 1. dot grid */
-.hero-dots{
-  position:absolute; inset:0; pointer-events:none;
-  background-image: radial-gradient(circle, rgba(176,122,46,0.38) 1px, transparent 1px);
-  background-size: 30px 30px;
-  /* spotlight mask — dots only show where light "hits" */
-  -webkit-mask-image: radial-gradient(ellipse 65% 75% at 80% 40%, black 0%, black 25%, transparent 70%);
-  mask-image: radial-gradient(ellipse 65% 75% at 80% 40%, black 0%, black 25%, transparent 70%);
-}
-/* 2. animated gradient blobs */
-.hero-blob{
-  position:absolute; border-radius:50%; pointer-events:none; filter:blur(90px);
-}
-.hb1{ width:700px; height:700px; background:radial-gradient(circle,rgba(176,122,46,0.22),transparent 65%); top:-180px; right:-120px; animation:hb-drift 22s ease-in-out infinite; }
-.hb2{ width:500px; height:500px; background:radial-gradient(circle,rgba(212,162,76,0.14),transparent 65%); bottom:-100px; right:15%; animation:hb-drift 28s ease-in-out infinite reverse; }
-.hb3{ width:350px; height:350px; background:radial-gradient(circle,rgba(176,122,46,0.1),transparent 65%); top:30%; left:-80px; animation:hb-drift 18s ease-in-out infinite; animation-delay:-7s; }
-@keyframes hb-drift{
-  0%,100%{ transform:translate(0,0) scale(1); }
-  33%{ transform:translate(-35px,25px) scale(1.08); }
-  66%{ transform:translate(28px,-20px) scale(0.94); }
-}
-/* 3. sharp radial spotlight (no blur) — illuminates the dot grid edge */
-.hero-spot{
-  position:absolute; inset:0; pointer-events:none;
-  background: radial-gradient(ellipse 55% 65% at 78% 38%, rgba(212,162,76,0.08) 0%, transparent 65%);
-}
+/* ── NAV ── */
+#mainNav{ background:transparent; }
+#mainNav .nav-link{ position:relative; color:rgba(250,247,242,.6); transition:color .2s; }
+#mainNav .nav-link::after{ content:''; position:absolute; left:0; bottom:-3px; width:0; height:1.5px; background:var(--bl); transition:width .25s; }
+#mainNav .nav-link:hover{ color:var(--bl); }
+#mainNav .nav-link:hover::after{ width:100%; }
+#mainNav .brand{ color:var(--paper); }
+#mainNav .burger span{ background:var(--paper); }
+#mainNav.scrolled{ background:rgba(250,247,242,.95); backdrop-filter:blur(16px); box-shadow:0 1px 0 rgba(28,24,20,.08); }
+#mainNav.scrolled .nav-link{ color:#4A443C; }
+#mainNav.scrolled .nav-link:hover{ color:var(--brass); }
+#mainNav.scrolled .brand{ color:#1C1814; }
+#mainNav.scrolled .burger span{ background:#1C1814; }
 
-/* glass */
-.glass{
-  background:rgba(212,162,76,0.03);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  border:1px solid rgba(212,162,76,0.12);
-  transition:border-color .35s,box-shadow .35s,transform .2s cubic-bezier(.16,1,.3,1);
-}
-.glass:hover{
-  border-color:rgba(212,162,76,0.3);
-  box-shadow:0 0 50px rgba(176,122,46,0.1),0 24px 60px rgba(0,0,0,0.4);
-}
-
-/* tilt */
-.tilt{ transform-style:preserve-3d; will-change:transform; transition:transform .1s ease; }
-
-/* buttons */
+/* ── BUTTONS ── */
 .btn-g{ background:var(--brass); color:var(--paper); transition:background .25s,box-shadow .3s,transform .2s; }
-.btn-g:hover{ background:var(--bl); box-shadow:0 0 28px rgba(212,162,76,0.35),0 4px 20px rgba(0,0,0,0.4); transform:translateY(-1px); }
-.btn-o{ border:1px solid rgba(250,247,242,0.15); color:rgba(250,247,242,0.7); transition:border-color .25s,color .25s,box-shadow .3s; }
-.btn-o:hover{ border-color:rgba(212,162,76,0.45); color:var(--bl); box-shadow:0 0 20px rgba(212,162,76,0.1); }
+.btn-g:hover{ background:var(--bl); box-shadow:0 0 28px rgba(212,162,76,.35),0 4px 20px rgba(0,0,0,.25); transform:translateY(-1px); }
+.btn-dark-o{ border:1px solid rgba(250,247,242,.18); color:rgba(250,247,242,.75); transition:all .25s; }
+.btn-dark-o:hover{ border-color:rgba(212,162,76,.5); color:var(--bl); }
 
-/* nav */
-nav.scrolled{ background:rgba(10,8,6,0.88)!important; backdrop-filter:blur(20px); box-shadow:0 1px 0 rgba(212,162,76,0.1); }
-.nav-link{ position:relative; color:rgba(250,247,242,0.55); transition:color .2s; }
-.nav-link::after{ content:''; position:absolute; left:0; bottom:-3px; width:0; height:1.5px; background:var(--bl); transition:width .25s; }
-.nav-link:hover{ color:var(--bl); }
-.nav-link:hover::after{ width:100%; }
-
-/* reveal */
-.reveal{ opacity:0; transform:translateY(32px); transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1); }
+/* ── REVEAL ── */
+.reveal{ opacity:0; transform:translateY(30px); transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1); }
 .reveal.visible{ opacity:1; transform:none; }
 .reveal-delay-1.visible{ transition-delay:.08s; }
 .reveal-delay-2.visible{ transition-delay:.16s; }
 .reveal-delay-3.visible{ transition-delay:.24s; }
 .reveal-delay-4.visible{ transition-delay:.32s; }
-.reveal-delay-5.visible{ transition-delay:.40s; }
 
-/* badge */
-.badge{ font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:4px 12px; border-radius:9999px; background:rgba(212,162,76,0.1); color:var(--bl); border:1px solid rgba(212,162,76,0.2); display:inline-block; }
-.badge-w{ background:rgba(250,247,242,0.08); color:var(--paper); border:1px solid rgba(250,247,242,0.15); }
-.badge-dk{ background:var(--ink); color:var(--bl); border:1px solid rgba(212,162,76,0.2); }
+/* ── BADGES ── */
+.badge{ font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:4px 12px; border-radius:9999px; display:inline-block; }
+.badge-light{ background:rgba(176,122,46,.1); color:var(--brass); border:1px solid rgba(176,122,46,.22); }
+.badge-dark{ background:rgba(212,162,76,.1); color:var(--bl); border:1px solid rgba(212,162,76,.25); }
+.badge-ink{ background:#1C1814; color:var(--paper); }
 
-/* marquee */
+/* ── MARQUEE ── */
 .mq-track{ display:flex; gap:3rem; white-space:nowrap; will-change:transform; }
 
-/* svc */
-.svc-ghost{ font-family:'Fraunces',serif; font-size:5rem; font-weight:700; line-height:1; opacity:.06; position:absolute; top:10px; right:18px; color:var(--bl); pointer-events:none; }
-.svc-icon{ width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; background:rgba(176,122,46,0.1); border:1px solid rgba(212,162,76,0.18); box-shadow:0 0 20px rgba(176,122,46,0.12); margin-bottom:20px; }
+/* ── LIGHT SERVICE CARDS ── */
+.svc-card{ background:#FFFFFF; border:1px solid rgba(28,24,20,.08); border-radius:20px; transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s ease,border-color .35s; position:relative; overflow:hidden; }
+.svc-card:hover{ transform:translateY(-6px); box-shadow:0 24px 48px -18px rgba(28,24,20,.18); border-color:rgba(176,122,46,.3); }
+.svc-ghost{ font-family:'Fraunces',serif; font-size:5rem; font-weight:700; line-height:1; opacity:.05; position:absolute; top:10px; right:18px; color:var(--brass); pointer-events:none; }
+.svc-icon{ width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; background:rgba(176,122,46,.09); border:1px solid rgba(176,122,46,.18); margin-bottom:20px; }
+.tag{ font-size:12px; padding:3px 10px; border-radius:9999px; font-weight:700; }
+.tag-hl{ background:rgba(176,122,46,.1); color:var(--brass); }
+.tag-mut{ background:rgba(28,24,20,.05); color:var(--muted); font-weight:600; }
 
-/* carousel */
+/* ── DARK WORK CARDS ── */
+.glass{ background:rgba(212,162,76,.03); backdrop-filter:blur(18px); border:1px solid rgba(212,162,76,.13); transition:border-color .35s,box-shadow .35s,transform .35s cubic-bezier(.16,1,.3,1); }
+.glass:hover{ border-color:rgba(212,162,76,.32); box-shadow:0 0 50px rgba(176,122,46,.1),0 24px 60px rgba(0,0,0,.4); transform:translateY(-5px); }
+
+/* ── CAROUSEL ── */
 .carousel{ position:relative; height:15rem; background:#050402; overflow:hidden; }
-@media(min-width:768px){.carousel{height:17.5rem;}}
+@media(min-width:768px){ .carousel{ height:17.5rem; } }
 .carousel-slide{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top; opacity:0; pointer-events:none; cursor:zoom-in; }
 .carousel-slide.active{ pointer-events:auto; animation:fi-in .85s cubic-bezier(.16,1,.3,1) forwards; }
 .carousel-slide.exiting{ animation:fi-out .55s ease-in forwards; }
 @keyframes fi-in{ 0%{opacity:0;transform:scale(1.42);filter:blur(14px) brightness(1.25);} 55%{opacity:1;filter:blur(1.5px) brightness(1.04);} 100%{opacity:1;transform:scale(1);filter:blur(0) brightness(1);} }
 @keyframes fi-out{ 0%{opacity:1;transform:scale(1);filter:blur(0) brightness(1);} 100%{opacity:0;transform:scale(.65);filter:blur(14px) brightness(1.45);} }
 .carousel-dots{ position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:10; }
-.carousel-dots button{ width:6px; height:6px; border-radius:9999px; background:rgba(255,255,255,0.3); transition:all .25s; padding:0; border:0; cursor:pointer; }
+.carousel-dots button{ width:6px; height:6px; border-radius:9999px; background:rgba(255,255,255,.3); transition:all .25s; padding:0; border:0; cursor:pointer; }
 .carousel-dots button.active{ background:#D4A24C; width:18px; }
-.carousel-arrow{ position:absolute; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:9999px; background:rgba(10,8,6,0.65); color:#fff; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .25s,background .25s; z-index:10; font-size:16px; cursor:pointer; border:0; }
+.carousel-arrow{ position:absolute; top:50%; transform:translateY(-50%); width:32px; height:32px; border-radius:9999px; background:rgba(10,8,6,.65); color:#fff; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .25s,background .25s; z-index:10; font-size:16px; cursor:pointer; border:0; }
 .carousel:hover .carousel-arrow{ opacity:1; }
-.carousel-arrow:hover{ background:rgba(176,122,46,0.85); }
-.carousel-arrow.prev{left:10px;} .carousel-arrow.next{right:10px;}
-.carousel-expand{ position:absolute; top:10px; right:10px; width:30px; height:30px; border-radius:9999px; background:rgba(10,8,6,0.65); color:#fff; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .25s; z-index:10; font-size:14px; pointer-events:none; }
+.carousel-arrow:hover{ background:rgba(176,122,46,.85); }
+.carousel-arrow.prev{ left:10px; } .carousel-arrow.next{ right:10px; }
+.carousel-expand{ position:absolute; top:10px; right:10px; width:30px; height:30px; border-radius:9999px; background:rgba(10,8,6,.65); color:#fff; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .25s; z-index:10; font-size:14px; pointer-events:none; }
 .carousel:hover .carousel-expand{ opacity:1; }
 
-/* lightbox */
-#lb{ position:fixed; inset:0; background:rgba(5,4,2,0.97); z-index:200; display:flex; align-items:center; justify-content:center; }
+/* ── LIGHTBOX ── */
+#lb{ position:fixed; inset:0; background:rgba(5,4,2,.97); z-index:200; display:flex; align-items:center; justify-content:center; }
 #lb.hidden{ display:none; }
 .lb-vp{ position:relative; width:min(92vw,1100px); aspect-ratio:16/10; overflow:hidden; border-radius:12px; }
 .lb-track{ display:flex; height:100%; transition:transform .5s cubic-bezier(.16,1,.3,1); }
 .lb-track img{ width:100%; height:100%; object-fit:contain; flex-shrink:0; background:#050402; }
-.lb-close{ position:absolute; top:18px; right:18px; width:40px; height:40px; border-radius:9999px; background:rgba(255,255,255,0.07); color:#FAF7F2; font-size:18px; border:0; cursor:pointer; z-index:210; display:flex; align-items:center; justify-content:center; }
-.lb-close:hover{ background:rgba(176,122,46,0.5); }
-.lb-arrow{ position:absolute; top:50%; transform:translateY(-50%); width:46px; height:46px; border-radius:9999px; background:rgba(255,255,255,0.07); color:#FAF7F2; font-size:22px; border:0; cursor:pointer; z-index:210; display:flex; align-items:center; justify-content:center; }
-.lb-arrow:hover{ background:rgba(176,122,46,0.6); }
-.lb-arrow.prev{left:-60px;} .lb-arrow.next{right:-60px;}
-@media(max-width:900px){.lb-arrow.prev{left:8px;} .lb-arrow.next{right:8px;}}
+.lb-close{ position:absolute; top:18px; right:18px; width:40px; height:40px; border-radius:9999px; background:rgba(255,255,255,.07); color:#FAF7F2; font-size:18px; border:0; cursor:pointer; z-index:210; display:flex; align-items:center; justify-content:center; }
+.lb-close:hover{ background:rgba(176,122,46,.5); }
+.lb-arrow{ position:absolute; top:50%; transform:translateY(-50%); width:46px; height:46px; border-radius:9999px; background:rgba(255,255,255,.07); color:#FAF7F2; font-size:22px; border:0; cursor:pointer; z-index:210; display:flex; align-items:center; justify-content:center; }
+.lb-arrow:hover{ background:rgba(176,122,46,.6); }
+.lb-arrow.prev{ left:-60px; } .lb-arrow.next{ right:-60px; }
+@media(max-width:900px){ .lb-arrow.prev{ left:8px; } .lb-arrow.next{ right:8px; } }
 .lb-dots{ position:absolute; bottom:16px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:10; }
-.lb-dots button{ width:7px; height:7px; border-radius:9999px; background:rgba(255,255,255,0.3); border:0; cursor:pointer; padding:0; }
+.lb-dots button{ width:7px; height:7px; border-radius:9999px; background:rgba(255,255,255,.3); border:0; cursor:pointer; padding:0; }
 .lb-dots button.active{ background:#D4A24C; width:20px; }
 
-/* pricing */
-.ptab-btn{ cursor:pointer; padding:10px 20px; border-radius:9999px; font-size:13px; font-weight:600; border:0; background:transparent; color:rgba(250,247,242,0.4); transition:background .2s,color .2s,border .2s; }
-.ptab-btn.active{ background:rgba(176,122,46,0.18); color:var(--bl); border:1px solid rgba(212,162,76,0.28); }
+/* ── PRICING (LIGHT) ── */
+.ptab-btn{ cursor:pointer; padding:10px 20px; border-radius:9999px; font-size:13px; font-weight:700; border:0; background:transparent; color:var(--muted); transition:background .2s,color .2s; }
+.ptab-btn.active{ background:#1C1814; color:var(--paper); }
 .ptab-pane{ display:none; }
 .ptab-pane.active{ display:block; }
-.pc-f{ background:rgba(176,122,46,0.1); border:1px solid rgba(212,162,76,0.3); border-radius:20px; padding:32px; box-shadow:0 0 60px rgba(176,122,46,0.08); }
-.pc-p{ background:rgba(250,247,242,0.03); border:1px solid rgba(250,247,242,0.08); border-radius:20px; padding:32px; }
-.fr{ display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid rgba(250,247,242,0.06); font-size:14px; color:rgba(250,247,242,0.7); }
+.pc-plain{ background:#FFFFFF; border:1px solid rgba(28,24,20,.1); border-radius:20px; padding:32px; }
+.pc-feat{ background:#1C1814; color:var(--paper); border-radius:20px; padding:32px; box-shadow:0 24px 60px -20px rgba(28,24,20,.4); }
+.fr{ display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid rgba(28,24,20,.07); font-size:14px; color:#4A443C; }
 .fr:last-child{ border-bottom:0; }
-.chk{ color:var(--bl); font-size:16px; flex-shrink:0; }
-.addon-row{ display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(250,247,242,0.07); font-size:14px; color:rgba(250,247,242,0.65); }
+.pc-feat .fr{ border-color:rgba(250,247,242,.08); color:rgba(250,247,242,.8); }
+.chk{ color:var(--brass); font-size:16px; flex-shrink:0; }
+.pc-feat .chk{ color:var(--bl); }
+.addon-row{ display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(28,24,20,.08); font-size:14px; color:#4A443C; }
 .addon-row:last-child{ border-bottom:0; }
 
-/* faq */
+/* ── FAQ ── */
 details>summary{ list-style:none; cursor:pointer; }
 details>summary::-webkit-details-marker{ display:none; }
 details[open] summary .chev{ transform:rotate(180deg); }
 .chev{ transition:transform .25s; }
+.faq-card{ background:#FFFFFF; border:1px solid rgba(28,24,20,.08); border-radius:16px; transition:border-color .25s; }
+.faq-card:hover{ border-color:rgba(176,122,46,.3); }
 
-/* step */
-.step-n{ width:52px; height:52px; border-radius:16px; background:rgba(176,122,46,0.1); border:1px solid rgba(212,162,76,0.2); display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:22px; font-weight:700; color:var(--bl); box-shadow:0 0 20px rgba(176,122,46,0.1); }
+/* ── STEPS ── */
+.step-n{ width:52px; height:52px; border-radius:16px; background:rgba(176,122,46,.09); border:1px solid rgba(176,122,46,.22); display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:22px; font-weight:700; color:var(--brass); }
 
-/* grad text */
-.gt{ background:linear-gradient(110deg,#FFE5A0 0%,#D4A24C 45%,#FF9E2A 75%,#B07A2E 100%); -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 0 40px rgba(212,162,76,0.55)); }
+/* ── GRAD TEXT ── */
+.gt{ background:linear-gradient(110deg,#FFE5A0 0%,#D4A24C 45%,#FF9E2A 75%,#B07A2E 100%); -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 0 40px rgba(212,162,76,.45)); }
 
-/* stat */
 .sv{ font-family:'Fraunces',serif; }
 </style>
 </head>
 <body id="top">
-
-<!-- cursor glow -->
-<div id="cg"></div>
 
 <!-- ══ LIGHTBOX ══ -->
 <div id="lb" class="hidden" role="dialog" aria-modal="true">
@@ -175,9 +146,9 @@ details[open] summary .chev{ transform:rotate(180deg); }
 </div>
 
 <!-- ══ NAV ══ -->
-<nav id="mainNav" class="fixed top-0 w-full z-50 transition-all duration-300" style="background:rgba(10,8,6,0);">
+<nav id="mainNav" class="fixed top-0 w-full z-50 transition-all duration-300">
   <div class="max-w-6xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
-    <a href="#top" class="font-display text-xl font-semibold tracking-tight" style="color:var(--paper);">JKR Solutions</a>
+    <a href="#top" class="brand font-display text-xl font-semibold tracking-tight">JKR Solutions</a>
     <div class="hidden md:flex items-center gap-8 text-sm font-medium">
       <a href="#services" class="nav-link">Services</a>
       <a href="#work" class="nav-link">Our Work</a>
@@ -185,35 +156,28 @@ details[open] summary .chev{ transform:rotate(180deg); }
       <a href="#pricing" class="nav-link">Pricing</a>
       <a href="#contact" class="btn-g px-5 py-2.5 rounded-full text-sm font-semibold">Get a Free Audit</a>
     </div>
-    <button id="menuBtn" class="md:hidden flex flex-col gap-1.5 p-2" aria-label="Menu" aria-expanded="false">
-      <span class="w-6 h-0.5 bg-[#FAF7F2]"></span>
-      <span class="w-6 h-0.5 bg-[#FAF7F2]"></span>
+    <button id="menuBtn" class="burger md:hidden flex flex-col gap-1.5 p-2" aria-label="Menu" aria-expanded="false">
+      <span class="w-6 h-0.5 transition-all"></span>
+      <span class="w-6 h-0.5 transition-all"></span>
     </button>
   </div>
-  <div id="mobileMenu" class="hidden md:hidden border-t px-6 py-6 flex flex-col gap-5 text-base font-medium" style="background:rgba(10,8,6,0.96);border-color:rgba(212,162,76,0.12);">
-    <a href="#services" class="ml-link" style="color:rgba(250,247,242,0.7);">Services</a>
-    <a href="#work" class="ml-link" style="color:rgba(250,247,242,0.7);">Our Work</a>
-    <a href="#process" class="ml-link" style="color:rgba(250,247,242,0.7);">Process</a>
-    <a href="#pricing" class="ml-link" style="color:rgba(250,247,242,0.7);">Pricing</a>
-    <a href="#contact" class="ml-link btn-g px-5 py-3 rounded-full text-center mt-2">Get a Free Audit</a>
+  <div id="mobileMenu" class="hidden md:hidden border-t px-6 py-6 flex flex-col gap-5 text-base font-medium" style="background:rgba(250,247,242,.98);border-color:rgba(28,24,20,.1);">
+    <a href="#services" class="ml-link" style="color:#4A443C;">Services</a>
+    <a href="#work" class="ml-link" style="color:#4A443C;">Our Work</a>
+    <a href="#process" class="ml-link" style="color:#4A443C;">Process</a>
+    <a href="#pricing" class="ml-link" style="color:#4A443C;">Pricing</a>
+    <a href="#contact" class="ml-link btn-g px-5 py-3 rounded-full text-center">Get a Free Audit</a>
   </div>
 </nav>
 
-<!-- ══ HERO ══ -->
+<!-- ══ HERO (DARK · CHAOS→ORDER) ══ -->
 <section style="position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;background:var(--ink);">
-  <!-- dot grid with spotlight mask -->
-  <div class="hero-dots"></div>
-  <!-- animated blobs -->
-  <div class="hero-blob hb1"></div>
-  <div class="hero-blob hb2"></div>
-  <div class="hero-blob hb3"></div>
-  <!-- sharp spotlight -->
-  <div class="hero-spot"></div>
+  <canvas class="fx" data-fx="chaos"></canvas>
 
-  <div class="max-w-6xl mx-auto px-6 md:px-10 py-28 md:py-36 relative z-10 w-full">
+  <div class="max-w-6xl mx-auto px-6 md:px-10 py-28 md:py-36 relative z-10 w-full" style="pointer-events:none;">
     <div class="max-w-2xl">
-      <div class="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full" style="border:1px solid rgba(212,162,76,0.25);background:rgba(212,162,76,0.08);">
-        <span style="width:8px;height:8px;border-radius:50%;background:var(--bl);animation:ring-p 2s ease-in-out infinite;display:inline-block;"></span>
+      <div class="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full" style="border:1px solid rgba(212,162,76,.25);background:rgba(212,162,76,.08);">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--bl);display:inline-block;"></span>
         <span style="color:var(--bl);font-size:13px;font-weight:700;letter-spacing:.06em;">CHENNAI · INDIA</span>
       </div>
 
@@ -222,37 +186,32 @@ details[open] summary .chev{ transform:rotate(180deg); }
         <span class="gt" style="display:inline-block;">Scale Faster.</span>
       </h1>
 
-      <p style="font-size:1.1rem;color:rgba(250,247,242,0.72);max-width:480px;line-height:1.75;margin-bottom:2.5rem;">
+      <p style="font-size:1.1rem;color:rgba(250,247,242,.72);max-width:480px;line-height:1.75;margin-bottom:2.5rem;">
         Dashboards, automation, websites, custom software, and media tools — we handle the technical heavy lifting so you can focus on growing.
       </p>
 
-      <div class="flex flex-wrap gap-4">
-        <a href="#contact" class="btn-g inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-base">
-          Get a Free Audit →
-        </a>
-        <a href="#work" class="btn-o inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-base">
-          See Our Work
-        </a>
+      <div class="flex flex-wrap gap-4" style="pointer-events:auto;">
+        <a href="#contact" class="btn-g inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-base">Get a Free Audit →</a>
+        <a href="#work" class="btn-dark-o inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-base">See Our Work</a>
       </div>
     </div>
 
-    <!-- stats -->
-    <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-6 pt-10" style="border-top:1px solid rgba(212,162,76,0.1);">
+    <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-6 pt-10" style="border-top:1px solid rgba(212,162,76,.12);">
       <div>
         <div class="sv text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="50">0</span>+</div>
-        <div style="font-size:13px;color:rgba(250,247,242,0.4);margin-top:4px;font-weight:600;">Reports Automated</div>
+        <div style="font-size:13px;color:rgba(250,247,242,.45);margin-top:4px;font-weight:600;">Reports Automated</div>
       </div>
       <div>
         <div class="sv text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="3">0</span></div>
-        <div style="font-size:13px;color:rgba(250,247,242,0.4);margin-top:4px;font-weight:600;">Shipped Products</div>
+        <div style="font-size:13px;color:rgba(250,247,242,.45);margin-top:4px;font-weight:600;">Shipped Products</div>
       </div>
       <div>
         <div class="sv text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="5">0</span></div>
-        <div style="font-size:13px;color:rgba(250,247,242,0.4);margin-top:4px;font-weight:600;">Service Areas</div>
+        <div style="font-size:13px;color:rgba(250,247,242,.45);margin-top:4px;font-weight:600;">Service Areas</div>
       </div>
       <div>
         <div class="sv text-4xl font-bold" style="color:var(--bl);">₹0</div>
-        <div style="font-size:13px;color:rgba(250,247,242,0.4);margin-top:4px;font-weight:600;">Audit Cost</div>
+        <div style="font-size:13px;color:rgba(250,247,242,.45);margin-top:4px;font-weight:600;">Audit Cost</div>
       </div>
     </div>
   </div>
@@ -262,131 +221,122 @@ details[open] summary .chev{ transform:rotate(180deg); }
 <div style="background:var(--brass);padding:14px 0;overflow:hidden;" aria-hidden="true">
   <div class="mq-track" id="mqTrack">
     <span style="color:#FAF7F2;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">BI Dashboards</span>
-    <span style="color:rgba(250,247,242,0.4);font-size:18px;">◆</span>
+    <span style="color:rgba(250,247,242,.4);font-size:18px;">◆</span>
     <span style="color:#FAF7F2;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Workflow Automation</span>
-    <span style="color:rgba(250,247,242,0.4);font-size:18px;">◆</span>
+    <span style="color:rgba(250,247,242,.4);font-size:18px;">◆</span>
     <span style="color:#FAF7F2;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Website Design</span>
-    <span style="color:rgba(250,247,242,0.4);font-size:18px;">◆</span>
+    <span style="color:rgba(250,247,242,.4);font-size:18px;">◆</span>
     <span style="color:#FAF7F2;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Custom Software</span>
-    <span style="color:rgba(250,247,242,0.4);font-size:18px;">◆</span>
+    <span style="color:rgba(250,247,242,.4);font-size:18px;">◆</span>
     <span style="color:#FAF7F2;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Content &amp; Media</span>
-    <span style="color:rgba(250,247,242,0.4);font-size:18px;">◆</span>
+    <span style="color:rgba(250,247,242,.4);font-size:18px;">◆</span>
     <span style="color:#FAF7F2;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;">Chennai · India</span>
-    <span style="color:rgba(250,247,242,0.4);font-size:18px;">◆</span>
+    <span style="color:rgba(250,247,242,.4);font-size:18px;">◆</span>
   </div>
 </div>
 
-<!-- ══ SERVICES ══ -->
-<section id="services" style="padding:7rem 0;background:var(--ink2);position:relative;overflow:hidden;">
-  <!-- bg glow -->
-  <div style="position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(176,122,46,0.06),transparent 65%);top:-100px;right:-200px;filter:blur(60px);pointer-events:none;"></div>
-
+<!-- ══ SERVICES (WHITE) ══ -->
+<section id="services" style="padding:7rem 0;background:var(--paper);">
   <div class="max-w-6xl mx-auto px-6 md:px-10">
     <div class="mb-16 reveal">
-      <span class="badge mb-4">What We Do</span>
-      <h2 class="font-display text-4xl md:text-5xl font-bold mb-4" style="color:var(--paper);">Five ways we grow<br>your business</h2>
-      <p style="color:rgba(250,247,242,0.5);max-width:480px;line-height:1.75;">From raw data to live dashboards, from manual tasks to zero-touch pipelines.</p>
+      <span class="badge badge-light mb-4">What We Do</span>
+      <h2 class="font-display text-4xl md:text-5xl font-bold mb-4" style="color:#1C1814;">Five ways we grow<br>your business</h2>
+      <p style="color:var(--muted);max-width:480px;line-height:1.75;">From raw data to live dashboards, from manual tasks to zero-touch pipelines.</p>
     </div>
 
-    <!-- top 2 -->
     <div class="grid md:grid-cols-2 gap-5 mb-5">
-      <div class="glass rounded-2xl p-8 relative overflow-hidden tilt reveal reveal-delay-1" style="cursor:default;">
+      <div class="svc-card p-8 reveal reveal-delay-1">
         <div class="svc-ghost">01</div>
         <div class="svc-icon">📊</div>
-        <h3 class="font-display text-2xl font-bold mb-3" style="color:var(--paper);">BI Dashboards</h3>
-        <p style="color:rgba(250,247,242,0.55);font-size:14px;line-height:1.75;margin-bottom:1.5rem;">Live KPI dashboards pulling from your ERP, Excel, or GST portal. See sales, inventory, collections, and agent performance at a glance — no more manual MIS.</p>
+        <h3 class="font-display text-2xl font-bold mb-3" style="color:#1C1814;">BI Dashboards</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;margin-bottom:1.5rem;">Live KPI dashboards pulling from your ERP, Excel, or GST portal. See sales, inventory, collections, and agent performance at a glance — no more manual MIS.</p>
         <div class="flex flex-wrap gap-2">
-          <span style="font-size:12px;background:rgba(212,162,76,0.12);color:var(--bl);padding:3px 10px;border-radius:9999px;font-weight:700;">Power BI</span>
-          <span style="font-size:12px;background:rgba(250,247,242,0.06);color:rgba(250,247,242,0.5);padding:3px 10px;border-radius:9999px;font-weight:600;">Excel → Live</span>
-          <span style="font-size:12px;background:rgba(250,247,242,0.06);color:rgba(250,247,242,0.5);padding:3px 10px;border-radius:9999px;font-weight:600;">Custom HTML</span>
-          <span style="font-size:12px;background:rgba(250,247,242,0.06);color:rgba(250,247,242,0.5);padding:3px 10px;border-radius:9999px;font-weight:600;">Multi-branch</span>
+          <span class="tag tag-hl">Power BI</span>
+          <span class="tag tag-mut">Excel → Live</span>
+          <span class="tag tag-mut">Custom HTML</span>
+          <span class="tag tag-mut">Multi-branch</span>
         </div>
       </div>
-      <div class="glass rounded-2xl p-8 relative overflow-hidden tilt reveal reveal-delay-2" style="cursor:default;">
+      <div class="svc-card p-8 reveal reveal-delay-2">
         <div class="svc-ghost">02</div>
         <div class="svc-icon">⚡</div>
-        <h3 class="font-display text-2xl font-bold mb-3" style="color:var(--paper);">Workflow Automation</h3>
-        <p style="color:rgba(250,247,242,0.55);font-size:14px;line-height:1.75;margin-bottom:1.5rem;">Automate daily reports, WhatsApp alerts, invoice generation, and data entry. Tasks that take hours done in seconds — every day, without you lifting a finger.</p>
+        <h3 class="font-display text-2xl font-bold mb-3" style="color:#1C1814;">Workflow Automation</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;margin-bottom:1.5rem;">Automate daily reports, WhatsApp alerts, invoice generation, and data entry. Tasks that take hours done in seconds — every day, without you lifting a finger.</p>
         <div class="flex flex-wrap gap-2">
-          <span style="font-size:12px;background:rgba(212,162,76,0.12);color:var(--bl);padding:3px 10px;border-radius:9999px;font-weight:700;">Python Scripts</span>
-          <span style="font-size:12px;background:rgba(250,247,242,0.06);color:rgba(250,247,242,0.5);padding:3px 10px;border-radius:9999px;font-weight:600;">WhatsApp Bots</span>
-          <span style="font-size:12px;background:rgba(250,247,242,0.06);color:rgba(250,247,242,0.5);padding:3px 10px;border-radius:9999px;font-weight:600;">Scheduled Jobs</span>
+          <span class="tag tag-hl">Python Scripts</span>
+          <span class="tag tag-mut">WhatsApp Bots</span>
+          <span class="tag tag-mut">Scheduled Jobs</span>
         </div>
       </div>
     </div>
 
-    <!-- bottom 3 -->
     <div class="grid md:grid-cols-3 gap-5">
-      <div class="glass rounded-2xl p-7 relative overflow-hidden tilt reveal reveal-delay-1" style="cursor:default;">
+      <div class="svc-card p-7 reveal reveal-delay-1">
         <div class="svc-ghost">03</div>
         <div class="svc-icon">🌐</div>
-        <h3 class="font-display text-xl font-bold mb-3" style="color:var(--paper);">Website Design</h3>
-        <p style="color:rgba(250,247,242,0.55);font-size:14px;line-height:1.75;margin-bottom:1.25rem;">Professional business websites built to convert — landing pages, service sites, and full e-commerce stores with Razorpay.</p>
+        <h3 class="font-display text-xl font-bold mb-3" style="color:#1C1814;">Website Design</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;margin-bottom:1.25rem;">Professional business websites built to convert — landing pages, service sites, and full e-commerce stores with Razorpay.</p>
         <div class="flex flex-wrap gap-2">
-          <span style="font-size:12px;background:rgba(212,162,76,0.12);color:var(--bl);padding:3px 10px;border-radius:9999px;font-weight:700;">Landing Pages</span>
-          <span style="font-size:12px;background:rgba(250,247,242,0.06);color:rgba(250,247,242,0.5);padding:3px 10px;border-radius:9999px;font-weight:600;">E-commerce</span>
+          <span class="tag tag-hl">Landing Pages</span>
+          <span class="tag tag-mut">E-commerce</span>
         </div>
       </div>
-      <div class="glass rounded-2xl p-7 relative overflow-hidden tilt reveal reveal-delay-2" style="cursor:default;">
+      <div class="svc-card p-7 reveal reveal-delay-2">
         <div class="svc-ghost">04</div>
         <div class="svc-icon">💻</div>
-        <h3 class="font-display text-xl font-bold mb-3" style="color:var(--paper);">Custom Software</h3>
-        <p style="color:rgba(250,247,242,0.55);font-size:14px;line-height:1.75;margin-bottom:1.25rem;">Desktop apps, browser tools, and internal platforms tailored to your exact workflow — inventory management, church media tools, anything.</p>
+        <h3 class="font-display text-xl font-bold mb-3" style="color:#1C1814;">Custom Software</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;margin-bottom:1.25rem;">Desktop apps, browser tools, and internal platforms tailored to your exact workflow — inventory management, church media tools, anything.</p>
         <div class="flex flex-wrap gap-2">
-          <span style="font-size:12px;background:rgba(212,162,76,0.12);color:var(--bl);padding:3px 10px;border-radius:9999px;font-weight:700;">Desktop Apps</span>
-          <span style="font-size:12px;background:rgba(250,247,242,0.06);color:rgba(250,247,242,0.5);padding:3px 10px;border-radius:9999px;font-weight:600;">Web Tools</span>
+          <span class="tag tag-hl">Desktop Apps</span>
+          <span class="tag tag-mut">Web Tools</span>
         </div>
       </div>
-      <div class="glass rounded-2xl p-7 relative overflow-hidden tilt reveal reveal-delay-3" style="cursor:default;">
+      <div class="svc-card p-7 reveal reveal-delay-3">
         <div class="svc-ghost">05</div>
         <div class="svc-icon">🎬</div>
-        <h3 class="font-display text-xl font-bold mb-3" style="color:var(--paper);">Content &amp; Media</h3>
-        <p style="color:rgba(250,247,242,0.55);font-size:14px;line-height:1.75;margin-bottom:1.25rem;">Sermon edits, YouTube shorts, event recaps, and social media creatives — fast turnaround, clean production.</p>
+        <h3 class="font-display text-xl font-bold mb-3" style="color:#1C1814;">Content &amp; Media</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;margin-bottom:1.25rem;">Sermon edits, YouTube shorts, event recaps, and social media creatives — fast turnaround, clean production.</p>
         <div class="flex flex-wrap gap-2">
-          <span style="font-size:12px;background:rgba(212,162,76,0.12);color:var(--bl);padding:3px 10px;border-radius:9999px;font-weight:700;">Video Editing</span>
-          <span style="font-size:12px;background:rgba(250,247,242,0.06);color:rgba(250,247,242,0.5);padding:3px 10px;border-radius:9999px;font-weight:600;">Shorts / Reels</span>
+          <span class="tag tag-hl">Video Editing</span>
+          <span class="tag tag-mut">Shorts / Reels</span>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══ OUR WORK ══ -->
+<!-- ══ OUR WORK (DARK) ══ -->
 <section id="work" style="padding:7rem 0;background:var(--ink);position:relative;overflow:hidden;">
-  <div style="position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(176,122,46,0.05),transparent 65%);bottom:-200px;left:-200px;filter:blur(60px);pointer-events:none;"></div>
+  <div style="position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(176,122,46,.06),transparent 65%);bottom:-200px;left:-200px;filter:blur(60px);pointer-events:none;"></div>
 
   <div class="max-w-6xl mx-auto px-6 md:px-10">
     <div class="mb-16 reveal">
-      <span class="badge mb-4">Portfolio</span>
+      <span class="badge badge-dark mb-4">Portfolio</span>
       <h2 class="font-display text-4xl md:text-5xl font-bold mb-4" style="color:var(--paper);">Products we've shipped</h2>
-      <p style="color:rgba(250,247,242,0.5);max-width:480px;line-height:1.75;">Real tools, real users — not mockups. Every product here runs in production.</p>
+      <p style="color:rgba(250,247,242,.5);max-width:480px;line-height:1.75;">Real tools, real users — not mockups. Every product here runs in production.</p>
     </div>
 
     <div class="grid md:grid-cols-3 gap-6">
-      <!-- NexRetail -->
-      <div class="glass rounded-2xl overflow-hidden tilt reveal reveal-delay-1">
+      <div class="glass rounded-2xl overflow-hidden reveal reveal-delay-1">
         <div class="carousel" data-carousel="nexretail">
           <img class="carousel-slide active" src="assets/work/nexretail-1.png" alt="NexRetail Command Center" data-lb-index="0" data-lb-group="nexretail"/>
           <img class="carousel-slide" src="assets/work/nexretail-2.png" alt="NexRetail Agent Hub" data-lb-index="1" data-lb-group="nexretail"/>
           <img class="carousel-slide" src="assets/work/nexretail-3.png" alt="NexRetail Customer Hub" data-lb-index="2" data-lb-group="nexretail"/>
           <button class="carousel-arrow prev">‹</button>
           <button class="carousel-arrow next">›</button>
-          <div class="carousel-dots">
-            <button class="active"></button><button></button><button></button>
-          </div>
+          <div class="carousel-dots"><button class="active"></button><button></button><button></button></div>
           <div class="carousel-expand">⤢</div>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
             <h3 class="font-display text-lg font-bold" style="color:var(--paper);">NexRetail Intelligence</h3>
-            <span class="badge" style="flex-shrink:0;">Dashboard</span>
+            <span class="badge badge-dark" style="flex-shrink:0;">Dashboard</span>
           </div>
-          <p style="color:rgba(250,247,242,0.5);font-size:13px;line-height:1.7;">Full-stack MIS platform for garment retail — live sales KPIs, agent performance tracking, customer segmentation, and multi-branch reporting.</p>
+          <p style="color:rgba(250,247,242,.5);font-size:13px;line-height:1.7;">Full-stack MIS platform for garment retail — live sales KPIs, agent performance tracking, customer segmentation, and multi-branch reporting.</p>
         </div>
       </div>
 
-      <!-- RhemaPresenter -->
-      <div class="glass rounded-2xl overflow-hidden tilt reveal reveal-delay-2">
+      <div class="glass rounded-2xl overflow-hidden reveal reveal-delay-2">
         <div class="carousel" data-carousel="rhema">
           <img class="carousel-slide active" src="assets/work/rhema-control.png" alt="RhemaPresenter Control" data-lb-index="0" data-lb-group="rhema"/>
           <img class="carousel-slide" src="assets/work/rhema-bible.png" alt="RhemaPresenter Bible" data-lb-index="1" data-lb-group="rhema"/>
@@ -394,22 +344,19 @@ details[open] summary .chev{ transform:rotate(180deg); }
           <img class="carousel-slide" src="assets/work/rhema-ndi.png" alt="RhemaPresenter NDI" data-lb-index="3" data-lb-group="rhema"/>
           <button class="carousel-arrow prev">‹</button>
           <button class="carousel-arrow next">›</button>
-          <div class="carousel-dots">
-            <button class="active"></button><button></button><button></button><button></button>
-          </div>
+          <div class="carousel-dots"><button class="active"></button><button></button><button></button><button></button></div>
           <div class="carousel-expand">⤢</div>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
             <h3 class="font-display text-lg font-bold" style="color:var(--paper);">RhemaPresenter</h3>
-            <span class="badge badge-w" style="flex-shrink:0;">Desktop App</span>
+            <span class="badge" style="flex-shrink:0;background:rgba(250,247,242,.08);color:var(--paper);border:1px solid rgba(250,247,242,.15);">Desktop App</span>
           </div>
-          <p style="color:rgba(250,247,242,0.5);font-size:13px;line-height:1.7;">Church presentation software built on Electron — live Bible display, slide design, NDI output for broadcast, and real-time operator controls.</p>
+          <p style="color:rgba(250,247,242,.5);font-size:13px;line-height:1.7;">Church presentation software built on Electron — live Bible display, slide design, NDI output for broadcast, and real-time operator controls.</p>
         </div>
       </div>
 
-      <!-- SermonCut -->
-      <div class="glass rounded-2xl overflow-hidden tilt reveal reveal-delay-3">
+      <div class="glass rounded-2xl overflow-hidden reveal reveal-delay-3">
         <div class="carousel" data-carousel="sermoncut">
           <img class="carousel-slide active" src="assets/work/sermoncut-hero.png" alt="SermonCut AI Hero" data-lb-index="0" data-lb-group="sermoncut"/>
           <img class="carousel-slide" src="assets/work/sermoncut-app.png" alt="SermonCut AI App" data-lb-index="1" data-lb-group="sermoncut"/>
@@ -417,93 +364,84 @@ details[open] summary .chev{ transform:rotate(180deg); }
           <img class="carousel-slide" src="assets/work/sermoncut-export.png" alt="SermonCut Export" data-lb-index="3" data-lb-group="sermoncut"/>
           <button class="carousel-arrow prev">‹</button>
           <button class="carousel-arrow next">›</button>
-          <div class="carousel-dots">
-            <button class="active"></button><button></button><button></button><button></button>
-          </div>
+          <div class="carousel-dots"><button class="active"></button><button></button><button></button><button></button></div>
           <div class="carousel-expand">⤢</div>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
             <h3 class="font-display text-lg font-bold" style="color:var(--paper);">SermonCut AI</h3>
-            <span class="badge" style="flex-shrink:0;">Media Tool</span>
+            <span class="badge badge-dark" style="flex-shrink:0;">Media Tool</span>
           </div>
-          <p style="color:rgba(250,247,242,0.5);font-size:13px;line-height:1.7;">Tamil sermon editing tool that auto-detects highlight clips, generates YouTube shorts, and exports captioned reels — cutting hours of editing to minutes.</p>
+          <p style="color:rgba(250,247,242,.5);font-size:13px;line-height:1.7;">Tamil sermon editing tool that auto-detects highlight clips, generates YouTube shorts, and exports captioned reels — cutting hours of editing to minutes.</p>
         </div>
+      </div>
+    </div>
+
+    <!-- trust stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center mt-20 pt-14" style="border-top:1px solid rgba(212,162,76,.12);">
+      <div class="reveal reveal-delay-1">
+        <div class="sv text-3xl md:text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="50">0</span>+</div>
+        <div style="font-size:12px;color:rgba(250,247,242,.35);margin-top:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">Reports Automated</div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="sv text-3xl md:text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="3">0</span></div>
+        <div style="font-size:12px;color:rgba(250,247,242,.35);margin-top:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">Live Products</div>
+      </div>
+      <div class="reveal reveal-delay-3">
+        <div class="sv text-3xl md:text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="100">0</span>%</div>
+        <div style="font-size:12px;color:rgba(250,247,242,.35);margin-top:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">India Focused</div>
+      </div>
+      <div class="reveal reveal-delay-4">
+        <div class="sv text-3xl md:text-4xl font-bold" style="color:var(--bl);">₹0</div>
+        <div style="font-size:12px;color:rgba(250,247,242,.35);margin-top:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">Audit Cost</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══ TRUST STATS ══ -->
-<div style="background:#050402;padding:5rem 0;position:relative;overflow:hidden;">
-  <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(176,122,46,0.05) 0%,transparent 50%,rgba(176,122,46,0.05) 100%);pointer-events:none;"></div>
-  <div class="max-w-6xl mx-auto px-6 md:px-10">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-      <div class="reveal reveal-delay-1">
-        <div class="sv text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="50">0</span>+</div>
-        <div style="font-size:12px;color:rgba(250,247,242,0.35);margin-top:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">Reports Automated</div>
-      </div>
-      <div class="reveal reveal-delay-2">
-        <div class="sv text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="3">0</span></div>
-        <div style="font-size:12px;color:rgba(250,247,242,0.35);margin-top:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">Live Products</div>
-      </div>
-      <div class="reveal reveal-delay-3">
-        <div class="sv text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="100">0</span>%</div>
-        <div style="font-size:12px;color:rgba(250,247,242,0.35);margin-top:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">India Focused</div>
-      </div>
-      <div class="reveal reveal-delay-4">
-        <div class="sv text-4xl font-bold" style="color:var(--bl);">₹0</div>
-        <div style="font-size:12px;color:rgba(250,247,242,0.35);margin-top:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">Audit Cost</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ PROCESS ══ -->
-<section id="process" style="padding:7rem 0;background:var(--ink2);">
+<!-- ══ PROCESS (WHITE) ══ -->
+<section id="process" style="padding:7rem 0;background:var(--paper);">
   <div class="max-w-6xl mx-auto px-6 md:px-10">
     <div class="mb-16 reveal">
-      <span class="badge mb-4">How It Works</span>
-      <h2 class="font-display text-4xl md:text-5xl font-bold mb-4" style="color:var(--paper);">From audit to live<br>in four steps</h2>
-      <p style="color:rgba(250,247,242,0.5);max-width:480px;line-height:1.75;">We start by understanding your business — not by pitching. If we can't add real value, we'll tell you.</p>
+      <span class="badge badge-light mb-4">How It Works</span>
+      <h2 class="font-display text-4xl md:text-5xl font-bold mb-4" style="color:#1C1814;">From audit to live<br>in four steps</h2>
+      <p style="color:var(--muted);max-width:480px;line-height:1.75;">We start by understanding your business — not by pitching. If we can't add real value, we'll tell you.</p>
     </div>
     <div class="grid md:grid-cols-4 gap-6">
       <div class="reveal reveal-delay-1">
         <div class="step-n mb-5">1</div>
-        <h3 class="font-display font-bold text-lg mb-2" style="color:var(--paper);">Free Audit Call</h3>
-        <p style="color:rgba(250,247,242,0.5);font-size:14px;line-height:1.75;">We map your workflow, find the biggest time-wasters, and tell you where automation or dashboards will have the highest ROI.</p>
+        <h3 class="font-display font-bold text-lg mb-2" style="color:#1C1814;">Free Audit Call</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;">We map your workflow, find the biggest time-wasters, and tell you where automation or dashboards will have the highest ROI.</p>
       </div>
       <div class="reveal reveal-delay-2">
         <div class="step-n mb-5">2</div>
-        <h3 class="font-display font-bold text-lg mb-2" style="color:var(--paper);">Scoped Proposal</h3>
-        <p style="color:rgba(250,247,242,0.5);font-size:14px;line-height:1.75;">A clear doc: what gets built, timeline, and an honest price. No hidden charges. ₹5k upfront split available on all projects.</p>
+        <h3 class="font-display font-bold text-lg mb-2" style="color:#1C1814;">Scoped Proposal</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;">A clear doc: what gets built, timeline, and an honest price. No hidden charges. ₹5k upfront split available on all projects.</p>
       </div>
       <div class="reveal reveal-delay-3">
         <div class="step-n mb-5">3</div>
-        <h3 class="font-display font-bold text-lg mb-2" style="color:var(--paper);">Build &amp; Review</h3>
-        <p style="color:rgba(250,247,242,0.5);font-size:14px;line-height:1.75;">We build in sprints with regular check-ins. You see progress, give feedback, and we adjust — no big reveal at the end.</p>
+        <h3 class="font-display font-bold text-lg mb-2" style="color:#1C1814;">Build &amp; Review</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;">We build in sprints with regular check-ins. You see progress, give feedback, and we adjust — no big reveal at the end.</p>
       </div>
       <div class="reveal reveal-delay-4">
         <div class="step-n mb-5">4</div>
-        <h3 class="font-display font-bold text-lg mb-2" style="color:var(--paper);">Launch &amp; Support</h3>
-        <p style="color:rgba(250,247,242,0.5);font-size:14px;line-height:1.75;">Go live with team training. Ongoing upkeep available — we stay in the loop as your business grows.</p>
+        <h3 class="font-display font-bold text-lg mb-2" style="color:#1C1814;">Launch &amp; Support</h3>
+        <p style="color:var(--muted);font-size:14px;line-height:1.75;">Go live with team training. Ongoing upkeep available — we stay in the loop as your business grows.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══ PRICING ══ -->
-<section id="pricing" style="padding:7rem 0;background:var(--ink);position:relative;overflow:hidden;">
-  <div style="position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(176,122,46,0.07),transparent 65%);top:50%;right:-200px;transform:translateY(-50%);filter:blur(80px);pointer-events:none;"></div>
+<!-- ══ PRICING (LIGHT SURFACE) ══ -->
+<section id="pricing" style="padding:7rem 0;background:var(--surface);">
   <div class="max-w-6xl mx-auto px-6 md:px-10">
     <div class="mb-12 reveal">
-      <span class="badge mb-4">Transparent Pricing</span>
-      <h2 class="font-display text-4xl md:text-5xl font-bold mb-4" style="color:var(--paper);">Honest prices, no surprises</h2>
-      <p style="color:rgba(250,247,242,0.5);max-width:480px;line-height:1.75;">All prices in INR. ₹5k upfront + balance on delivery. Monthly retainer optional — cancel anytime.</p>
+      <span class="badge badge-light mb-4">Transparent Pricing</span>
+      <h2 class="font-display text-4xl md:text-5xl font-bold mb-4" style="color:#1C1814;">Honest prices, no surprises</h2>
+      <p style="color:var(--muted);max-width:480px;line-height:1.75;">All prices in INR. ₹5k upfront + balance on delivery. Monthly retainer optional — cancel anytime.</p>
     </div>
 
-    <!-- tab bar -->
-    <div class="flex flex-wrap gap-2 mb-10 p-2 rounded-full w-fit reveal" style="background:rgba(250,247,242,0.04);">
+    <div class="flex flex-wrap gap-2 mb-10 p-2 rounded-full w-fit reveal" style="background:#FFFFFF;border:1px solid rgba(28,24,20,.08);">
       <button class="ptab-btn active" data-tab="dashboards">📊 Dashboards</button>
       <button class="ptab-btn" data-tab="automation">⚡ Automation</button>
       <button class="ptab-btn" data-tab="websites">🌐 Websites</button>
@@ -514,11 +452,11 @@ details[open] summary .chev{ transform:rotate(180deg); }
     <!-- Dashboards -->
     <div class="ptab-pane active" id="tab-dashboards">
       <div class="grid md:grid-cols-2 gap-6 mb-6">
-        <div class="pc-p reveal reveal-delay-1">
-          <span class="badge mb-4">Starter</span>
-          <div class="flex items-end gap-2 mb-1"><span class="font-display text-4xl font-bold" style="color:var(--paper);">₹10,000</span><span style="color:rgba(250,247,242,0.4);font-size:14px;margin-bottom:4px;">one-time</span></div>
-          <div style="font-size:13px;color:rgba(250,247,242,0.4);margin-bottom:6px;">+ ₹2,000 /month upkeep (optional)</div>
-          <div style="font-size:12px;color:var(--bl);font-weight:700;margin-bottom:24px;">₹5,000 upfront · balance on delivery</div>
+        <div class="pc-plain reveal reveal-delay-1">
+          <span class="badge badge-light mb-4">Starter</span>
+          <div class="flex items-end gap-2 mb-1"><span class="font-display text-4xl font-bold" style="color:#1C1814;">₹10,000</span><span style="color:var(--muted);font-size:14px;margin-bottom:4px;">one-time</span></div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:6px;">+ ₹2,000 /month upkeep (optional)</div>
+          <div style="font-size:12px;color:var(--brass);font-weight:700;margin-bottom:24px;">₹5,000 upfront · balance on delivery</div>
           <div class="mb-8">
             <div class="fr"><span class="chk">✓</span><span>Up to 5 KPI widgets</span></div>
             <div class="fr"><span class="chk">✓</span><span>Single data source (Excel / GST)</span></div>
@@ -528,10 +466,10 @@ details[open] summary .chev{ transform:rotate(180deg); }
           </div>
           <a href="#contact" class="btn-g block text-center py-3 rounded-full font-semibold text-sm">Get Started</a>
         </div>
-        <div class="pc-f reveal reveal-delay-2">
-          <div class="flex justify-between items-start mb-4"><span class="badge">Full Platform</span><span style="font-size:12px;color:var(--bl);font-weight:700;">Most Popular</span></div>
-          <div class="flex items-end gap-2 mb-1"><span class="font-display text-4xl font-bold" style="color:var(--paper);">₹25,000+</span><span style="color:rgba(250,247,242,0.4);font-size:14px;margin-bottom:4px;">one-time</span></div>
-          <div style="font-size:13px;color:rgba(250,247,242,0.4);margin-bottom:6px;">+ ₹3,000–₹15,000 /month upkeep</div>
+        <div class="pc-feat reveal reveal-delay-2">
+          <div class="flex justify-between items-start mb-4"><span class="badge badge-dark">Full Platform</span><span style="font-size:12px;color:var(--bl);font-weight:700;">Most Popular</span></div>
+          <div class="flex items-end gap-2 mb-1"><span class="font-display text-4xl font-bold" style="color:var(--paper);">₹25,000+</span><span style="color:rgba(250,247,242,.5);font-size:14px;margin-bottom:4px;">one-time</span></div>
+          <div style="font-size:13px;color:rgba(250,247,242,.5);margin-bottom:6px;">+ ₹3,000–₹15,000 /month upkeep</div>
           <div style="font-size:12px;color:var(--bl);font-weight:700;margin-bottom:24px;">₹5,000 upfront · balance on delivery</div>
           <div class="mb-8">
             <div class="fr"><span class="chk">✓</span><span>Unlimited KPI widgets &amp; charts</span></div>
@@ -544,19 +482,19 @@ details[open] summary .chev{ transform:rotate(180deg); }
           <a href="#contact" class="btn-g block text-center py-3 rounded-full font-semibold text-sm">Book a Free Audit</a>
         </div>
       </div>
-      <div class="glass rounded-2xl p-6 reveal" style="font-size:14px;color:rgba(250,247,242,0.55);line-height:1.75;">
-        <strong style="color:var(--paper);">ROI snapshot:</strong> A retail business with 5 staff spends ~8 hrs/week on manual MIS. At ₹200/hr that's ₹6,400/month wasted. A ₹25k dashboard pays for itself in 4 months — with better data on top.
+      <div class="pc-plain reveal" style="font-size:14px;color:var(--muted);line-height:1.75;padding:24px;">
+        <strong style="color:#1C1814;">ROI snapshot:</strong> A retail business with 5 staff spends ~8 hrs/week on manual MIS. At ₹200/hr that's ₹6,400/month wasted. A ₹25k dashboard pays for itself in 4 months — with better data on top.
       </div>
     </div>
 
     <!-- Automation -->
     <div class="ptab-pane" id="tab-automation">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="pc-p reveal reveal-delay-1">
-          <span class="badge mb-4">Single Automation</span>
-          <div class="flex items-end gap-2 mb-1"><span class="font-display text-4xl font-bold" style="color:var(--paper);">₹20,000+</span><span style="color:rgba(250,247,242,0.4);font-size:14px;margin-bottom:4px;">per automation</span></div>
-          <div style="font-size:13px;color:rgba(250,247,242,0.4);margin-bottom:6px;">+ ₹5,000 /month maintenance</div>
-          <div style="font-size:12px;color:var(--bl);font-weight:700;margin-bottom:24px;">₹5,000 upfront · balance on delivery</div>
+        <div class="pc-plain reveal reveal-delay-1">
+          <span class="badge badge-light mb-4">Single Automation</span>
+          <div class="flex items-end gap-2 mb-1"><span class="font-display text-4xl font-bold" style="color:#1C1814;">₹20,000+</span><span style="color:var(--muted);font-size:14px;margin-bottom:4px;">per automation</span></div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:6px;">+ ₹5,000 /month maintenance</div>
+          <div style="font-size:12px;color:var(--brass);font-weight:700;margin-bottom:24px;">₹5,000 upfront · balance on delivery</div>
           <div class="mb-8">
             <div class="fr"><span class="chk">✓</span><span>One workflow end-to-end</span></div>
             <div class="fr"><span class="chk">✓</span><span>e.g. daily report → WhatsApp group</span></div>
@@ -565,10 +503,10 @@ details[open] summary .chev{ transform:rotate(180deg); }
           </div>
           <a href="#contact" class="btn-g block text-center py-3 rounded-full font-semibold text-sm">Get Started</a>
         </div>
-        <div class="pc-f reveal reveal-delay-2">
-          <span class="badge mb-4">Automation Suite</span>
+        <div class="pc-feat reveal reveal-delay-2">
+          <span class="badge badge-dark mb-4">Automation Suite</span>
           <div class="font-display text-4xl font-bold mb-1" style="color:var(--paper);">Custom</div>
-          <div style="font-size:13px;color:rgba(250,247,242,0.4);margin-bottom:6px;">₹5,000–₹25,000 /month retainer</div>
+          <div style="font-size:13px;color:rgba(250,247,242,.5);margin-bottom:6px;">₹5,000–₹25,000 /month retainer</div>
           <div style="font-size:12px;color:var(--bl);font-weight:700;margin-bottom:24px;">Ideal for 3+ workflows</div>
           <div class="mb-8">
             <div class="fr"><span class="chk">✓</span><span>Multiple automations bundled</span></div>
@@ -585,10 +523,10 @@ details[open] summary .chev{ transform:rotate(180deg); }
     <!-- Websites -->
     <div class="ptab-pane" id="tab-websites">
       <div class="grid md:grid-cols-3 gap-5 mb-6">
-        <div class="pc-p reveal reveal-delay-1">
-          <span class="badge mb-4">Landing Page</span>
-          <div class="flex items-end gap-2 mb-1"><span class="font-display text-3xl font-bold" style="color:var(--paper);">₹4,000</span><span style="color:rgba(250,247,242,0.4);font-size:14px;margin-bottom:4px;">– ₹7,000</span></div>
-          <div style="font-size:12px;color:var(--bl);font-weight:700;margin-bottom:20px;">Domain/hosting extra</div>
+        <div class="pc-plain reveal reveal-delay-1">
+          <span class="badge badge-light mb-4">Landing Page</span>
+          <div class="flex items-end gap-2 mb-1"><span class="font-display text-3xl font-bold" style="color:#1C1814;">₹4,000</span><span style="color:var(--muted);font-size:14px;margin-bottom:4px;">– ₹7,000</span></div>
+          <div style="font-size:12px;color:var(--brass);font-weight:700;margin-bottom:20px;">Domain/hosting extra</div>
           <div class="mb-6">
             <div class="fr"><span class="chk">✓</span><span>1-page design</span></div>
             <div class="fr"><span class="chk">✓</span><span>Mobile responsive</span></div>
@@ -597,9 +535,9 @@ details[open] summary .chev{ transform:rotate(180deg); }
           </div>
           <a href="#contact" class="btn-g block text-center py-3 rounded-full font-semibold text-sm">Enquire</a>
         </div>
-        <div class="pc-f reveal reveal-delay-2">
-          <span class="badge mb-4">Business Site</span>
-          <div class="flex items-end gap-2 mb-1"><span class="font-display text-3xl font-bold" style="color:var(--paper);">₹8,000</span><span style="color:rgba(250,247,242,0.4);font-size:14px;margin-bottom:4px;">– ₹18,000</span></div>
+        <div class="pc-feat reveal reveal-delay-2">
+          <span class="badge badge-dark mb-4">Business Site</span>
+          <div class="flex items-end gap-2 mb-1"><span class="font-display text-3xl font-bold" style="color:var(--paper);">₹8,000</span><span style="color:rgba(250,247,242,.5);font-size:14px;margin-bottom:4px;">– ₹18,000</span></div>
           <div style="font-size:12px;color:var(--bl);font-weight:700;margin-bottom:20px;">Domain/hosting extra</div>
           <div class="mb-6">
             <div class="fr"><span class="chk">✓</span><span>Multi-page site</span></div>
@@ -610,10 +548,10 @@ details[open] summary .chev{ transform:rotate(180deg); }
           </div>
           <a href="#contact" class="btn-g block text-center py-3 rounded-full font-semibold text-sm">Enquire</a>
         </div>
-        <div class="pc-p reveal reveal-delay-3">
-          <span class="badge badge-dk mb-4">E-commerce</span>
-          <div class="flex items-end gap-2 mb-1"><span class="font-display text-3xl font-bold" style="color:var(--paper);">₹20,000</span><span style="color:rgba(250,247,242,0.4);font-size:14px;margin-bottom:4px;">– ₹45,000</span></div>
-          <div style="font-size:12px;color:var(--bl);font-weight:700;margin-bottom:20px;">Domain/hosting extra</div>
+        <div class="pc-plain reveal reveal-delay-3">
+          <span class="badge badge-ink mb-4">E-commerce</span>
+          <div class="flex items-end gap-2 mb-1"><span class="font-display text-3xl font-bold" style="color:#1C1814;">₹20,000</span><span style="color:var(--muted);font-size:14px;margin-bottom:4px;">– ₹45,000</span></div>
+          <div style="font-size:12px;color:var(--brass);font-weight:700;margin-bottom:20px;">Domain/hosting extra</div>
           <div class="mb-6">
             <div class="fr"><span class="chk">✓</span><span>WooCommerce or Shopify</span></div>
             <div class="fr"><span class="chk">✓</span><span>Up to 100 products</span></div>
@@ -624,24 +562,24 @@ details[open] summary .chev{ transform:rotate(180deg); }
           <a href="#contact" class="btn-g block text-center py-3 rounded-full font-semibold text-sm">Enquire</a>
         </div>
       </div>
-      <div class="glass rounded-2xl p-6 reveal">
-        <div style="font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(250,247,242,0.4);margin-bottom:12px;">Add-ons</div>
-        <div class="addon-row"><span>Domain (1 year)</span><span style="color:var(--bl);font-weight:700;">₹800 – ₹1,500</span></div>
-        <div class="addon-row"><span>Shared hosting (1 year)</span><span style="color:var(--bl);font-weight:700;">₹2,000 – ₹5,000</span></div>
-        <div class="addon-row"><span>SSL certificate</span><span style="color:var(--bl);font-weight:700;">Free</span></div>
-        <div class="addon-row"><span>WhatsApp Business API</span><span style="color:var(--bl);font-weight:700;">₹2,000 + usage</span></div>
-        <div class="addon-row"><span>Monthly maintenance</span><span style="color:var(--bl);font-weight:700;">₹2,000 – ₹6,000</span></div>
+      <div class="pc-plain reveal">
+        <div style="font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Add-ons</div>
+        <div class="addon-row"><span>Domain (1 year)</span><span style="color:var(--brass);font-weight:700;">₹800 – ₹1,500</span></div>
+        <div class="addon-row"><span>Shared hosting (1 year)</span><span style="color:var(--brass);font-weight:700;">₹2,000 – ₹5,000</span></div>
+        <div class="addon-row"><span>SSL certificate</span><span style="color:var(--brass);font-weight:700;">Free</span></div>
+        <div class="addon-row"><span>WhatsApp Business API</span><span style="color:var(--brass);font-weight:700;">₹2,000 + usage</span></div>
+        <div class="addon-row"><span>Monthly maintenance</span><span style="color:var(--brass);font-weight:700;">₹2,000 – ₹6,000</span></div>
       </div>
     </div>
 
     <!-- Software -->
     <div class="ptab-pane" id="tab-software">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="pc-p reveal reveal-delay-1">
-          <span class="badge mb-4">Simple Tool</span>
-          <div class="flex items-end gap-2 mb-1"><span class="font-display text-4xl font-bold" style="color:var(--paper);">₹15,000</span><span style="color:rgba(250,247,242,0.4);font-size:14px;margin-bottom:4px;">– ₹35,000</span></div>
-          <div style="font-size:13px;color:rgba(250,247,242,0.4);margin-bottom:6px;">+ ₹3,000–₹8,000 /month support</div>
-          <div style="font-size:12px;color:var(--bl);font-weight:700;margin-bottom:24px;">₹5,000 upfront · balance on delivery</div>
+        <div class="pc-plain reveal reveal-delay-1">
+          <span class="badge badge-light mb-4">Simple Tool</span>
+          <div class="flex items-end gap-2 mb-1"><span class="font-display text-4xl font-bold" style="color:#1C1814;">₹15,000</span><span style="color:var(--muted);font-size:14px;margin-bottom:4px;">– ₹35,000</span></div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:6px;">+ ₹3,000–₹8,000 /month support</div>
+          <div style="font-size:12px;color:var(--brass);font-weight:700;margin-bottom:24px;">₹5,000 upfront · balance on delivery</div>
           <div class="mb-8">
             <div class="fr"><span class="chk">✓</span><span>Single-purpose desktop or web tool</span></div>
             <div class="fr"><span class="chk">✓</span><span>Admin panel for data management</span></div>
@@ -650,10 +588,10 @@ details[open] summary .chev{ transform:rotate(180deg); }
           </div>
           <a href="#contact" class="btn-g block text-center py-3 rounded-full font-semibold text-sm">Get a Quote</a>
         </div>
-        <div class="pc-f reveal reveal-delay-2">
-          <span class="badge mb-4">Full Platform</span>
-          <div class="flex items-end gap-2 mb-1"><span class="font-display text-4xl font-bold" style="color:var(--paper);">₹35,000</span><span style="color:rgba(250,247,242,0.4);font-size:14px;margin-bottom:4px;">– ₹75,000+</span></div>
-          <div style="font-size:13px;color:rgba(250,247,242,0.4);margin-bottom:6px;">+ ₹5,000–₹12,000 /month support</div>
+        <div class="pc-feat reveal reveal-delay-2">
+          <span class="badge badge-dark mb-4">Full Platform</span>
+          <div class="flex items-end gap-2 mb-1"><span class="font-display text-4xl font-bold" style="color:var(--paper);">₹35,000</span><span style="color:rgba(250,247,242,.5);font-size:14px;margin-bottom:4px;">– ₹75,000+</span></div>
+          <div style="font-size:13px;color:rgba(250,247,242,.5);margin-bottom:6px;">+ ₹5,000–₹12,000 /month support</div>
           <div style="font-size:12px;color:var(--bl);font-weight:700;margin-bottom:24px;">₹5,000 upfront · balance on delivery</div>
           <div class="mb-8">
             <div class="fr"><span class="chk">✓</span><span>Multi-module application</span></div>
@@ -670,20 +608,20 @@ details[open] summary .chev{ transform:rotate(180deg); }
     <!-- Media -->
     <div class="ptab-pane" id="tab-media">
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="pc-p reveal reveal-delay-1">
-          <span class="badge mb-4">Per Piece</span>
+        <div class="pc-plain reveal reveal-delay-1">
+          <span class="badge badge-light mb-4">Per Piece</span>
           <div class="mb-8">
-            <div class="addon-row"><span style="font-weight:600;color:var(--paper);">Sermon edit (full)</span><span style="color:var(--bl);font-weight:700;">₹800 – ₹1,500</span></div>
-            <div class="addon-row"><span style="font-weight:600;color:var(--paper);">YouTube short / reel</span><span style="color:var(--bl);font-weight:700;">₹300 – ₹600</span></div>
-            <div class="addon-row"><span style="font-weight:600;color:var(--paper);">Event recap video</span><span style="color:var(--bl);font-weight:700;">₹1,500 – ₹3,000</span></div>
-            <div class="addon-row"><span style="font-weight:600;color:var(--paper);">Social poster (per post)</span><span style="color:var(--bl);font-weight:700;">₹200 – ₹500</span></div>
-            <div class="addon-row"><span style="font-weight:600;color:var(--paper);">Lyric / worship visual</span><span style="color:var(--bl);font-weight:700;">₹1,000 – ₹2,500</span></div>
+            <div class="addon-row"><span style="font-weight:600;color:#1C1814;">Sermon edit (full)</span><span style="color:var(--brass);font-weight:700;">₹800 – ₹1,500</span></div>
+            <div class="addon-row"><span style="font-weight:600;color:#1C1814;">YouTube short / reel</span><span style="color:var(--brass);font-weight:700;">₹300 – ₹600</span></div>
+            <div class="addon-row"><span style="font-weight:600;color:#1C1814;">Event recap video</span><span style="color:var(--brass);font-weight:700;">₹1,500 – ₹3,000</span></div>
+            <div class="addon-row"><span style="font-weight:600;color:#1C1814;">Social poster (per post)</span><span style="color:var(--brass);font-weight:700;">₹200 – ₹500</span></div>
+            <div class="addon-row"><span style="font-weight:600;color:#1C1814;">Lyric / worship visual</span><span style="color:var(--brass);font-weight:700;">₹1,000 – ₹2,500</span></div>
           </div>
           <a href="#contact" class="btn-g block text-center py-3 rounded-full font-semibold text-sm">Enquire</a>
         </div>
-        <div class="pc-f reveal reveal-delay-2">
-          <span class="badge mb-4">Monthly Retainer</span>
-          <div class="flex items-end gap-2 mb-1"><span class="font-display text-4xl font-bold" style="color:var(--paper);">₹5,000</span><span style="color:rgba(250,247,242,0.4);font-size:14px;margin-bottom:4px;">– ₹15,000/mo</span></div>
+        <div class="pc-feat reveal reveal-delay-2">
+          <span class="badge badge-dark mb-4">Monthly Retainer</span>
+          <div class="flex items-end gap-2 mb-1"><span class="font-display text-4xl font-bold" style="color:var(--paper);">₹5,000</span><span style="color:rgba(250,247,242,.5);font-size:14px;margin-bottom:4px;">– ₹15,000/mo</span></div>
           <div style="font-size:12px;color:var(--bl);font-weight:700;margin-bottom:24px;">Best for churches &amp; weekly content</div>
           <div class="mb-8">
             <div class="fr"><span class="chk">✓</span><span>Weekly sermon edits</span></div>
@@ -699,206 +637,188 @@ details[open] summary .chev{ transform:rotate(180deg); }
   </div>
 </section>
 
-<!-- ══ FAQ ══ -->
-<section style="padding:7rem 0;background:var(--ink2);">
+<!-- ══ FAQ (WHITE) ══ -->
+<section style="padding:7rem 0;background:var(--paper);">
   <div class="max-w-3xl mx-auto px-6 md:px-10">
     <div class="mb-12 reveal">
-      <span class="badge mb-4">FAQ</span>
-      <h2 class="font-display text-4xl md:text-5xl font-bold" style="color:var(--paper);">Common questions</h2>
+      <span class="badge badge-light mb-4">FAQ</span>
+      <h2 class="font-display text-4xl md:text-5xl font-bold" style="color:#1C1814;">Common questions</h2>
     </div>
     <div class="space-y-3">
-      <details class="glass rounded-2xl p-6 reveal">
-        <summary class="flex items-center justify-between gap-4 font-semibold text-base" style="color:var(--paper);">
+      <details class="faq-card p-6 reveal">
+        <summary class="flex items-center justify-between gap-4 font-semibold text-base" style="color:#1C1814;">
           Do I need technical knowledge to use what you build?
-          <span class="chev" style="color:var(--bl);font-size:18px;flex-shrink:0;">▾</span>
+          <span class="chev" style="color:var(--brass);font-size:18px;flex-shrink:0;">▾</span>
         </summary>
-        <p style="margin-top:16px;color:rgba(250,247,242,0.55);font-size:14px;line-height:1.75;">No. Everything is designed for non-technical owners and managers. We provide training on handover and a user guide. If anything feels confusing, we fix it.</p>
+        <p style="margin-top:16px;color:var(--muted);font-size:14px;line-height:1.75;">No. Everything is designed for non-technical owners and managers. We provide training on handover and a user guide. If anything feels confusing, we fix it.</p>
       </details>
-      <details class="glass rounded-2xl p-6 reveal">
-        <summary class="flex items-center justify-between gap-4 font-semibold text-base" style="color:var(--paper);">
+      <details class="faq-card p-6 reveal">
+        <summary class="flex items-center justify-between gap-4 font-semibold text-base" style="color:#1C1814;">
           How long does a dashboard or automation take?
-          <span class="chev" style="color:var(--bl);font-size:18px;flex-shrink:0;">▾</span>
+          <span class="chev" style="color:var(--brass);font-size:18px;flex-shrink:0;">▾</span>
         </summary>
-        <p style="margin-top:16px;color:rgba(250,247,242,0.55);font-size:14px;line-height:1.75;">Starter dashboard: 5–10 working days. Full platform: 3–6 weeks. Automations: 1–3 weeks per workflow. Depends on data complexity and how quickly we get sample data from you.</p>
+        <p style="margin-top:16px;color:var(--muted);font-size:14px;line-height:1.75;">Starter dashboard: 5–10 working days. Full platform: 3–6 weeks. Automations: 1–3 weeks per workflow. Depends on data complexity and how quickly we get sample data from you.</p>
       </details>
-      <details class="glass rounded-2xl p-6 reveal">
-        <summary class="flex items-center justify-between gap-4 font-semibold text-base" style="color:var(--paper);">
+      <details class="faq-card p-6 reveal">
+        <summary class="flex items-center justify-between gap-4 font-semibold text-base" style="color:#1C1814;">
           My data is in old Excel files or Tally. Can you work with that?
-          <span class="chev" style="color:var(--bl);font-size:18px;flex-shrink:0;">▾</span>
+          <span class="chev" style="color:var(--brass);font-size:18px;flex-shrink:0;">▾</span>
         </summary>
-        <p style="margin-top:16px;color:rgba(250,247,242,0.55);font-size:14px;line-height:1.75;">That's our speciality. We've worked with Tally, Busy, custom ERPs, and dozens of Excel formats. We clean and connect your data into a single live view.</p>
+        <p style="margin-top:16px;color:var(--muted);font-size:14px;line-height:1.75;">That's our speciality. We've worked with Tally, Busy, custom ERPs, and dozens of Excel formats. We clean and connect your data into a single live view.</p>
       </details>
-      <details class="glass rounded-2xl p-6 reveal">
-        <summary class="flex items-center justify-between gap-4 font-semibold text-base" style="color:var(--paper);">
+      <details class="faq-card p-6 reveal">
+        <summary class="flex items-center justify-between gap-4 font-semibold text-base" style="color:#1C1814;">
           For e-commerce, do I need AWS or a server?
-          <span class="chev" style="color:var(--bl);font-size:18px;flex-shrink:0;">▾</span>
+          <span class="chev" style="color:var(--brass);font-size:18px;flex-shrink:0;">▾</span>
         </summary>
-        <p style="margin-top:16px;color:rgba(250,247,242,0.55);font-size:14px;line-height:1.75;">No. We use WooCommerce or Shopify on shared hosting (₹2,000–₹5,000/year). AWS is only needed at high traffic — we'll recommend it only if you reach that stage. Razorpay handles payments at 2% per transaction.</p>
+        <p style="margin-top:16px;color:var(--muted);font-size:14px;line-height:1.75;">No. We use WooCommerce or Shopify on shared hosting (₹2,000–₹5,000/year). AWS is only needed at high traffic — we'll recommend it only if you reach that stage. Razorpay handles payments at 2% per transaction.</p>
       </details>
-      <details class="glass rounded-2xl p-6 reveal">
-        <summary class="flex items-center justify-between gap-4 font-semibold text-base" style="color:var(--paper);">
+      <details class="faq-card p-6 reveal">
+        <summary class="flex items-center justify-between gap-4 font-semibold text-base" style="color:#1C1814;">
           Can I cancel the monthly retainer?
-          <span class="chev" style="color:var(--bl);font-size:18px;flex-shrink:0;">▾</span>
+          <span class="chev" style="color:var(--brass);font-size:18px;flex-shrink:0;">▾</span>
         </summary>
-        <p style="margin-top:16px;color:rgba(250,247,242,0.55);font-size:14px;line-height:1.75;">Yes — monthly, no lock-in. 15 days' notice. The one-time build fee is separate, so you own what was built even if you stop the monthly plan.</p>
+        <p style="margin-top:16px;color:var(--muted);font-size:14px;line-height:1.75;">Yes — monthly, no lock-in. 15 days' notice. The one-time build fee is separate, so you own what was built even if you stop the monthly plan.</p>
       </details>
     </div>
   </div>
 </section>
 
-<!-- ══ CTA ══ -->
-<section id="contact" style="padding:7rem 0;background:#050402;position:relative;overflow:hidden;">
-  <div style="position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(176,122,46,0.12),transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);filter:blur(80px);pointer-events:none;"></div>
+<!-- ══ CTA (DARK · TERRAIN) ══ -->
+<section id="contact" style="padding:8rem 0;background:#050402;position:relative;overflow:hidden;">
+  <canvas class="fx" data-fx="terrain"></canvas>
   <div class="max-w-4xl mx-auto px-6 md:px-10 text-center relative z-10">
-    <span class="badge mb-6">Free · No Commitment</span>
+    <span class="badge badge-dark mb-6">Free · No Commitment</span>
     <h2 class="font-display font-bold mb-6 reveal" style="font-size:clamp(2rem,5vw,4rem);color:var(--paper);line-height:1.1;">
       Ready to stop guessing<br>and start knowing?
     </h2>
-    <p style="color:rgba(250,247,242,0.5);font-size:1.1rem;max-width:480px;margin:0 auto 2.5rem;line-height:1.75;" class="reveal">
+    <p style="color:rgba(250,247,242,.55);font-size:1.1rem;max-width:480px;margin:0 auto 2.5rem;line-height:1.75;" class="reveal">
       Book a free 30-minute audit. We'll map your workflow, find the biggest bottleneck, and tell you honestly what it would take to fix it.
     </p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center reveal">
       <a href="mailto:balakishore21111998@gmail.com?subject=Free%20Audit%20Request&body=Hi%2C%20I%27d%20like%20to%20book%20a%20free%20audit%20call." class="btn-g inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-base">
         📧 Send an Email
       </a>
-      <a href="https://wa.me/919XXXXXXXXX?text=Hi%2C%20I%27d%20like%20a%20free%20audit%20from%20JKR%20Solutions." class="btn-o inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-base">
+      <a href="https://wa.me/919XXXXXXXXX?text=Hi%2C%20I%27d%20like%20a%20free%20audit%20from%20JKR%20Solutions." class="btn-dark-o inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-base">
         💬 WhatsApp Us
       </a>
     </div>
-    <p style="color:rgba(250,247,242,0.2);font-size:13px;margin-top:2rem;">Chennai, India · Response within 24 hours</p>
+    <p style="color:rgba(250,247,242,.25);font-size:13px;margin-top:2rem;">Chennai, India · Response within 24 hours</p>
   </div>
 </section>
 
-<!-- ══ FOOTER ══ -->
+<!-- ══ FOOTER (DARK) ══ -->
 <footer style="background:#030201;padding:5rem 0;">
   <div class="max-w-6xl mx-auto px-6 md:px-10">
     <div class="grid md:grid-cols-4 gap-10 mb-12">
       <div class="md:col-span-1">
         <div class="font-display text-lg font-semibold mb-3" style="color:var(--paper);">JKR Solutions</div>
-        <p style="color:rgba(250,247,242,0.3);font-size:13px;line-height:1.75;">Dashboards, automation, software, and media tools for growing Indian businesses.</p>
+        <p style="color:rgba(250,247,242,.3);font-size:13px;line-height:1.75;">Dashboards, automation, software, and media tools for growing Indian businesses.</p>
       </div>
       <div>
-        <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,247,242,0.25);margin-bottom:16px;">Services</div>
+        <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,247,242,.25);margin-bottom:16px;">Services</div>
         <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;">
-          <li><a href="#services" style="color:rgba(250,247,242,0.45);font-size:14px;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#D4A24C'" onmouseout="this.style.color='rgba(250,247,242,0.45)'">BI Dashboards</a></li>
-          <li><a href="#services" style="color:rgba(250,247,242,0.45);font-size:14px;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#D4A24C'" onmouseout="this.style.color='rgba(250,247,242,0.45)'">Workflow Automation</a></li>
-          <li><a href="#services" style="color:rgba(250,247,242,0.45);font-size:14px;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#D4A24C'" onmouseout="this.style.color='rgba(250,247,242,0.45)'">Website Design</a></li>
-          <li><a href="#services" style="color:rgba(250,247,242,0.45);font-size:14px;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#D4A24C'" onmouseout="this.style.color='rgba(250,247,242,0.45)'">Custom Software</a></li>
-          <li><a href="#services" style="color:rgba(250,247,242,0.45);font-size:14px;text-decoration:none;transition:color .2s;" onmouseover="this.style.color='#D4A24C'" onmouseout="this.style.color='rgba(250,247,242,0.45)'">Content &amp; Media</a></li>
+          <li><a href="#services" class="foot-link" style="color:rgba(250,247,242,.45);font-size:14px;text-decoration:none;">BI Dashboards</a></li>
+          <li><a href="#services" class="foot-link" style="color:rgba(250,247,242,.45);font-size:14px;text-decoration:none;">Workflow Automation</a></li>
+          <li><a href="#services" class="foot-link" style="color:rgba(250,247,242,.45);font-size:14px;text-decoration:none;">Website Design</a></li>
+          <li><a href="#services" class="foot-link" style="color:rgba(250,247,242,.45);font-size:14px;text-decoration:none;">Custom Software</a></li>
+          <li><a href="#services" class="foot-link" style="color:rgba(250,247,242,.45);font-size:14px;text-decoration:none;">Content &amp; Media</a></li>
         </ul>
       </div>
       <div>
-        <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,247,242,0.25);margin-bottom:16px;">Products</div>
+        <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,247,242,.25);margin-bottom:16px;">Products</div>
         <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;">
-          <li><a href="#work" style="color:rgba(250,247,242,0.45);font-size:14px;text-decoration:none;" onmouseover="this.style.color='#D4A24C'" onmouseout="this.style.color='rgba(250,247,242,0.45)'">NexRetail Intelligence</a></li>
-          <li><a href="#work" style="color:rgba(250,247,242,0.45);font-size:14px;text-decoration:none;" onmouseover="this.style.color='#D4A24C'" onmouseout="this.style.color='rgba(250,247,242,0.45)'">RhemaPresenter</a></li>
-          <li><a href="#work" style="color:rgba(250,247,242,0.45);font-size:14px;text-decoration:none;" onmouseover="this.style.color='#D4A24C'" onmouseout="this.style.color='rgba(250,247,242,0.45)'">SermonCut AI</a></li>
+          <li><a href="#work" class="foot-link" style="color:rgba(250,247,242,.45);font-size:14px;text-decoration:none;">NexRetail Intelligence</a></li>
+          <li><a href="#work" class="foot-link" style="color:rgba(250,247,242,.45);font-size:14px;text-decoration:none;">RhemaPresenter</a></li>
+          <li><a href="#work" class="foot-link" style="color:rgba(250,247,242,.45);font-size:14px;text-decoration:none;">SermonCut AI</a></li>
         </ul>
       </div>
       <div>
-        <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,247,242,0.25);margin-bottom:16px;">Contact</div>
+        <div style="font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(250,247,242,.25);margin-bottom:16px;">Contact</div>
         <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;">
-          <li><a href="mailto:balakishore21111998@gmail.com" style="color:rgba(250,247,242,0.45);font-size:13px;text-decoration:none;word-break:break-all;" onmouseover="this.style.color='#D4A24C'" onmouseout="this.style.color='rgba(250,247,242,0.45)'">balakishore21111998@gmail.com</a></li>
-          <li><span style="color:rgba(250,247,242,0.4);font-size:14px;">Chennai, Tamil Nadu</span></li>
-          <li><a href="#contact" style="color:rgba(250,247,242,0.45);font-size:14px;text-decoration:none;" onmouseover="this.style.color='#D4A24C'" onmouseout="this.style.color='rgba(250,247,242,0.45)'">Book a Free Audit →</a></li>
+          <li><a href="mailto:balakishore21111998@gmail.com" class="foot-link" style="color:rgba(250,247,242,.45);font-size:13px;text-decoration:none;word-break:break-all;">balakishore21111998@gmail.com</a></li>
+          <li><span style="color:rgba(250,247,242,.4);font-size:14px;">Chennai, Tamil Nadu</span></li>
+          <li><a href="#contact" class="foot-link" style="color:rgba(250,247,242,.45);font-size:14px;text-decoration:none;">Book a Free Audit →</a></li>
         </ul>
       </div>
     </div>
-    <div style="border-top:1px solid rgba(212,162,76,0.08);padding-top:32px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;">
-      <span style="color:rgba(250,247,242,0.2);font-size:12px;">© 2026 JKR Solutions. All rights reserved.</span>
-      <span style="color:rgba(250,247,242,0.2);font-size:12px;">Part of the JKR group · Chennai · India</span>
+    <div style="border-top:1px solid rgba(212,162,76,.08);padding-top:32px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;">
+      <span style="color:rgba(250,247,242,.2);font-size:12px;">© 2026 JKR Solutions. All rights reserved.</span>
+      <span style="color:rgba(250,247,242,.2);font-size:12px;">Part of the JKR group · Chennai · India</span>
     </div>
   </div>
 </footer>
 
 <script>
-
-/* ═══ CURSOR GLOW ═══ */
-(function(){
-  const cg = document.getElementById('cg');
-  document.addEventListener('mousemove', e => {
-    cg.style.left = e.clientX+'px';
-    cg.style.top  = e.clientY+'px';
-  });
-})();
-
-/* ═══ 3D CARD TILT ═══ */
-document.querySelectorAll('.tilt').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const r = card.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width  - .5;
-    const y = (e.clientY - r.top)  / r.height - .5;
-    card.style.transform = `perspective(900px) rotateX(${-y*9}deg) rotateY(${x*9}deg) translateZ(6px)`;
-  });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = 'perspective(900px) rotateX(0) rotateY(0) translateZ(0)';
-  });
-});
-
 /* ═══ MARQUEE ═══ */
 (function(){
-  const t = document.getElementById('mqTrack');
+  const t=document.getElementById('mqTrack');
   if(!t) return;
-  t.innerHTML += t.innerHTML;
-  let x = 0;
-  const hw = () => t.scrollWidth / 2;
+  t.innerHTML+=t.innerHTML;
+  let x=0;
+  const hw=()=>t.scrollWidth/2;
   (function tick(){
-    x += 0.55;
-    if(x >= hw()) x -= hw();
-    t.style.transform = 'translateX(-'+x+'px)';
+    x+=0.55;
+    if(x>=hw()) x-=hw();
+    t.style.transform='translateX(-'+x+'px)';
     requestAnimationFrame(tick);
   })();
 })();
 
 /* ═══ NAV ═══ */
 (function(){
-  const nav = document.getElementById('mainNav');
-  const btn = document.getElementById('menuBtn');
-  const menu = document.getElementById('mobileMenu');
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', scrollY > 30);
-  }, {passive:true});
-  btn.addEventListener('click', () => {
-    const open = menu.classList.toggle('hidden') === false;
-    btn.setAttribute('aria-expanded', open);
+  const nav=document.getElementById('mainNav');
+  const btn=document.getElementById('menuBtn');
+  const menu=document.getElementById('mobileMenu');
+  window.addEventListener('scroll',()=>{
+    nav.classList.toggle('scrolled',scrollY>40);
+  },{passive:true});
+  btn.addEventListener('click',()=>{
+    const open=menu.classList.toggle('hidden')===false;
+    btn.setAttribute('aria-expanded',open);
   });
-  menu.querySelectorAll('.ml-link').forEach(l => l.addEventListener('click', () => {
+  menu.querySelectorAll('.ml-link').forEach(l=>l.addEventListener('click',()=>{
     menu.classList.add('hidden'); btn.setAttribute('aria-expanded','false');
   }));
 })();
 
+/* ═══ FOOTER LINK HOVER ═══ */
+document.querySelectorAll('.foot-link').forEach(a=>{
+  a.addEventListener('mouseenter',()=>a.style.color='#D4A24C');
+  a.addEventListener('mouseleave',()=>a.style.color='rgba(250,247,242,.45)');
+});
+
 /* ═══ SCROLL REVEAL + COUNTERS ═══ */
 (function(){
-  const io = new IntersectionObserver(es => es.forEach(e => {
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
     if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
-  }), {threshold:.12});
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  }),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-  const done = new WeakSet();
-  const cio = new IntersectionObserver(es => es.forEach(e => {
-    if(!e.isIntersecting || done.has(e.target)) return;
+  const done=new WeakSet();
+  const cio=new IntersectionObserver(es=>es.forEach(e=>{
+    if(!e.isIntersecting||done.has(e.target)) return;
     done.add(e.target);
-    const target = +e.target.dataset.target;
-    const start = performance.now();
+    const target=+e.target.dataset.target;
+    const start=performance.now();
     (function run(now){
-      const p = Math.min((now-start)/1400,1);
-      const ease = 1-Math.pow(1-p,3);
-      e.target.textContent = Math.round(ease*target);
+      const p=Math.min((now-start)/1400,1);
+      const ease=1-Math.pow(1-p,3);
+      e.target.textContent=Math.round(ease*target);
       if(p<1) requestAnimationFrame(run);
     })(performance.now());
-  }), {threshold:.5});
-  document.querySelectorAll('.counter').forEach(c => cio.observe(c));
+  }),{threshold:.5});
+  document.querySelectorAll('.counter').forEach(c=>cio.observe(c));
 })();
 
 /* ═══ CAROUSEL ═══ */
 (function(){
-  document.querySelectorAll('[data-carousel]').forEach(container => {
-    const slides = [...container.querySelectorAll('.carousel-slide')];
-    const dots   = [...container.querySelectorAll('.carousel-dots button')];
-    const prev   = container.querySelector('.carousel-arrow.prev');
-    const next   = container.querySelector('.carousel-arrow.next');
-    let idx=0, timer;
-
+  document.querySelectorAll('[data-carousel]').forEach(container=>{
+    const slides=[...container.querySelectorAll('.carousel-slide')];
+    const dots=[...container.querySelectorAll('.carousel-dots button')];
+    const prev=container.querySelector('.carousel-arrow.prev');
+    const next=container.querySelector('.carousel-arrow.next');
+    let idx=0,timer;
     function goTo(i){
       const p=idx;
       slides[p].classList.add('exiting');
@@ -921,7 +841,7 @@ document.querySelectorAll('.tilt').forEach(card => {
 })();
 
 /* ═══ LIGHTBOX ═══ */
-const LB_IMGS = {
+const LB_IMGS={
   nexretail:[
     {src:'assets/work/nexretail-1.png',alt:'NexRetail Command Center'},
     {src:'assets/work/nexretail-2.png',alt:'NexRetail Agent Hub'},
@@ -940,9 +860,8 @@ const LB_IMGS = {
     {src:'assets/work/sermoncut-export.png',alt:'SermonCut Export'}
   ]
 };
-let lbGrp=null, lbIdx=0;
-const lb=document.getElementById('lb'), lbTrack=document.getElementById('lbTrack'), lbDots=document.getElementById('lbDots');
-
+let lbGrp=null,lbIdx=0;
+const lb=document.getElementById('lb'),lbTrack=document.getElementById('lbTrack'),lbDots=document.getElementById('lbDots');
 function openLB(group,start){
   lbGrp=group; lbIdx=start;
   const imgs=LB_IMGS[group]||[];
@@ -981,6 +900,143 @@ document.addEventListener('keydown',e=>{
       if(pane) pane.classList.add('active');
     });
   });
+})();
+
+/* ═══ WEBGL SHADER ENGINE ═══ */
+(function(){
+const VERT='attribute vec2 a; void main(){ gl_Position=vec4(a,0.,1.); }';
+const COMMON=`
+precision mediump float;
+uniform vec2 u_res; uniform float u_time; uniform vec2 u_mouse;
+float hash(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+float noise(vec2 p){
+  vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f);
+  return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),
+             mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),f.y);
+}
+vec3 INK=vec3(0.039,0.031,0.024);
+vec3 BRASS=vec3(0.69,0.478,0.18);
+vec3 GOLD=vec3(0.831,0.635,0.298);
+vec3 CHAMP=vec3(1.0,0.851,0.541);
+`;
+const FRAGS={
+
+chaos: COMMON + `
+void main(){
+  vec2 uv=gl_FragCoord.xy/u_res;
+  float aspect=u_res.x/u_res.y;
+  vec3 col=INK;
+  // soft corner glow
+  col+=BRASS*exp(-length((uv-vec2(.8,.75))*vec2(aspect,1.))*2.)*.05;
+  // chaos → order dots
+  float d=distance(gl_FragCoord.xy,u_mouse)/u_res.y;
+  float order=exp(-d*d*7.);
+  vec2 gp=uv*vec2(aspect,1.)*24.;
+  vec2 cell=floor(gp), fp=fract(gp);
+  vec2 jit=(vec2(hash(cell),hash(cell+9.))-.5)*.85;
+  jit+=.3*vec2(sin(u_time*.8+hash(cell)*6.28),cos(u_time*.65+hash(cell+4.)*6.28));
+  jit*=(1.-order);
+  float dd=length(fp-.5-jit*.45);
+  float dot_=smoothstep(.1,.05,dd);
+  col+=mix(BRASS*.4,CHAMP,order)*dot_*mix(.3,1.,order);
+  col+=CHAMP*exp(-d*4.)*.05;
+  float vig=1.-length(uv-vec2(.42,.5))*.75;
+  col*=.5+.5*clamp(vig,0.,1.);
+  gl_FragColor=vec4(col,1.);
+}`,
+
+terrain: COMMON + `
+void main(){
+  vec2 uv=(gl_FragCoord.xy/u_res-.5)*2.;
+  float aspect=u_res.x/u_res.y;
+  uv.x*=aspect;
+  float horizon=-.05;
+  vec3 col=INK*.7;
+  if(uv.y<horizon){
+    float z=1./(horizon-uv.y);
+    float x=uv.x*z;
+    float zz=z*1.4+u_time*1.1;
+    float wob=noise(vec2(floor(x*1.6),floor(zz))*.7)*.5;
+    vec2 g=vec2(x*1.6,zz);
+    float lx=smoothstep(.93,1.,abs(fract(g.x)-.5)*2.);
+    float lz=smoothstep(.91,1.,abs(fract(g.y)-.5)*2.);
+    float grid=max(lx,lz);
+    float fade=exp(-z*.16);
+    col=mix(INK*.7,mix(BRASS,CHAMP,wob),grid*fade);
+    col+=GOLD*exp(-z*.4)*.1;
+    float pulse=exp(-abs(fract(g.y*.25+u_time*.22)-.5)*14.)*lx*fade;
+    col+=CHAMP*pulse*.7;
+  } else {
+    float xx=clamp((uv.x/aspect+1.)*.5,0.,1.);
+    float chartY=horizon+.18+xx*.42+(noise(vec2(xx*5.,3.7))-.5)*.1;
+    float dl=abs(uv.y-chartY);
+    float line=exp(-dl*80.);
+    float prog=fract(u_time*.09);
+    float px=abs(xx-prog);
+    float pulse=exp(-px*26.)*exp(-dl*36.);
+    col+=GOLD*line*.5+CHAMP*pulse*.9;
+    float mk=smoothstep(.028,.008,length(vec2((fract(xx*5.)-.5)/5.*aspect,dl)));
+    col+=CHAMP*mk*.55*step(xx,prog+.02);
+  }
+  float glow=exp(-abs(uv.y-horizon)*6.);
+  col+=GOLD*glow*.3+CHAMP*glow*glow*.2;
+  float vig=1.-length((gl_FragCoord.xy/u_res)-.5)*.8;
+  col*=.45+.55*clamp(vig,0.,1.);
+  gl_FragColor=vec4(col,1.);
+}`
+};
+function initFX(canvas){
+  const gl=canvas.getContext('webgl',{antialias:false});
+  if(!gl) return;
+  function compile(type,src){
+    const s=gl.createShader(type);
+    gl.shaderSource(s,src); gl.compileShader(s);
+    if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)) console.error(canvas.dataset.fx,gl.getShaderInfoLog(s));
+    return s;
+  }
+  const prog=gl.createProgram();
+  gl.attachShader(prog,compile(gl.VERTEX_SHADER,VERT));
+  gl.attachShader(prog,compile(gl.FRAGMENT_SHADER,FRAGS[canvas.dataset.fx]));
+  gl.linkProgram(prog); gl.useProgram(prog);
+  const buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  const loc=gl.getAttribLocation(prog,'a');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+  const uRes=gl.getUniformLocation(prog,'u_res'),
+        uTime=gl.getUniformLocation(prog,'u_time'),
+        uMouse=gl.getUniformLocation(prog,'u_mouse');
+  let mx=-1,my=-1,tx=-1,ty=-1,started=false;
+  const sec=canvas.parentElement;
+  sec.addEventListener('mousemove',e=>{
+    const r=canvas.getBoundingClientRect();
+    tx=(e.clientX-r.left)*(canvas.width/Math.max(r.width,1));
+    ty=(r.height-(e.clientY-r.top))*(canvas.height/Math.max(r.height,1));
+  });
+  function resize(){
+    const dpr=Math.min(devicePixelRatio,1.5);
+    const w=Math.floor(canvas.clientWidth*dpr),h=Math.floor(canvas.clientHeight*dpr);
+    if(w&&h&&(canvas.width!==w||canvas.height!==h)){
+      canvas.width=w; canvas.height=h; gl.viewport(0,0,w,h);
+      if(!started){ started=true; tx=w*.62; ty=h*.5; mx=tx; my=ty; }
+    }
+  }
+  let visible=true;
+  new IntersectionObserver(es=>{visible=es[0].isIntersecting;},{threshold:.02}).observe(sec);
+  const t0=performance.now();
+  (function frame(){
+    requestAnimationFrame(frame);
+    if(!visible) return;
+    resize();
+    mx+=(tx-mx)*.09; my+=(ty-my)*.09;
+    gl.uniform2f(uRes,canvas.width,canvas.height);
+    gl.uniform1f(uTime,(performance.now()-t0)/1000);
+    gl.uniform2f(uMouse,mx,my);
+    gl.drawArrays(gl.TRIANGLES,0,3);
+  })();
+}
+document.querySelectorAll('canvas.fx').forEach(initFX);
 })();
 </script>
 </body>
