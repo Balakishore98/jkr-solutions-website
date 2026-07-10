@@ -23,13 +23,13 @@ body{ font-family:'Manrope',sans-serif; background:var(--paper); color:#1C1814; 
 /* ── PROCESS RING (swirling vortex, matches cybercrest reference) ── */
 .proc-grid{ display:grid; grid-template-columns:1fr auto 1fr; grid-template-rows:auto auto; column-gap:48px; row-gap:56px; align-items:center; max-width:980px; margin:0 auto; }
 .proc-ring-cell{ grid-column:2; grid-row:1 / span 2; position:relative; width:300px; height:300px; display:flex; align-items:center; justify-content:center; }
-.proc-outer-ring{ position:absolute; inset:0; border-radius:50%; border:1.5px solid rgba(255,233,184,.85); box-shadow:0 0 6px rgba(255,233,184,.5), 0 0 1px rgba(255,255,255,.9); z-index:3; }
+.proc-outer-ring{ position:absolute; inset:0; border-radius:50%; border:1.5px solid rgba(212,162,76,.85); box-shadow:0 0 6px rgba(212,162,76,.5), 0 0 1px rgba(250,247,242,.9); z-index:3; }
 .vortex{ position:absolute; border-radius:50%; }
-/* textured vortex — bright wide peaks, narrow dark valleys (luminous, not muddy), clear gaps from core + boundary */
+/* textured vortex — strictly base palette only: --ink, --brass, --bl, --paper */
 .vortex-1{ inset:2px;
   background:conic-gradient(from 0deg,
-    #FFE9B8, #D4A24C, #150F09, #B07A2E, #FFF3D6, #D4A24C, #150F09,
-    #FFE9B8, #8A5E20, #FFF8E8, #150F09, #D4A24C, #B07A2E, #FFE9B8);
+    var(--bl), var(--brass), var(--ink), var(--brass), var(--bl), var(--brass), var(--ink),
+    var(--bl), var(--brass), var(--bl), var(--ink), var(--brass), var(--bl), var(--bl));
   filter:blur(6px);
   -webkit-mask:radial-gradient(circle, transparent 52%, black 61%, black 83%, transparent 89%);
   mask:radial-gradient(circle, transparent 52%, black 61%, black 83%, transparent 89%);
@@ -37,8 +37,8 @@ body{ font-family:'Manrope',sans-serif; background:var(--paper); color:#1C1814; 
 }
 .vortex-2{ inset:2px;
   background:conic-gradient(from 90deg,
-    transparent, #FFF8E8, transparent, transparent, #FFE9B8, transparent, transparent, #FFFBF2,
-    transparent, transparent, #D4A24C, transparent, transparent, #FFF3D6, transparent);
+    transparent, var(--paper), transparent, transparent, var(--bl), transparent, transparent, var(--paper),
+    transparent, transparent, var(--brass), transparent, transparent, var(--bl), transparent);
   filter:blur(4px);
   -webkit-mask:radial-gradient(circle, transparent 53%, black 63%, black 81%, transparent 87%);
   mask:radial-gradient(circle, transparent 53%, black 63%, black 81%, transparent 87%);
@@ -47,7 +47,7 @@ body{ font-family:'Manrope',sans-serif; background:var(--paper); color:#1C1814; 
   opacity:1;
 }
 .vortex-halo{ inset:84px;
-  background:conic-gradient(from 40deg, #FFFBF2, #FFE9B8, #6B4A1C, #FFFBF2, #FFF3D6, #6B4A1C, #FFE9B8, #FFFBF2, #FFFBF2);
+  background:conic-gradient(from 40deg, var(--paper), var(--bl), var(--brass), var(--paper), var(--bl), var(--brass), var(--bl), var(--paper), var(--paper));
   filter:blur(1px);
   -webkit-mask:radial-gradient(circle, transparent 73%, black 80%, black 93%, transparent 100%);
   mask:radial-gradient(circle, transparent 73%, black 80%, black 93%, transparent 100%);
@@ -56,9 +56,9 @@ body{ font-family:'Manrope',sans-serif; background:var(--paper); color:#1C1814; 
 @keyframes proc-spin{ to{ transform:rotate(360deg); } }
 @keyframes proc-spin-rev{ to{ transform:rotate(-360deg); } }
 .proc-core{ position:relative; width:150px; height:150px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:2;
-  background-image:radial-gradient(circle, #1A140D 0%, #0A0806 78%), radial-gradient(circle, rgba(212,162,76,.35) 1px, transparent 1px);
+  background-image:radial-gradient(circle, var(--ink2) 0%, var(--ink) 78%), radial-gradient(circle, rgba(212,162,76,.35) 1px, transparent 1px);
   background-size:cover, 10px 10px;
-  box-shadow:inset 0 0 30px rgba(0,0,0,.6), 0 0 0 2.5px rgba(255,233,184,.75), 0 0 26px rgba(212,162,76,.5);
+  box-shadow:inset 0 0 30px rgba(0,0,0,.6), 0 0 0 2.5px rgba(212,162,76,.75), 0 0 26px rgba(212,162,76,.5);
 }
 .proc-core .brand-mark{ height:52px; }
 .proc-step{ display:flex; gap:16px; align-items:flex-start; }
