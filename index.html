@@ -9,6 +9,7 @@
 <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 <script src="https://cdn.tailwindcss.com"></script>
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&family=Barlow+Semi+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -207,29 +208,59 @@ details[open] summary .chev{ transform:rotate(180deg); }
 <section style="position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;background:var(--ink);">
   <canvas class="fx" data-fx="chaos"></canvas>
 
-  <div class="max-w-6xl mx-auto px-6 md:px-10 py-28 md:py-36 relative z-10 w-full" style="pointer-events:none;">
-    <div class="max-w-2xl">
-      <div class="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full" style="border:1px solid rgba(212,162,76,.25);background:rgba(212,162,76,.08);">
-        <span style="width:8px;height:8px;border-radius:50%;background:var(--bl);display:inline-block;"></span>
-        <span style="color:var(--bl);font-size:13px;font-weight:700;letter-spacing:.06em;">CHENNAI · INDIA</span>
+  <div class="max-w-6xl mx-auto px-6 md:px-10 py-28 md:py-36 relative z-10 w-full">
+    <div class="grid lg:grid-cols-2 gap-10 items-center" style="pointer-events:none;">
+      <div class="max-w-2xl">
+        <div class="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full" style="border:1px solid rgba(212,162,76,.25);background:rgba(212,162,76,.08);">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--bl);display:inline-block;"></span>
+          <span style="color:var(--bl);font-size:13px;font-weight:700;letter-spacing:.06em;">CHENNAI · INDIA</span>
+        </div>
+
+        <h1 class="font-display font-bold mb-8" style="font-size:clamp(3.2rem,7vw,6rem);color:var(--paper);line-height:1.0;letter-spacing:-0.02em;">
+          Build Smarter.<br>
+          <span class="gt" style="display:inline-block;">Scale Faster.</span>
+        </h1>
+
+        <p style="font-size:1.1rem;color:rgba(250,247,242,.72);max-width:480px;line-height:1.75;margin-bottom:2.5rem;">
+          Dashboards, automation, websites, custom software, and media tools — we handle the technical heavy lifting so you can focus on growing.
+        </p>
+
+        <div class="flex flex-wrap gap-4" style="pointer-events:auto;">
+          <a href="#contact" class="btn-g inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-base">Get a Free Audit →</a>
+          <a href="#work" class="btn-dark-o inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-base">See Our Work</a>
+        </div>
       </div>
 
-      <h1 class="font-display font-bold mb-8" style="font-size:clamp(3.2rem,8.5vw,7rem);color:var(--paper);line-height:1.0;letter-spacing:-0.02em;">
-        Build Smarter.<br>
-        <span class="gt" style="display:inline-block;">Scale Faster.</span>
-      </h1>
-
-      <p style="font-size:1.1rem;color:rgba(250,247,242,.72);max-width:480px;line-height:1.75;margin-bottom:2.5rem;">
-        Dashboards, automation, websites, custom software, and media tools — we handle the technical heavy lifting so you can focus on growing.
-      </p>
-
-      <div class="flex flex-wrap gap-4" style="pointer-events:auto;">
-        <a href="#contact" class="btn-g inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-base">Get a Free Audit →</a>
-        <a href="#work" class="btn-dark-o inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-base">See Our Work</a>
+      <div class="hidden lg:block" style="pointer-events:auto;height:440px;position:relative;">
+        <svg class="proc-glow" style="position:absolute;top:50%;left:50%;width:400px;height:400px;transform:translate(-50%,-50%);z-index:0;" viewBox="0 0 300 300">
+          <defs>
+            <linearGradient id="heroringg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#8A5E20"/><stop offset=".5" stop-color="#D4A24C"/><stop offset="1" stop-color="#FFE5A0"/>
+            </linearGradient>
+            <filter id="heroringblur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+          </defs>
+          <circle cx="150" cy="150" r="120" fill="none" stroke="url(#heroringg)" stroke-width="26" filter="url(#heroringblur)" opacity=".5"/>
+          <circle cx="150" cy="150" r="120" fill="none" stroke="url(#heroringg)" stroke-width="2" opacity=".7"/>
+        </svg>
+        <model-viewer
+          src="assets/k-logo-3d.glb"
+          poster="assets/k-logo-3d-poster.png"
+          camera-controls
+          disable-zoom
+          auto-rotate
+          auto-rotate-delay="0"
+          rotation-per-second="12deg"
+          shadow-intensity="1"
+          exposure="1.05"
+          environment-image="neutral"
+          camera-orbit="100deg 75deg 120%"
+          interaction-prompt="none"
+          style="position:relative;z-index:1;width:100%;height:100%;--poster-color:transparent;background:transparent;">
+        </model-viewer>
       </div>
     </div>
 
-    <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-6 pt-10" style="border-top:1px solid rgba(212,162,76,.12);">
+    <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-6 pt-10" style="border-top:1px solid rgba(212,162,76,.12);pointer-events:none;">
       <div>
         <div class="sv text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="50">0</span>+</div>
         <div style="font-size:13px;color:rgba(250,247,242,.45);margin-top:4px;font-weight:600;">Reports Automated</div>
