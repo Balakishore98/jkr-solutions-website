@@ -20,12 +20,46 @@ body{ font-family:'Manrope',sans-serif; background:var(--paper); color:#1C1814; 
 .brand-mark{ height:28px; width:auto; flex-shrink:0; display:block; }
 .brand-mark path{ fill:var(--bl); }
 
-/* ── PROCESS RING ── */
+/* ── PROCESS RING (swirling vortex, matches cybercrest reference) ── */
 .proc-grid{ display:grid; grid-template-columns:1fr auto 1fr; grid-template-rows:auto auto; column-gap:48px; row-gap:56px; align-items:center; max-width:980px; margin:0 auto; }
 .proc-ring-cell{ grid-column:2; grid-row:1 / span 2; position:relative; width:300px; height:300px; display:flex; align-items:center; justify-content:center; }
-.proc-glow{ position:absolute; inset:0; border-radius:50%; animation:proc-spin 16s linear infinite; }
+.proc-outer-ring{ position:absolute; inset:0; border-radius:50%; border:1px solid rgba(212,162,76,.4); }
+.vortex{ position:absolute; border-radius:50%; }
+/* textured vortex — real dark valleys between bright streaks, gap from core and from outer boundary */
+.vortex-1{ inset:2px;
+  background:conic-gradient(from 0deg,
+    #0D0A06, #8A5E20, #D4A24C, #0D0A06, #6B4A1C, #FFE9B8, #D4A24C,
+    #0D0A06, #B07A2E, #FFF3D6, #0D0A06, #8A5E20, #D4A24C, #0D0A06);
+  filter:blur(7px);
+  -webkit-mask:radial-gradient(circle, transparent 50%, black 60%, black 86%, transparent 93%);
+  mask:radial-gradient(circle, transparent 50%, black 60%, black 86%, transparent 93%);
+  animation:proc-spin 26s linear infinite;
+}
+.vortex-2{ inset:2px;
+  background:conic-gradient(from 90deg,
+    transparent, #FFE9B8, transparent, transparent, #D4A24C, transparent, transparent, #FFF3D6,
+    transparent, transparent, #B07A2E, transparent, transparent, #FFE9B8, transparent);
+  filter:blur(5px);
+  -webkit-mask:radial-gradient(circle, transparent 52%, black 62%, black 84%, transparent 91%);
+  mask:radial-gradient(circle, transparent 52%, black 62%, black 84%, transparent 91%);
+  mix-blend-mode:screen;
+  animation:proc-spin-rev 19s linear infinite;
+  opacity:.95;
+}
+.vortex-halo{ inset:86px;
+  background:conic-gradient(from 40deg, #FFF8E8, #D4A24C, #0D0A06, #FFE9B8, #FFF8E8, #0D0A06, #D4A24C, #FFF3D6, #FFF8E8);
+  filter:blur(1.5px);
+  -webkit-mask:radial-gradient(circle, transparent 74%, black 82%, black 94%, transparent 100%);
+  mask:radial-gradient(circle, transparent 74%, black 82%, black 94%, transparent 100%);
+  animation:proc-spin 11s linear infinite;
+}
 @keyframes proc-spin{ to{ transform:rotate(360deg); } }
-.proc-core{ position:relative; width:150px; height:150px; border-radius:50%; background:radial-gradient(circle, #14100C 0%, #0A0806 75%); display:flex; align-items:center; justify-content:center; box-shadow:inset 0 0 30px rgba(0,0,0,.6); }
+@keyframes proc-spin-rev{ to{ transform:rotate(-360deg); } }
+.proc-core{ position:relative; width:150px; height:150px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:2;
+  background-image:radial-gradient(circle, #1A140D 0%, #0A0806 78%), radial-gradient(circle, rgba(212,162,76,.35) 1px, transparent 1px);
+  background-size:cover, 10px 10px;
+  box-shadow:inset 0 0 30px rgba(0,0,0,.6), 0 0 0 2px rgba(212,162,76,.55), 0 0 22px rgba(212,162,76,.35);
+}
 .proc-core .brand-mark{ height:52px; }
 .proc-step{ display:flex; gap:16px; align-items:flex-start; }
 .proc-step .num{ font-family:'Fraunces',serif; font-size:2.4rem; font-weight:700; line-height:1; color:var(--bl); opacity:.55; flex-shrink:0; }
@@ -463,26 +497,10 @@ details[open] summary .chev{ transform:rotate(180deg); }
         <div><h3 class="font-display font-bold text-lg mb-2">Scoped Proposal</h3><p style="font-size:14px;line-height:1.7;max-width:230px;">A clear doc: what gets built, timeline, and an honest price. ₹5k upfront split available on all projects.</p></div>
       </div>
       <div class="proc-ring-cell">
-        <svg class="proc-glow" width="300" height="300" viewBox="0 0 300 300">
-          <defs>
-            <linearGradient id="ringg" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#5C3E15"/><stop offset=".25" stop-color="#B07A2E"/><stop offset=".5" stop-color="#FFE9B8"/><stop offset=".75" stop-color="#D4A24C"/><stop offset="1" stop-color="#5C3E15"/>
-            </linearGradient>
-            <filter id="ringblur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="16"/></filter>
-          </defs>
-          <circle cx="150" cy="150" r="115" fill="none" stroke="url(#ringg)" stroke-width="30" filter="url(#ringblur)" opacity=".55"/>
-        </svg>
-        <svg class="proc-glow" width="300" height="300" viewBox="0 0 300 300" style="animation-duration:16s;">
-          <defs>
-            <linearGradient id="ringg2" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#6B4A1C"/><stop offset=".22" stop-color="#D4A24C"/><stop offset=".42" stop-color="#FFF3D6"/><stop offset=".55" stop-color="#FFE9B8"/><stop offset=".75" stop-color="#B07A2E"/><stop offset="1" stop-color="#6B4A1C"/>
-            </linearGradient>
-          </defs>
-          <circle cx="150" cy="150" r="112" fill="none" stroke="url(#ringg2)" stroke-width="4" opacity=".95"/>
-        </svg>
-        <svg class="proc-glow" width="300" height="300" viewBox="0 0 300 300" style="animation-duration:6s;">
-          <circle cx="150" cy="150" r="112" fill="none" stroke="#FFF8E8" stroke-width="5" opacity=".9" stroke-linecap="round" stroke-dasharray="28 674"/>
-        </svg>
+        <div class="proc-outer-ring"></div>
+        <div class="vortex vortex-1"></div>
+        <div class="vortex vortex-2"></div>
+        <div class="vortex vortex-halo"></div>
         <div class="proc-core">
           <svg class="brand-mark" viewBox="0 0 354.61543 534.49124" xmlns="http://www.w3.org/2000/svg"><path d="m170.83997,292.06601c35.06052,22.62911,69.23355,44.68735,103.40864,66.74245,25.13344,16.22007,50.22228,32.51012,75.45719,48.57083,3.63297,2.31222,4.93116,4.78334,4.90937,9.0959-.18554,36.71331-.10615,73.42782-.10615,110.14204v7.87403c-5.03394-1.43561-9.72429-1.70266-13.16676-3.91238-76.35987-49.01485-152.58173-98.24487-228.83253-147.42994-1.98587-1.281-4.00178-2.51525-7.06535-4.43739v134.62199H.63251v-231.60552c2.11439,1.24928,3.98,2.26753,5.76147,3.41636,51.61937,33.28752,103.20826,66.62244,154.90585,99.78802,2.65696,1.70449,6.18949,2.54343,9.39137,2.79089,5.71819.44194,11.49509.12439,19.08577.12439-3.07051-2.17545-4.70102-3.42553-6.42175-4.53591-59.31839-38.2771-118.62186-76.5776-178.02659-114.72041C1.56824,266.17683-.01373,263.79485.00009,259.15081c.1851-62.05441.16222-124.10963.03524-186.16435-.00826-4.02362,1.12624-6.40323,4.59115-8.61695C36.55705,43.96947,68.35808,23.36703,100.20567,2.83729c1.30045-.83828,2.68891-1.54001,4.9729-2.83729v209.19422c83.50615-53.84719,165.84659-106.94262,249.01493-160.57196.14021,2.6951.30382,4.38155.30455,6.06806.01447,37.70942-.05541,75.41913.106,113.12785.01754,4.10346-1.31075,6.41467-4.73538,8.6147-57.54788,36.97221-115.00994,74.07809-172.48487,111.16391-1.97008,1.2712-3.87539,2.64275-6.54383,4.46922Z"/></svg>
         </div>
