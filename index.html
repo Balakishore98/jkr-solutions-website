@@ -4,14 +4,21 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>JKR Solutions | Dashboards · Automation · Software · Web · Media</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&family=Barlow+Semi+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{ --ink:#0A0806; --ink2:#0E0C09; --paper:#FAF7F2; --surface:#F2EDE6; --brass:#B07A2E; --bl:#D4A24C; --muted:#6B6258; }
 *{ box-sizing:border-box; }
 body{ font-family:'Manrope',sans-serif; background:var(--paper); color:#1C1814; overflow-x:hidden; }
 .font-display{ font-family:'Fraunces',serif; }
+.font-brand{ font-family:'Bahnschrift','Barlow Semi Condensed',sans-serif; font-stretch:semi-condensed; letter-spacing:.01em; }
+.brand-mark{ height:28px; width:auto; flex-shrink:0; display:block; }
+.brand-mark path{ fill:var(--bl); }
 
 /* ── WEBGL CANVASES ── */
 .fx{ position:absolute; inset:0; width:100%; height:100%; display:block; }
@@ -148,7 +155,10 @@ details[open] summary .chev{ transform:rotate(180deg); }
 <!-- ══ NAV ══ -->
 <nav id="mainNav" class="fixed top-0 w-full z-50 transition-all duration-300">
   <div class="max-w-6xl mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
-    <a href="#top" class="brand font-display text-xl font-semibold tracking-tight">JKR Solutions</a>
+    <a href="#top" class="brand font-brand text-xl font-bold tracking-tight flex items-center gap-2">
+      <svg class="brand-mark" viewBox="0 0 354.61543 534.49124" xmlns="http://www.w3.org/2000/svg"><path d="m170.83997,292.06601c35.06052,22.62911,69.23355,44.68735,103.40864,66.74245,25.13344,16.22007,50.22228,32.51012,75.45719,48.57083,3.63297,2.31222,4.93116,4.78334,4.90937,9.0959-.18554,36.71331-.10615,73.42782-.10615,110.14204v7.87403c-5.03394-1.43561-9.72429-1.70266-13.16676-3.91238-76.35987-49.01485-152.58173-98.24487-228.83253-147.42994-1.98587-1.281-4.00178-2.51525-7.06535-4.43739v134.62199H.63251v-231.60552c2.11439,1.24928,3.98,2.26753,5.76147,3.41636,51.61937,33.28752,103.20826,66.62244,154.90585,99.78802,2.65696,1.70449,6.18949,2.54343,9.39137,2.79089,5.71819.44194,11.49509.12439,19.08577.12439-3.07051-2.17545-4.70102-3.42553-6.42175-4.53591-59.31839-38.2771-118.62186-76.5776-178.02659-114.72041C1.56824,266.17683-.01373,263.79485.00009,259.15081c.1851-62.05441.16222-124.10963.03524-186.16435-.00826-4.02362,1.12624-6.40323,4.59115-8.61695C36.55705,43.96947,68.35808,23.36703,100.20567,2.83729c1.30045-.83828,2.68891-1.54001,4.9729-2.83729v209.19422c83.50615-53.84719,165.84659-106.94262,249.01493-160.57196.14021,2.6951.30382,4.38155.30455,6.06806.01447,37.70942-.05541,75.41913.106,113.12785.01754,4.10346-1.31075,6.41467-4.73538,8.6147-57.54788,36.97221-115.00994,74.07809-172.48487,111.16391-1.97008,1.2712-3.87539,2.64275-6.54383,4.46922Z"/></svg>
+      JKR Solutions
+    </a>
     <div class="hidden md:flex items-center gap-8 text-sm font-medium">
       <a href="#services" class="nav-link">Services</a>
       <a href="#work" class="nav-link">Our Work</a>
@@ -758,7 +768,10 @@ details[open] summary .chev{ transform:rotate(180deg); }
   <div class="max-w-6xl mx-auto px-6 md:px-10">
     <div class="grid md:grid-cols-4 gap-10 mb-12">
       <div class="md:col-span-1">
-        <div class="font-display text-lg font-semibold mb-3" style="color:var(--paper);">JKR Solutions</div>
+        <div class="font-brand text-lg font-bold mb-3 flex items-center gap-2" style="color:var(--paper);">
+          <svg class="brand-mark" style="height:22px;" viewBox="0 0 354.61543 534.49124" xmlns="http://www.w3.org/2000/svg"><path d="m170.83997,292.06601c35.06052,22.62911,69.23355,44.68735,103.40864,66.74245,25.13344,16.22007,50.22228,32.51012,75.45719,48.57083,3.63297,2.31222,4.93116,4.78334,4.90937,9.0959-.18554,36.71331-.10615,73.42782-.10615,110.14204v7.87403c-5.03394-1.43561-9.72429-1.70266-13.16676-3.91238-76.35987-49.01485-152.58173-98.24487-228.83253-147.42994-1.98587-1.281-4.00178-2.51525-7.06535-4.43739v134.62199H.63251v-231.60552c2.11439,1.24928,3.98,2.26753,5.76147,3.41636,51.61937,33.28752,103.20826,66.62244,154.90585,99.78802,2.65696,1.70449,6.18949,2.54343,9.39137,2.79089,5.71819.44194,11.49509.12439,19.08577.12439-3.07051-2.17545-4.70102-3.42553-6.42175-4.53591-59.31839-38.2771-118.62186-76.5776-178.02659-114.72041C1.56824,266.17683-.01373,263.79485.00009,259.15081c.1851-62.05441.16222-124.10963.03524-186.16435-.00826-4.02362,1.12624-6.40323,4.59115-8.61695C36.55705,43.96947,68.35808,23.36703,100.20567,2.83729c1.30045-.83828,2.68891-1.54001,4.9729-2.83729v209.19422c83.50615-53.84719,165.84659-106.94262,249.01493-160.57196.14021,2.6951.30382,4.38155.30455,6.06806.01447,37.70942-.05541,75.41913.106,113.12785.01754,4.10346-1.31075,6.41467-4.73538,8.6147-57.54788,36.97221-115.00994,74.07809-172.48487,111.16391-1.97008,1.2712-3.87539,2.64275-6.54383,4.46922Z"/></svg>
+          JKR Solutions
+        </div>
         <p style="color:rgba(250,247,242,.3);font-size:13px;line-height:1.75;">Dashboards, automation, software, and media tools for growing Indian businesses.</p>
       </div>
       <div>
@@ -789,7 +802,7 @@ details[open] summary .chev{ transform:rotate(180deg); }
       </div>
     </div>
     <div style="border-top:1px solid rgba(212,162,76,.08);padding-top:32px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;">
-      <span style="color:rgba(250,247,242,.2);font-size:12px;">© 2026 JKR Solutions. All rights reserved.</span>
+      <span class="font-brand" style="color:rgba(250,247,242,.2);font-size:12px;">© 2026 JKR Solutions. All rights reserved.</span>
       <span style="color:rgba(250,247,242,.2);font-size:12px;">Part of the JKR group · Chennai · India</span>
     </div>
   </div>
