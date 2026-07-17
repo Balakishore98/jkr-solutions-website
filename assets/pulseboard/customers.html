@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PulseBoard — Customers</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#0F1115; --panel:#151822; --panel2:#1B1F2B; --line:#252A38; --indigo:#6366F1; --indigo-light:#818CF8; --green:#34D399; --red:#F87171; --amber:#F59E0B; --muted:#8B92A8; --text:#E8EAF0; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:'Inter','Manrope',sans-serif; background:var(--ink); color:var(--text); }
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:16px; }
+  .mono{ font-variant-numeric:tabular-nums; }
+</style>
+</head>
+<body>
+
+<div class="flex min-h-screen">
+  <aside class="w-60 flex-shrink-0 border-r p-6 flex flex-col" style="border-color:var(--line); background:var(--panel);">
+    <div class="flex items-center gap-2.5 mb-10">
+      <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#6366F1,#818CF8);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;">P</div>
+      <span style="font-weight:800;font-size:16px;letter-spacing:-.02em;">PulseBoard</span>
+    </div>
+    <nav class="flex flex-col gap-1 text-sm">
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="color:var(--muted);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        Overview
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="color:var(--muted);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Revenue
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="background:rgba(99,102,241,.12);color:#C7D2FE;font-weight:600;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Customers
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="color:var(--muted);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Funnel
+      </a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 p-8">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 style="font-size:22px;font-weight:800;letter-spacing:-.01em;">Customers</h1>
+        <p style="font-size:13px;color:var(--muted);margin-top:2px;">1,284 active · segmented by plan</p>
+      </div>
+      <div class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm" style="background:var(--panel2);border:1px solid var(--line);">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span style="color:var(--muted);">Search customers...</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-4 gap-4 mb-6">
+      <div class="card p-5 text-center">
+        <div class="mono" style="font-size:24px;font-weight:800;color:#818CF8;">412</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Starter</div>
+      </div>
+      <div class="card p-5 text-center">
+        <div class="mono" style="font-size:24px;font-weight:800;color:#818CF8;">518</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Pro</div>
+      </div>
+      <div class="card p-5 text-center">
+        <div class="mono" style="font-size:24px;font-weight:800;color:#818CF8;">301</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Growth</div>
+      </div>
+      <div class="card p-5 text-center">
+        <div class="mono" style="font-size:24px;font-weight:800;color:#818CF8;">53</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Enterprise</div>
+      </div>
+    </div>
+
+    <div class="card p-6">
+      <div class="flex items-center justify-between mb-5">
+        <h3 style="font-size:14px;font-weight:700;">All Customers</h3>
+        <div class="flex gap-2">
+          <span style="font-size:12px;padding:5px 12px;border-radius:99px;background:rgba(99,102,241,.15);color:#A5B4FC;font-weight:600;">All</span>
+          <span style="font-size:12px;padding:5px 12px;border-radius:99px;color:var(--muted);">Active</span>
+          <span style="font-size:12px;padding:5px 12px;border-radius:99px;color:var(--muted);">At Risk</span>
+        </div>
+      </div>
+      <table class="w-full" style="font-size:13px;">
+        <thead>
+          <tr style="color:var(--muted);text-align:left;border-bottom:1px solid var(--line);">
+            <th class="pb-3 font-medium">Company</th>
+            <th class="pb-3 font-medium">Seats</th>
+            <th class="pb-3 font-medium">MRR</th>
+            <th class="pb-3 font-medium">Health</th>
+            <th class="pb-3 font-medium">Renewal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--line);">
+            <td class="py-3.5 flex items-center gap-2.5"><div style="width:26px;height:26px;border-radius:7px;background:#34D399;"></div>Basecamp Ops</td>
+            <td class="py-3.5" style="color:var(--muted);">48</td>
+            <td class="py-3.5 mono font-semibold">$2,400</td>
+            <td class="py-3.5"><div style="width:60px;height:6px;border-radius:3px;background:#252A38;"><div style="width:92%;height:100%;border-radius:3px;background:#34D399;"></div></div></td>
+            <td class="py-3.5" style="color:var(--muted);">Aug 14</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--line);">
+            <td class="py-3.5 flex items-center gap-2.5"><div style="width:26px;height:26px;border-radius:7px;background:#6366F1;"></div>Northwind Labs</td>
+            <td class="py-3.5" style="color:var(--muted);">22</td>
+            <td class="py-3.5 mono font-semibold">$890</td>
+            <td class="py-3.5"><div style="width:60px;height:6px;border-radius:3px;background:#252A38;"><div style="width:78%;height:100%;border-radius:3px;background:#34D399;"></div></div></td>
+            <td class="py-3.5" style="color:var(--muted);">Jul 30</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--line);">
+            <td class="py-3.5 flex items-center gap-2.5"><div style="width:26px;height:26px;border-radius:7px;background:#EC4899;"></div>Fable &amp; Co</td>
+            <td class="py-3.5" style="color:var(--muted);">14</td>
+            <td class="py-3.5 mono font-semibold">$890</td>
+            <td class="py-3.5"><div style="width:60px;height:6px;border-radius:3px;background:#252A38;"><div style="width:34%;height:100%;border-radius:3px;background:#F87171;"></div></div></td>
+            <td class="py-3.5" style="color:var(--muted);">Jul 2</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--line);">
+            <td class="py-3.5 flex items-center gap-2.5"><div style="width:26px;height:26px;border-radius:7px;background:#F59E0B;"></div>Verta Studio</td>
+            <td class="py-3.5" style="color:var(--muted);">9</td>
+            <td class="py-3.5 mono font-semibold">$340</td>
+            <td class="py-3.5"><div style="width:60px;height:6px;border-radius:3px;background:#252A38;"><div style="width:65%;height:100%;border-radius:3px;background:#F59E0B;"></div></div></td>
+            <td class="py-3.5" style="color:var(--muted);">Aug 2</td>
+          </tr>
+          <tr>
+            <td class="py-3.5 flex items-center gap-2.5"><div style="width:26px;height:26px;border-radius:7px;background:#818CF8;"></div>Ironclad Retail</td>
+            <td class="py-3.5" style="color:var(--muted);">31</td>
+            <td class="py-3.5 mono font-semibold">$1,120</td>
+            <td class="py-3.5"><div style="width:60px;height:6px;border-radius:3px;background:#252A38;"><div style="width:88%;height:100%;border-radius:3px;background:#34D399;"></div></div></td>
+            <td class="py-3.5" style="color:var(--muted);">Sep 5</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

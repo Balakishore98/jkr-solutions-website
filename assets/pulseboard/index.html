@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PulseBoard — Startup Metrics Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#0F1115; --panel:#151822; --panel2:#1B1F2B; --line:#252A38; --indigo:#6366F1; --indigo-light:#818CF8; --green:#34D399; --red:#F87171; --muted:#8B92A8; --text:#E8EAF0; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:'Inter','Manrope',sans-serif; background:var(--ink); color:var(--text); }
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:16px; }
+  .glow-indigo{ box-shadow:0 0 0 1px rgba(99,102,241,.15), 0 8px 30px -12px rgba(99,102,241,.25); }
+  .mono{ font-variant-numeric:tabular-nums; }
+  .sparkline-up{ color:var(--green); }
+  .sparkline-down{ color:var(--red); }
+  ::-webkit-scrollbar{ width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px; }
+</style>
+</head>
+<body>
+
+<div class="flex min-h-screen">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="w-60 flex-shrink-0 border-r p-6 flex flex-col" style="border-color:var(--line); background:var(--panel);">
+    <div class="flex items-center gap-2.5 mb-10">
+      <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#6366F1,#818CF8);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;">P</div>
+      <span style="font-weight:800;font-size:16px;letter-spacing:-.02em;">PulseBoard</span>
+    </div>
+    <nav class="flex flex-col gap-1 text-sm">
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="background:rgba(99,102,241,.12);color:#C7D2FE;font-weight:600;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        Overview
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="color:var(--muted);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Revenue
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="color:var(--muted);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Customers
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="color:var(--muted);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Funnel
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="color:var(--muted);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+    <div class="mt-auto pt-6 border-t" style="border-color:var(--line);">
+      <div class="flex items-center gap-3">
+        <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#818CF8,#6366F1);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;">SK</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;">Sarah Kim</div>
+          <div style="font-size:11px;color:var(--muted);">Founder, Loop</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <main class="flex-1 p-8">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 style="font-size:22px;font-weight:800;letter-spacing:-.01em;">Overview</h1>
+        <p style="font-size:13px;color:var(--muted);margin-top:2px;">Last updated 2 minutes ago</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm" style="background:var(--panel2);border:1px solid var(--line);color:var(--muted);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Last 12 months
+        </div>
+        <button class="px-4 py-2 rounded-lg text-sm font-semibold" style="background:linear-gradient(135deg,#6366F1,#818CF8);color:#fff;">+ New Report</button>
+      </div>
+    </div>
+
+    <!-- KPI cards -->
+    <div class="grid grid-cols-4 gap-4 mb-6">
+      <div class="card p-5">
+        <div style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;">MRR</div>
+        <div class="flex items-end gap-2 mt-2">
+          <span class="mono" style="font-size:26px;font-weight:800;">$48,210</span>
+          <span class="sparkline-up" style="font-size:12px;font-weight:700;margin-bottom:4px;">↑ 12.4%</span>
+        </div>
+        <svg width="100%" height="28" viewBox="0 0 120 28" class="mt-2"><path d="M0,22 L15,20 L30,18 L45,15 L60,16 L75,10 L90,8 L105,4 L120,2" fill="none" stroke="#34D399" stroke-width="2"/></svg>
+      </div>
+      <div class="card p-5">
+        <div style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;">Active Customers</div>
+        <div class="flex items-end gap-2 mt-2">
+          <span class="mono" style="font-size:26px;font-weight:800;">1,284</span>
+          <span class="sparkline-up" style="font-size:12px;font-weight:700;margin-bottom:4px;">↑ 8.1%</span>
+        </div>
+        <svg width="100%" height="28" viewBox="0 0 120 28" class="mt-2"><path d="M0,20 L15,19 L30,17 L45,17 L60,14 L75,12 L90,9 L105,7 L120,5" fill="none" stroke="#818CF8" stroke-width="2"/></svg>
+      </div>
+      <div class="card p-5">
+        <div style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;">Churn Rate</div>
+        <div class="flex items-end gap-2 mt-2">
+          <span class="mono" style="font-size:26px;font-weight:800;">2.3%</span>
+          <span class="sparkline-up" style="font-size:12px;font-weight:700;margin-bottom:4px;">↓ 0.6%</span>
+        </div>
+        <svg width="100%" height="28" viewBox="0 0 120 28" class="mt-2"><path d="M0,8 L15,10 L30,9 L45,14 L60,13 L75,18 L90,17 L105,21 L120,22" fill="none" stroke="#34D399" stroke-width="2"/></svg>
+      </div>
+      <div class="card p-5">
+        <div style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;">Net Revenue Retention</div>
+        <div class="flex items-end gap-2 mt-2">
+          <span class="mono" style="font-size:26px;font-weight:800;">118%</span>
+          <span class="sparkline-up" style="font-size:12px;font-weight:700;margin-bottom:4px;">↑ 4.2%</span>
+        </div>
+        <svg width="100%" height="28" viewBox="0 0 120 28" class="mt-2"><path d="M0,18 L15,17 L30,15 L45,16 L60,12 L75,10 L90,8 L105,6 L120,3" fill="none" stroke="#34D399" stroke-width="2"/></svg>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-6">
+      <!-- MRR chart -->
+      <div class="card p-6 col-span-2">
+        <div class="flex items-center justify-between mb-1">
+          <h3 style="font-size:14px;font-weight:700;">Monthly Recurring Revenue</h3>
+          <div class="flex items-center gap-4" style="font-size:12px;color:var(--muted);">
+            <span class="flex items-center gap-1.5"><span style="width:8px;height:8px;border-radius:2px;background:#6366F1;display:inline-block;"></span>New</span>
+            <span class="flex items-center gap-1.5"><span style="width:8px;height:8px;border-radius:2px;background:#252A38;display:inline-block;"></span>Expansion</span>
+          </div>
+        </div>
+        <svg width="100%" height="220" viewBox="0 0 560 220" class="mt-4">
+          <defs>
+            <linearGradient id="mrrFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#6366F1" stop-opacity="0.35"/>
+              <stop offset="1" stop-color="#6366F1" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <g stroke="#1F2430" stroke-width="1">
+            <line x1="0" y1="20" x2="560" y2="20"/><line x1="0" y1="70" x2="560" y2="70"/>
+            <line x1="0" y1="120" x2="560" y2="120"/><line x1="0" y1="170" x2="560" y2="170"/>
+          </g>
+          <path d="M0,180 L47,172 L94,168 L140,150 L187,145 L234,130 L280,118 L327,100 L374,92 L420,68 L467,52 L560,20 L560,220 L0,220 Z" fill="url(#mrrFill)"/>
+          <path d="M0,180 L47,172 L94,168 L140,150 L187,145 L234,130 L280,118 L327,100 L374,92 L420,68 L467,52 L560,20" fill="none" stroke="#818CF8" stroke-width="2.5"/>
+          <g fill="#6366F1">
+            <circle cx="560" cy="20" r="4"/>
+          </g>
+          <text x="0" y="215" fill="#8B92A8" font-size="10">Jan</text>
+          <text x="230" y="215" fill="#8B92A8" font-size="10">Jun</text>
+          <text x="535" y="215" fill="#8B92A8" font-size="10">Dec</text>
+        </svg>
+      </div>
+
+      <!-- Funnel -->
+      <div class="card p-6">
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:16px;">Signup Funnel</h3>
+        <div class="flex flex-col gap-3">
+          <div>
+            <div class="flex justify-between mb-1" style="font-size:12px;"><span style="color:var(--muted);">Visitors</span><span class="mono font-semibold">24,801</span></div>
+            <div style="height:8px;border-radius:4px;background:#6366F1;width:100%;"></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1" style="font-size:12px;"><span style="color:var(--muted);">Signups</span><span class="mono font-semibold">3,940</span></div>
+            <div style="height:8px;border-radius:4px;background:#818CF8;width:62%;"></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1" style="font-size:12px;"><span style="color:var(--muted);">Trial Started</span><span class="mono font-semibold">2,110</span></div>
+            <div style="height:8px;border-radius:4px;background:#A5B4FC;width:38%;"></div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1" style="font-size:12px;"><span style="color:var(--muted);">Paid</span><span class="mono font-semibold">1,284</span></div>
+            <div style="height:8px;border-radius:4px;background:#34D399;width:22%;"></div>
+          </div>
+        </div>
+        <div class="mt-5 pt-4 border-t flex justify-between items-center" style="border-color:var(--line);">
+          <span style="font-size:12px;color:var(--muted);">Visitor → Paid</span>
+          <span style="font-size:13px;font-weight:700;color:#34D399;">5.2%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customers table -->
+    <div class="card p-6 mt-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 style="font-size:14px;font-weight:700;">Recent Customers</h3>
+        <span style="font-size:12px;color:#818CF8;font-weight:600;cursor:pointer;">View all →</span>
+      </div>
+      <table class="w-full" style="font-size:13px;">
+        <thead>
+          <tr style="color:var(--muted);text-align:left;border-bottom:1px solid var(--line);">
+            <th class="pb-3 font-medium">Company</th>
+            <th class="pb-3 font-medium">Plan</th>
+            <th class="pb-3 font-medium">MRR</th>
+            <th class="pb-3 font-medium">Status</th>
+            <th class="pb-3 font-medium">Joined</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--line);">
+            <td class="py-3 flex items-center gap-2.5"><div style="width:26px;height:26px;border-radius:7px;background:#6366F1;"></div>Northwind Labs</td>
+            <td class="py-3" style="color:var(--muted);">Growth</td>
+            <td class="py-3 mono font-semibold">$890</td>
+            <td class="py-3"><span style="background:rgba(52,211,153,.15);color:#34D399;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700;">Active</span></td>
+            <td class="py-3" style="color:var(--muted);">Jun 12</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--line);">
+            <td class="py-3 flex items-center gap-2.5"><div style="width:26px;height:26px;border-radius:7px;background:#F59E0B;"></div>Verta Studio</td>
+            <td class="py-3" style="color:var(--muted);">Pro</td>
+            <td class="py-3 mono font-semibold">$340</td>
+            <td class="py-3"><span style="background:rgba(52,211,153,.15);color:#34D399;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700;">Active</span></td>
+            <td class="py-3" style="color:var(--muted);">Jun 10</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--line);">
+            <td class="py-3 flex items-center gap-2.5"><div style="width:26px;height:26px;border-radius:7px;background:#EC4899;"></div>Fable & Co</td>
+            <td class="py-3" style="color:var(--muted);">Growth</td>
+            <td class="py-3 mono font-semibold">$890</td>
+            <td class="py-3"><span style="background:rgba(248,113,113,.15);color:#F87171;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700;">Trial</span></td>
+            <td class="py-3" style="color:var(--muted);">Jun 8</td>
+          </tr>
+          <tr>
+            <td class="py-3 flex items-center gap-2.5"><div style="width:26px;height:26px;border-radius:7px;background:#34D399;"></div>Basecamp Ops</td>
+            <td class="py-3" style="color:var(--muted);">Enterprise</td>
+            <td class="py-3 mono font-semibold">$2,400</td>
+            <td class="py-3"><span style="background:rgba(52,211,153,.15);color:#34D399;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700;">Active</span></td>
+            <td class="py-3" style="color:var(--muted);">Jun 3</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>
