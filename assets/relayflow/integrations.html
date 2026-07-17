@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RelayFlow — Integrations</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#F7F8FA; --panel:#FFFFFF; --line:#E7E9EE; --ink:#14161F; --muted:#6B7280; --teal:#0EA5A0; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); }
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:14px; box-shadow:0 1px 2px rgba(16,24,40,.04); }
+</style>
+</head>
+<body>
+
+<div class="flex min-h-screen">
+  <aside class="w-60 flex-shrink-0 border-r p-6 flex flex-col" style="border-color:var(--line); background:#fff;">
+    <div class="flex items-center gap-2.5 mb-10">
+      <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#0EA5A0,#14B8A6);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;">R</div>
+      <span style="font-weight:800;font-size:16px;letter-spacing:-.02em;">RelayFlow</span>
+    </div>
+    <nav class="flex flex-col gap-1 text-sm">
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="color:var(--muted);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        Workflows
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="color:var(--muted);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Run History
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="background:rgba(14,165,160,.08);color:#0D9488;font-weight:600;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        Integrations
+      </a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 p-8">
+    <div class="mb-7">
+      <h1 style="font-size:21px;font-weight:800;letter-spacing:-.01em;">Integrations</h1>
+      <p style="font-size:13px;color:var(--muted);margin-top:2px;">Connected apps powering your workflows</p>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4">
+      <div class="card p-5 flex items-center gap-4">
+        <div style="width:44px;height:44px;border-radius:11px;background:#0F9D58;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div>
+        <div>
+          <div style="font-size:14px;font-weight:700;">Google Sheets</div>
+          <div style="font-size:12px;color:#0D9488;font-weight:600;margin-top:2px;">● Connected</div>
+        </div>
+      </div>
+      <div class="card p-5 flex items-center gap-4">
+        <div style="width:44px;height:44px;border-radius:11px;background:#25D366;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.07L2 22l5.07-1.35A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg></div>
+        <div>
+          <div style="font-size:14px;font-weight:700;">WhatsApp Business</div>
+          <div style="font-size:12px;color:#0D9488;font-weight:600;margin-top:2px;">● Connected</div>
+        </div>
+      </div>
+      <div class="card p-5 flex items-center gap-4">
+        <div style="width:44px;height:44px;border-radius:11px;background:#EA4335;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg></div>
+        <div>
+          <div style="font-size:14px;font-weight:700;">Gmail</div>
+          <div style="font-size:12px;color:#0D9488;font-weight:600;margin-top:2px;">● Connected</div>
+        </div>
+      </div>
+      <div class="card p-5 flex items-center gap-4">
+        <div style="width:44px;height:44px;border-radius:11px;background:#635BFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg></div>
+        <div>
+          <div style="font-size:14px;font-weight:700;">Razorpay</div>
+          <div style="font-size:12px;color:#0D9488;font-weight:600;margin-top:2px;">● Connected</div>
+        </div>
+      </div>
+      <div class="card p-5 flex items-center gap-4">
+        <div style="width:44px;height:44px;border-radius:11px;background:#F59E0B;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+        <div>
+          <div style="font-size:14px;font-weight:700;">Tally / Busy</div>
+          <div style="font-size:12px;color:#0D9488;font-weight:600;margin-top:2px;">● Connected</div>
+        </div>
+      </div>
+      <div class="card p-5 flex items-center gap-4" style="opacity:.5;">
+        <div style="width:44px;height:44px;border-radius:11px;background:#6B7280;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div>
+        <div>
+          <div style="font-size:14px;font-weight:700;">Add integration</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">Browse 40+ apps</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-6 mt-6">
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:16px;">Active Workflows</h3>
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center justify-between py-2" style="border-bottom:1px solid var(--line);">
+          <div class="flex items-center gap-3">
+            <span style="width:8px;height:8px;border-radius:50%;background:#0D9488;display:inline-block;"></span>
+            <span style="font-size:13px;font-weight:600;">New Order → WhatsApp + Invoice</span>
+          </div>
+          <span style="font-size:12px;color:var(--muted);">142 runs today</span>
+        </div>
+        <div class="flex items-center justify-between py-2" style="border-bottom:1px solid var(--line);">
+          <div class="flex items-center gap-3">
+            <span style="width:8px;height:8px;border-radius:50%;background:#0D9488;display:inline-block;"></span>
+            <span style="font-size:13px;font-weight:600;">Daily Sales Report → Owner Email</span>
+          </div>
+          <span style="font-size:12px;color:var(--muted);">1 run today</span>
+        </div>
+        <div class="flex items-center justify-between py-2">
+          <div class="flex items-center gap-3">
+            <span style="width:8px;height:8px;border-radius:50%;background:#0D9488;display:inline-block;"></span>
+            <span style="font-size:13px;font-weight:600;">Low Stock Alert → WhatsApp Group</span>
+          </div>
+          <span style="font-size:12px;color:var(--muted);">6 runs today</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

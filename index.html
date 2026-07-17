@@ -273,7 +273,7 @@ details[open] summary .chev{ transform:rotate(180deg); }
         <div style="font-size:13px;color:rgba(250,247,242,.45);margin-top:4px;font-weight:600;">Reports Automated</div>
       </div>
       <div>
-        <div class="sv text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="4">0</span></div>
+        <div class="sv text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="6">0</span></div>
         <div style="font-size:13px;color:rgba(250,247,242,.45);margin-top:4px;font-weight:600;">Shipped Products</div>
       </div>
       <div>
@@ -397,7 +397,7 @@ details[open] summary .chev{ transform:rotate(180deg); }
       <p style="color:rgba(250,247,242,.5);max-width:480px;line-height:1.75;">Real tools, real users — not mockups. Every product here runs in production.</p>
     </div>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div class="glass rounded-2xl overflow-hidden reveal reveal-delay-1">
         <div class="carousel" data-carousel="nexretail">
           <img class="carousel-slide active" src="assets/work/nexretail-1.png" alt="NexRetail Command Center" data-lb-index="0" data-lb-group="nexretail"/>
@@ -475,6 +475,42 @@ details[open] summary .chev{ transform:rotate(180deg); }
           <p style="color:rgba(250,247,242,.5);font-size:13px;line-height:1.7;">Startup metrics dashboard — live MRR, churn, signup funnel, and cohort retention in one view. Built for founders who need clarity, not spreadsheets.</p>
         </div>
       </div>
+
+      <div class="glass rounded-2xl overflow-hidden reveal reveal-delay-1">
+        <div class="carousel" data-carousel="relayflow">
+          <img class="carousel-slide active" src="assets/work/relayflow-1.png" alt="RelayFlow Workflow" data-lb-index="0" data-lb-group="relayflow"/>
+          <img class="carousel-slide" src="assets/work/relayflow-2.png" alt="RelayFlow Integrations" data-lb-index="1" data-lb-group="relayflow"/>
+          <button class="carousel-arrow prev">‹</button>
+          <button class="carousel-arrow next">›</button>
+          <div class="carousel-dots"><button class="active"></button><button></button></div>
+          <div class="carousel-expand">⤢</div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <h3 class="font-display text-lg font-bold" style="color:var(--paper);">RelayFlow</h3>
+            <span class="badge" style="flex-shrink:0;background:rgba(250,247,242,.08);color:var(--paper);border:1px solid rgba(250,247,242,.15);">Automation</span>
+          </div>
+          <p style="color:rgba(250,247,242,.5);font-size:13px;line-height:1.7;">No-code workflow automation — new orders trigger WhatsApp alerts, invoice generation, and customer emails automatically. Zero manual follow-up.</p>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl overflow-hidden reveal reveal-delay-2">
+        <div class="carousel" data-carousel="copperco">
+          <img class="carousel-slide active" src="assets/work/copperco-1.png" alt="Copper & Co. Homepage" data-lb-index="0" data-lb-group="copperco"/>
+          <img class="carousel-slide" src="assets/work/copperco-2.png" alt="Copper & Co. Menu" data-lb-index="1" data-lb-group="copperco"/>
+          <button class="carousel-arrow prev">‹</button>
+          <button class="carousel-arrow next">›</button>
+          <div class="carousel-dots"><button class="active"></button><button></button></div>
+          <div class="carousel-expand">⤢</div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <h3 class="font-display text-lg font-bold" style="color:var(--paper);">Copper &amp; Co.</h3>
+            <span class="badge badge-dark" style="flex-shrink:0;">Website Design</span>
+          </div>
+          <p style="color:rgba(250,247,242,.5);font-size:13px;line-height:1.7;">Café brand site built to convert browsers into bookings — warm visual identity, menu showcase, and a reservation flow that fits on one screen.</p>
+        </div>
+      </div>
     </div>
 
     <!-- trust stats -->
@@ -484,7 +520,7 @@ details[open] summary .chev{ transform:rotate(180deg); }
         <div style="font-size:12px;color:rgba(250,247,242,.35);margin-top:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">Reports Automated</div>
       </div>
       <div class="reveal reveal-delay-2">
-        <div class="sv text-3xl md:text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="4">0</span></div>
+        <div class="sv text-3xl md:text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="6">0</span></div>
         <div style="font-size:12px;color:rgba(250,247,242,.35);margin-top:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">Live Products</div>
       </div>
       <div class="reveal reveal-delay-3">
@@ -1024,6 +1060,14 @@ const LB_IMGS={
     {src:'assets/work/pulseboard-1.png',alt:'PulseBoard Overview'},
     {src:'assets/work/pulseboard-2.png',alt:'PulseBoard Revenue'},
     {src:'assets/work/pulseboard-3.png',alt:'PulseBoard Customers'}
+  ],
+  relayflow:[
+    {src:'assets/work/relayflow-1.png',alt:'RelayFlow Workflow'},
+    {src:'assets/work/relayflow-2.png',alt:'RelayFlow Integrations'}
+  ],
+  copperco:[
+    {src:'assets/work/copperco-1.png',alt:'Copper & Co. Homepage'},
+    {src:'assets/work/copperco-2.png',alt:'Copper & Co. Menu'}
   ]
 };
 let lbGrp=null,lbIdx=0;

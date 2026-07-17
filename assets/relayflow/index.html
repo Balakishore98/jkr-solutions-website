@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RelayFlow — Workflow Automation</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#F7F8FA; --panel:#FFFFFF; --line:#E7E9EE; --ink:#14161F; --muted:#6B7280; --teal:#0EA5A0; --teal-light:#14B8A6; --amber:#F59E0B; --red:#EF4444; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); }
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:14px; box-shadow:0 1px 2px rgba(16,24,40,.04); }
+  .mono{ font-variant-numeric:tabular-nums; }
+  .node{ background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; min-width:170px; }
+  .node.active{ border-color:var(--teal); box-shadow:0 0 0 3px rgba(14,165,160,.12); }
+</style>
+</head>
+<body>
+
+<div class="flex min-h-screen">
+  <!-- SIDEBAR -->
+  <aside class="w-60 flex-shrink-0 border-r p-6 flex flex-col" style="border-color:var(--line); background:#fff;">
+    <div class="flex items-center gap-2.5 mb-10">
+      <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#0EA5A0,#14B8A6);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;">R</div>
+      <span style="font-weight:800;font-size:16px;letter-spacing:-.02em;">RelayFlow</span>
+    </div>
+    <nav class="flex flex-col gap-1 text-sm">
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="background:rgba(14,165,160,.08);color:#0D9488;font-weight:600;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        Workflows
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="color:var(--muted);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Run History
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="color:var(--muted);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        Integrations
+      </a>
+      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg" style="color:var(--muted);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="flex-1 p-8">
+    <div class="flex items-center justify-between mb-7">
+      <div>
+        <h1 style="font-size:21px;font-weight:800;letter-spacing:-.01em;">New Order → WhatsApp + Invoice</h1>
+        <p style="font-size:13px;color:var(--muted);margin-top:2px;">Active · runs automatically on every new row</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span style="font-size:12px;padding:5px 12px;border-radius:99px;background:rgba(14,165,160,.1);color:#0D9488;font-weight:700;display:flex;align-items:center;gap:6px;"><span style="width:6px;height:6px;border-radius:50%;background:#0D9488;display:inline-block;"></span>Live</span>
+        <button class="px-4 py-2 rounded-lg text-sm font-semibold" style="background:var(--teal);color:#fff;">Run Now</button>
+      </div>
+    </div>
+
+    <!-- Flow diagram -->
+    <div class="card p-8 mb-6">
+      <div class="flex items-center gap-3 overflow-x-auto pb-2">
+        <div class="node active">
+          <div class="flex items-center gap-2 mb-1.5">
+            <div style="width:22px;height:22px;border-radius:6px;background:#0EA5A0;display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+            <span style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;">Trigger</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;">New row in Sheet</div>
+        </div>
+        <svg width="28" height="16" viewBox="0 0 28 16" fill="none" stroke="#CBD2DC" stroke-width="2"><path d="M2 8h22m0 0-6-6m6 6-6 6"/></svg>
+        <div class="node">
+          <div class="flex items-center gap-2 mb-1.5">
+            <div style="width:22px;height:22px;border-radius:6px;background:#25D366;display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.07L2 22l5.07-1.35A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg></div>
+            <span style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;">Action</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;">Send WhatsApp alert</div>
+        </div>
+        <svg width="28" height="16" viewBox="0 0 28 16" fill="none" stroke="#CBD2DC" stroke-width="2"><path d="M2 8h22m0 0-6-6m6 6-6 6"/></svg>
+        <div class="node">
+          <div class="flex items-center gap-2 mb-1.5">
+            <div style="width:22px;height:22px;border-radius:6px;background:#F59E0B;display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+            <span style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;">Action</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;">Generate invoice PDF</div>
+        </div>
+        <svg width="28" height="16" viewBox="0 0 28 16" fill="none" stroke="#CBD2DC" stroke-width="2"><path d="M2 8h22m0 0-6-6m6 6-6 6"/></svg>
+        <div class="node">
+          <div class="flex items-center gap-2 mb-1.5">
+            <div style="width:22px;height:22px;border-radius:6px;background:#6366F1;display:flex;align-items:center;justify-content:center;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg></div>
+            <span style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;">Action</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;">Email customer</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI row -->
+    <div class="grid grid-cols-4 gap-4 mb-6">
+      <div class="card p-5">
+        <div style="font-size:12px;color:var(--muted);font-weight:600;">Runs today</div>
+        <div class="mono" style="font-size:24px;font-weight:800;margin-top:6px;">142</div>
+      </div>
+      <div class="card p-5">
+        <div style="font-size:12px;color:var(--muted);font-weight:600;">Success rate</div>
+        <div class="mono" style="font-size:24px;font-weight:800;margin-top:6px;color:#0D9488;">99.3%</div>
+      </div>
+      <div class="card p-5">
+        <div style="font-size:12px;color:var(--muted);font-weight:600;">Avg run time</div>
+        <div class="mono" style="font-size:24px;font-weight:800;margin-top:6px;">2.4s</div>
+      </div>
+      <div class="card p-5">
+        <div style="font-size:12px;color:var(--muted);font-weight:600;">Hours saved / mo</div>
+        <div class="mono" style="font-size:24px;font-weight:800;margin-top:6px;color:#0D9488;">31.5</div>
+      </div>
+    </div>
+
+    <!-- Run log -->
+    <div class="card p-6">
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;">Recent Runs</h3>
+      <table class="w-full" style="font-size:13px;">
+        <thead>
+          <tr style="color:var(--muted);text-align:left;border-bottom:1px solid var(--line);">
+            <th class="pb-3 font-medium">Trigger</th>
+            <th class="pb-3 font-medium">Steps</th>
+            <th class="pb-3 font-medium">Status</th>
+            <th class="pb-3 font-medium">Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--line);">
+            <td class="py-3">Order #4821 — Priya S.</td>
+            <td class="py-3" style="color:var(--muted);">3/3 completed</td>
+            <td class="py-3"><span style="background:rgba(14,165,160,.1);color:#0D9488;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700;">Success</span></td>
+            <td class="py-3" style="color:var(--muted);">2 min ago</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--line);">
+            <td class="py-3">Order #4820 — Ramesh K.</td>
+            <td class="py-3" style="color:var(--muted);">3/3 completed</td>
+            <td class="py-3"><span style="background:rgba(14,165,160,.1);color:#0D9488;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700;">Success</span></td>
+            <td class="py-3" style="color:var(--muted);">18 min ago</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--line);">
+            <td class="py-3">Order #4819 — Divya M.</td>
+            <td class="py-3" style="color:var(--muted);">2/3 completed</td>
+            <td class="py-3"><span style="background:rgba(245,158,11,.1);color:#B45309;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700;">Retried</span></td>
+            <td class="py-3" style="color:var(--muted);">41 min ago</td>
+          </tr>
+          <tr>
+            <td class="py-3">Order #4818 — Arjun T.</td>
+            <td class="py-3" style="color:var(--muted);">3/3 completed</td>
+            <td class="py-3"><span style="background:rgba(14,165,160,.1);color:#0D9488;padding:2px 10px;border-radius:99px;font-size:11px;font-weight:700;">Success</span></td>
+            <td class="py-3" style="color:var(--muted);">1 hr ago</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>
