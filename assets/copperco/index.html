@@ -6,83 +6,357 @@
 <title>Copper & Co. — Neighbourhood Café</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{ --cream:#FBF3E7; --terracotta:#C1552C; --terracotta-dark:#9C4322; --olive:#3D3A2E; --charcoal:#2B2620; --muted:#7A7060; }
+  :root{
+    --cream:#FBF3E7; --cream2:#F5E8D6; --terracotta:#C1552C; --terracotta-dark:#9C4322;
+    --terracotta-light:#E8956B; --olive:#3D3A2E; --charcoal:#2B2620; --charcoal2:#231F1A;
+    --muted:#7A7060; --gold:#D8A24C; --cream-line:rgba(61,58,46,.12);
+  }
   *{ box-sizing:border-box; }
   body{ margin:0; font-family:'Manrope',sans-serif; background:var(--cream); color:var(--charcoal); }
   .disp{ font-family:'Fraunces',serif; }
+  .eyebrow{ display:inline-block; padding:6px 16px; border-radius:99px; font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+  .bean{ position:absolute; }
+  .bean svg{ display:block; }
+  @keyframes float{ 0%,100%{ transform:translateY(0) rotate(var(--r,0deg)); } 50%{ transform:translateY(-14px) rotate(var(--r,0deg)); } }
+  @keyframes steam{ 0%{ transform:translateY(0) scaleX(1); opacity:.55; } 50%{ transform:translateY(-16px) scaleX(1.3); opacity:.15; } 100%{ transform:translateY(-30px) scaleX(1); opacity:0; } }
+  .steam-path{ transform-origin:bottom center; animation:steam 3.2s ease-in-out infinite; }
+  .steam-path:nth-child(2){ animation-delay:.5s; }
+  .steam-path:nth-child(3){ animation-delay:1s; }
+  .card{ background:#fff; border:1px solid var(--cream-line); border-radius:18px; }
+  .beanpattern{ background-image:radial-gradient(circle at 3px 3px, rgba(251,247,242,.18) 1.6px, transparent 0); background-size:22px 22px; }
 </style>
 </head>
 <body>
 
 <!-- NAV -->
-<nav class="flex items-center justify-between px-10 py-6 max-w-6xl mx-auto">
-  <div class="disp font-bold text-xl" style="color:var(--terracotta-dark);">Copper &amp; Co.</div>
-  <div class="hidden md:flex items-center gap-8 text-sm font-semibold" style="color:var(--charcoal);">
-    <span>Menu</span><span>Our Story</span><span>Gallery</span><span>Visit Us</span>
+<nav style="position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);background:rgba(251,247,242,.85);border-bottom:1px solid var(--cream-line);">
+  <div class="flex items-center justify-between px-10 py-5 max-w-6xl mx-auto">
+    <div class="flex items-center gap-2.5">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M4 8h13a3 3 0 0 1 0 6h-1" stroke="#C1552C" stroke-width="1.6" stroke-linecap="round"/><path d="M4 8v7a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V8" stroke="#C1552C" stroke-width="1.6"/><path d="M8 3.5c-.6.7-.6 1.3 0 2M11 3.5c-.6.7-.6 1.3 0 2" stroke="#D8A24C" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <span class="disp font-bold text-xl" style="color:var(--terracotta-dark);">Copper &amp; Co.</span>
+    </div>
+    <div class="hidden md:flex items-center gap-8 text-sm font-semibold" style="color:var(--charcoal);">
+      <span>Menu</span><span>Our Story</span><span>Gallery</span><span>Visit Us</span>
+    </div>
+    <button class="px-5 py-2.5 rounded-full text-sm font-bold text-white" style="background:var(--terracotta);">Book a Table</button>
   </div>
-  <button class="px-5 py-2.5 rounded-full text-sm font-bold text-white" style="background:var(--terracotta);">Book a Table</button>
 </nav>
 
 <!-- HERO -->
-<section class="max-w-6xl mx-auto px-10 py-16 grid md:grid-cols-2 gap-12 items-center">
-  <div>
-    <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold mb-6" style="background:rgba(193,85,44,.1);color:var(--terracotta-dark);letter-spacing:.05em;">EST. 2019 · CHENNAI</span>
-    <h1 class="disp font-bold mb-6" style="font-size:3.2rem;line-height:1.05;color:var(--charcoal);">Coffee, slow<br>mornings &amp;<br><span style="color:var(--terracotta);">honest food.</span></h1>
-    <p style="font-size:1.05rem;color:var(--muted);line-height:1.7;max-width:420px;margin-bottom:2rem;">A neighbourhood café serving small-batch coffee and seasonal plates — no rush, no pretence, just good mornings done right.</p>
-    <div class="flex gap-4">
-      <button class="px-7 py-3.5 rounded-full font-bold text-sm text-white" style="background:var(--terracotta);">Reserve a Table</button>
-      <button class="px-7 py-3.5 rounded-full font-bold text-sm" style="border:1.5px solid var(--charcoal);color:var(--charcoal);">View Menu</button>
+<section style="position:relative;overflow:hidden;">
+  <div class="max-w-6xl mx-auto px-10 pt-16 pb-20 grid md:grid-cols-2 gap-12 items-center" style="position:relative;">
+
+    <div class="bean" style="top:60px;left:-10px;--r:-18deg;animation:float 5s ease-in-out infinite;opacity:.5;">
+      <svg width="34" height="34" viewBox="0 0 24 24" style="transform:rotate(-18deg);"><ellipse cx="12" cy="12" rx="9" ry="11" fill="#9C4322"/><path d="M12 1c-3 4-3 18 0 22" stroke="#6B2E15" stroke-width="1.4" fill="none"/></svg>
     </div>
-  </div>
-  <div style="border-radius:24px;overflow:hidden;aspect-ratio:4/5;background:linear-gradient(135deg,#D9C4A3,#C1552C 60%,#9C4322);position:relative;">
-    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
-      <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="#FBF3E7" stroke-width="1.2" opacity=".6"><path d="M17 8h1a4 4 0 1 1 0 8h-1M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+    <div class="bean" style="bottom:40px;left:60px;--r:14deg;animation:float 6.5s ease-in-out infinite 1s;opacity:.35;">
+      <svg width="22" height="22" viewBox="0 0 24 24" style="transform:rotate(14deg);"><ellipse cx="12" cy="12" rx="9" ry="11" fill="#C1552C"/><path d="M12 1c-3 4-3 18 0 22" stroke="#7A3013" stroke-width="1.4" fill="none"/></svg>
+    </div>
+
+    <div style="position:relative;z-index:2;">
+      <span class="eyebrow" style="background:rgba(193,85,44,.1);color:var(--terracotta-dark);">Est. 2019 · Chennai</span>
+      <h1 class="disp font-bold mt-6 mb-6" style="font-size:3.4rem;line-height:1.06;color:var(--charcoal);">Coffee, slow<br>mornings &amp;<br><span style="color:var(--terracotta);">honest food.</span></h1>
+      <p style="font-size:1.05rem;color:var(--muted);line-height:1.75;max-width:430px;margin-bottom:2.2rem;">A neighbourhood café serving small-batch, single-origin coffee and seasonal plates — no rush, no pretence, just good mornings done right.</p>
+      <div class="flex gap-4 mb-8">
+        <button class="px-7 py-3.5 rounded-full font-bold text-sm text-white" style="background:var(--terracotta);box-shadow:0 10px 24px -8px rgba(193,85,44,.5);">Reserve a Table</button>
+        <button class="px-7 py-3.5 rounded-full font-bold text-sm" style="border:1.5px solid var(--charcoal);color:var(--charcoal);">View Menu</button>
+      </div>
+      <div class="flex items-center gap-5">
+        <div class="flex" style="margin-left:4px;">
+          <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#E8956B,#C1552C);border:2.5px solid var(--cream);margin-left:-8px;"></div>
+          <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#9C4322,#3D3A2E);border:2.5px solid var(--cream);margin-left:-8px;"></div>
+          <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#D8A24C,#C1552C);border:2.5px solid var(--cream);margin-left:-8px;"></div>
+        </div>
+        <div style="font-size:13px;color:var(--muted);"><b style="color:var(--charcoal);">1,200+</b> regulars &amp; counting</div>
+      </div>
+    </div>
+
+    <div style="position:relative;">
+      <div style="border-radius:28px;overflow:hidden;aspect-ratio:4/5;background:radial-gradient(circle at 30% 20%,#E8B688,transparent 55%), linear-gradient(160deg,#D9A876,#C1552C 55%,#7A3013);position:relative;box-shadow:0 30px 60px -20px rgba(156,67,34,.45);">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <svg width="150" height="170" viewBox="0 0 150 170">
+            <g class="steam-path"><path d="M60 40c-8-10 8-16 0-28" stroke="#FBF3E7" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/></g>
+            <g class="steam-path"><path d="M75 40c-8-12 8-18 0-30" stroke="#FBF3E7" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/></g>
+            <g class="steam-path"><path d="M90 40c-8-10 8-16 0-28" stroke="#FBF3E7" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/></g>
+            <ellipse cx="75" cy="128" rx="52" ry="10" fill="#7A3013" opacity=".55"/>
+            <path d="M32 70h86l-8 55a14 14 0 0 1-14 12H54a14 14 0 0 1-14-12z" fill="#FBF3E7"/>
+            <ellipse cx="75" cy="70" rx="43" ry="9" fill="#4A2A16"/>
+            <ellipse cx="75" cy="70" rx="43" ry="9" fill="none" stroke="#3D2312" stroke-width="1.5"/>
+            <path d="M118 78c16-2 26 8 24 20s-16 18-28 14" stroke="#FBF3E7" stroke-width="6" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div style="position:absolute;top:20px;right:20px;width:64px;height:64px;border-radius:50%;background:rgba(251,247,242,.92);display:flex;align-items:center;justify-content:center;text-align:center;transform:rotate(8deg);box-shadow:0 8px 20px rgba(0,0,0,.2);">
+          <span class="disp font-bold" style="font-size:10px;line-height:1.3;color:var(--terracotta-dark);">SINCE<br>2019</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- STATS STRIP -->
-<div style="background:var(--charcoal);padding:2.5rem 0;">
+<div class="beanpattern" style="background:var(--charcoal);padding:2.6rem 0;">
   <div class="max-w-6xl mx-auto px-10 grid grid-cols-3 text-center" style="color:var(--cream);">
-    <div><div class="disp font-bold text-3xl">6</div><div style="font-size:12px;opacity:.6;margin-top:4px;letter-spacing:.05em;">YEARS SERVING</div></div>
-    <div><div class="disp font-bold text-3xl">40+</div><div style="font-size:12px;opacity:.6;margin-top:4px;letter-spacing:.05em;">MENU ITEMS</div></div>
-    <div><div class="disp font-bold text-3xl">4.8★</div><div style="font-size:12px;opacity:.6;margin-top:4px;letter-spacing:.05em;">GOOGLE RATING</div></div>
+    <div><div class="disp font-bold text-3xl" style="color:var(--gold);">6</div><div style="font-size:12px;opacity:.6;margin-top:4px;letter-spacing:.05em;">YEARS SERVING</div></div>
+    <div><div class="disp font-bold text-3xl" style="color:var(--gold);">40+</div><div style="font-size:12px;opacity:.6;margin-top:4px;letter-spacing:.05em;">MENU ITEMS</div></div>
+    <div><div class="disp font-bold text-3xl" style="color:var(--gold);">4.8★</div><div style="font-size:12px;opacity:.6;margin-top:4px;letter-spacing:.05em;">GOOGLE RATING</div></div>
   </div>
 </div>
 
-<!-- MENU -->
+<!-- BEAN TO CUP -->
 <section class="max-w-6xl mx-auto px-10 py-20">
-  <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold mb-4" style="background:rgba(193,85,44,.1);color:var(--terracotta-dark);letter-spacing:.05em;">THE MENU</span>
-  <h2 class="disp font-bold text-4xl mb-12" style="color:var(--charcoal);">Small plates, big flavour</h2>
+  <div class="text-center mb-14">
+    <span class="eyebrow" style="background:rgba(193,85,44,.1);color:var(--terracotta-dark);">Our Process</span>
+    <h2 class="disp font-bold text-4xl mt-4" style="color:var(--charcoal);">From bean to cup</h2>
+  </div>
+  <div class="grid md:grid-cols-4 gap-6">
+    <div class="text-center px-3">
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(193,85,44,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C1552C" stroke-width="1.7"><path d="M12 2C8 6 4 10 4 15a8 8 0 0 0 16 0c0-5-4-9-8-13z"/></svg>
+      </div>
+      <div class="disp font-bold text-sm mb-2" style="color:var(--terracotta-dark);">01 · SOURCE</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;">Single-origin beans from Coorg &amp; Chikmagalur estates, picked at peak ripeness.</p>
+    </div>
+    <div class="text-center px-3">
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(193,85,44,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C1552C" stroke-width="1.7"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8" stroke-linecap="round"/></svg>
+      </div>
+      <div class="disp font-bold text-sm mb-2" style="color:var(--terracotta-dark);">02 · ROAST</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;">Small-batch roasted in-house, twice weekly, to a light-medium profile.</p>
+    </div>
+    <div class="text-center px-3">
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(193,85,44,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C1552C" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1" fill="#C1552C" stroke="none"/><circle cx="14" cy="9" r="1" fill="#C1552C" stroke="none"/><circle cx="12" cy="14" r="1" fill="#C1552C" stroke="none"/><circle cx="15" cy="13" r="1" fill="#C1552C" stroke="none"/></svg>
+      </div>
+      <div class="disp font-bold text-sm mb-2" style="color:var(--terracotta-dark);">03 · GRIND</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;">Ground to order per brew method — filter, pour-over, or espresso.</p>
+    </div>
+    <div class="text-center px-3">
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(193,85,44,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C1552C" stroke-width="1.7"><path d="M4 8h13a3 3 0 0 1 0 6h-1"/><path d="M4 8v7a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V8"/></svg>
+      </div>
+      <div class="disp font-bold text-sm mb-2" style="color:var(--terracotta-dark);">04 · SERVE</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;">Brewed fresh, cup by cup — no batch-brewed pots sitting on a warmer.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section style="background:var(--cream2);padding:5.5rem 0;">
+  <div class="max-w-6xl mx-auto px-10">
+    <div class="flex items-end justify-between mb-12 flex-wrap gap-4">
+      <div>
+        <span class="eyebrow" style="background:rgba(193,85,44,.12);color:var(--terracotta-dark);">The Menu</span>
+        <h2 class="disp font-bold text-4xl mt-4" style="color:var(--charcoal);">Small plates, big flavour</h2>
+      </div>
+      <div class="flex gap-2">
+        <span class="px-4 py-2 rounded-full text-xs font-bold text-white" style="background:var(--terracotta);">Coffee</span>
+        <span class="px-4 py-2 rounded-full text-xs font-bold" style="color:var(--muted);border:1px solid var(--cream-line);">Food</span>
+        <span class="px-4 py-2 rounded-full text-xs font-bold" style="color:var(--muted);border:1px solid var(--cream-line);">Specials</span>
+      </div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="card p-6">
+        <div style="width:100%;aspect-ratio:4/3;border-radius:14px;background:linear-gradient(135deg,#E8C9A0,#C1552C);margin-bottom:16px;position:relative;overflow:hidden;">
+          <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#FBF3E7" stroke-width="1.3" style="position:absolute;bottom:14px;right:14px;opacity:.8;"><path d="M4 8h13a3 3 0 0 1 0 6h-1"/><path d="M4 8v7a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V8"/></svg>
+        </div>
+        <div class="flex items-start justify-between gap-2">
+          <h3 class="disp font-bold text-lg mb-1">Filter Coffee Flight</h3>
+          <span class="disp font-bold" style="color:var(--terracotta);white-space:nowrap;">₹280</span>
+        </div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">Three single-origin pours, tasting notes included.</p>
+      </div>
+      <div class="card p-6">
+        <div style="width:100%;aspect-ratio:4/3;border-radius:14px;background:linear-gradient(135deg,#C99A6C,#8A4A22);margin-bottom:16px;position:relative;overflow:hidden;">
+          <span class="disp font-bold" style="position:absolute;top:12px;left:12px;background:var(--gold);color:var(--charcoal);font-size:10px;padding:4px 10px;border-radius:99px;">NEW</span>
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FBF3E7" stroke-width="1.3" style="position:absolute;bottom:14px;right:14px;opacity:.8;"><path d="M12 2c-2 3-1 5 0 6-1 1-4 3-4 8a5 5 0 0 0 10 0c0-5-3-7-4-8 1-1 2-3 0-6z"/></svg>
+        </div>
+        <div class="flex items-start justify-between gap-2">
+          <h3 class="disp font-bold text-lg mb-1">Cardamom Cortado</h3>
+          <span class="disp font-bold" style="color:var(--terracotta);white-space:nowrap;">₹240</span>
+        </div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">Espresso, steamed milk, a whisper of green cardamom.</p>
+      </div>
+      <div class="card p-6">
+        <div style="width:100%;aspect-ratio:4/3;border-radius:14px;background:linear-gradient(135deg,#B08050,#3D3A2E);margin-bottom:16px;position:relative;overflow:hidden;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FBF3E7" stroke-width="1.3" style="position:absolute;bottom:14px;right:14px;opacity:.8;"><path d="M4 8h13a3 3 0 0 1 0 6h-1"/><path d="M4 8v7a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V8"/><path d="M9 3.5c-.6.7-.6 1.3 0 2M12.5 3.5c-.6.7-.6 1.3 0 2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="flex items-start justify-between gap-2">
+          <h3 class="disp font-bold text-lg mb-1">Cold Brew Tonic</h3>
+          <span class="disp font-bold" style="color:var(--terracotta);white-space:nowrap;">₹260</span>
+        </div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">18-hour cold brew, tonic water, orange peel.</p>
+      </div>
+      <div class="card p-6">
+        <div style="width:100%;aspect-ratio:4/3;border-radius:14px;background:linear-gradient(135deg,#E8D4B0,#C99A6C);margin-bottom:16px;position:relative;overflow:hidden;">
+          <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#5C4023" stroke-width="1.3" style="position:absolute;bottom:14px;right:14px;opacity:.75;"><path d="M3 12c3-6 15-6 18 0-3 2-15 2-18 0z"/><path d="M6 12c1-2 11-2 12 0" stroke-linecap="round"/></svg>
+        </div>
+        <div class="flex items-start justify-between gap-2">
+          <h3 class="disp font-bold text-lg mb-1">Butter Croissant</h3>
+          <span class="disp font-bold" style="color:var(--terracotta);white-space:nowrap;">₹180</span>
+        </div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">Laminated 36 hours, baked fresh each morning.</p>
+      </div>
+      <div class="card p-6">
+        <div style="width:100%;aspect-ratio:4/3;border-radius:14px;background:linear-gradient(135deg,#D9C4A3,#9C4322);margin-bottom:16px;position:relative;overflow:hidden;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#FBF3E7" stroke-width="1.3" style="position:absolute;bottom:14px;right:14px;opacity:.8;"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 14l4-4 4 4 4-6 4 4"/></svg>
+        </div>
+        <div class="flex items-start justify-between gap-2">
+          <h3 class="disp font-bold text-lg mb-1">Sourdough Toast</h3>
+          <span class="disp font-bold" style="color:var(--terracotta);white-space:nowrap;">₹320</span>
+        </div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">House-baked, whipped ricotta, seasonal preserve.</p>
+      </div>
+      <div class="card p-6">
+        <div style="width:100%;aspect-ratio:4/3;border-radius:14px;background:linear-gradient(135deg,#C1552C,#3D3A2E);margin-bottom:16px;position:relative;overflow:hidden;">
+          <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#FBF3E7" stroke-width="1.3" style="position:absolute;bottom:14px;right:14px;opacity:.8;"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+        </div>
+        <div class="flex items-start justify-between gap-2">
+          <h3 class="disp font-bold text-lg mb-1">Slow Egg Bowl</h3>
+          <span class="disp font-bold" style="color:var(--terracotta);white-space:nowrap;">₹360</span>
+        </div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6;">63° egg, roasted greens, chilli oil, herb crumb.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section style="background:var(--charcoal);padding:6rem 0;position:relative;overflow:hidden;">
+  <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(193,85,44,.15),transparent 65%);top:-150px;right:-150px;filter:blur(40px);"></div>
+  <div class="max-w-6xl mx-auto px-10" style="position:relative;">
+    <div class="text-center mb-12">
+      <span class="eyebrow" style="background:rgba(216,162,76,.15);color:var(--gold);">Gallery</span>
+      <h2 class="disp font-bold text-4xl mt-4" style="color:var(--cream);">Inside Copper &amp; Co.</h2>
+    </div>
+    <div class="grid grid-cols-3 gap-5" style="grid-auto-rows:140px;">
+      <div style="grid-row:span 2;border-radius:18px;background:linear-gradient(160deg,#D9A876,#7A3013);position:relative;overflow:hidden;">
+        <svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#FBF3E7" stroke-width="1.1" style="position:absolute;bottom:16px;left:16px;opacity:.5;"><ellipse cx="12" cy="12" rx="8" ry="10"/><path d="M12 2c-2.5 4-2.5 16 0 20" /></svg>
+      </div>
+      <div class="beanpattern" style="border-radius:18px;background:var(--olive);"></div>
+      <div style="grid-row:span 2;border-radius:18px;background:linear-gradient(200deg,#E8956B,#9C4322);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#FBF3E7" stroke-width="1" opacity=".5"><path d="M4 8h13a3 3 0 0 1 0 6h-1" stroke-width="1"/><path d="M4 8v7a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V8"/></svg>
+      </div>
+      <div style="border-radius:18px;background:linear-gradient(135deg,#C1552C,#5C2712);"></div>
+      <div style="border-radius:18px;background:var(--gold);display:flex;align-items:center;justify-content:center;">
+        <span class="disp font-bold" style="color:var(--charcoal);font-size:15px;">Est. 2019</span>
+      </div>
+      <div style="grid-column:span 2;border-radius:18px;background:linear-gradient(120deg,#3D3A2E,#1F1C16);position:relative;display:flex;align-items:center;padding:0 24px;">
+        <p class="disp" style="color:var(--cream);font-size:15px;font-style:italic;opacity:.75;">"Every table has a window seat worth fighting for."</p>
+      </div>
+      <div style="border-radius:18px;background:linear-gradient(160deg,#D9C4A3,#B07A2E);"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="max-w-6xl mx-auto px-10 py-20">
+  <div class="text-center mb-14">
+    <span class="eyebrow" style="background:rgba(193,85,44,.1);color:var(--terracotta-dark);">Regulars Say</span>
+    <h2 class="disp font-bold text-4xl mt-4" style="color:var(--charcoal);">Word of mouth, mostly</h2>
+  </div>
   <div class="grid md:grid-cols-3 gap-6">
-    <div class="rounded-2xl p-6" style="background:#fff;border:1px solid rgba(61,58,46,.1);">
-      <div style="width:100%;aspect-ratio:1;border-radius:14px;background:linear-gradient(135deg,#E8C9A0,#C1552C);margin-bottom:16px;"></div>
-      <h3 class="disp font-bold text-lg mb-1">Filter Coffee Flight</h3>
-      <p style="font-size:13px;color:var(--muted);line-height:1.6;">Three single-origin pours, tasting notes included.</p>
-      <div class="disp font-bold mt-3" style="color:var(--terracotta);">₹280</div>
+    <div class="card p-7">
+      <div class="flex gap-1 mb-4">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+      </div>
+      <p style="font-size:14px;color:var(--charcoal);line-height:1.7;margin-bottom:18px;">"The filter coffee flight converted me from a chain-café regular to a Copper regular in one visit."</p>
+      <div class="flex items-center gap-3">
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#E8956B,#C1552C);"></div>
+        <div><div style="font-size:13px;font-weight:700;">Meera R.</div><div style="font-size:11px;color:var(--muted);">Regular since 2020</div></div>
+      </div>
     </div>
-    <div class="rounded-2xl p-6" style="background:#fff;border:1px solid rgba(61,58,46,.1);">
-      <div style="width:100%;aspect-ratio:1;border-radius:14px;background:linear-gradient(135deg,#D9C4A3,#9C4322);margin-bottom:16px;"></div>
-      <h3 class="disp font-bold text-lg mb-1">Sourdough Toast</h3>
-      <p style="font-size:13px;color:var(--muted);line-height:1.6;">House-baked, whipped ricotta, seasonal preserve.</p>
-      <div class="disp font-bold mt-3" style="color:var(--terracotta);">₹320</div>
+    <div class="card p-7">
+      <div class="flex gap-1 mb-4">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+      </div>
+      <p style="font-size:14px;color:var(--charcoal);line-height:1.7;margin-bottom:18px;">"Best sourdough in the neighbourhood, and they remember your order by the second visit."</p>
+      <div class="flex items-center gap-3">
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#9C4322,#3D3A2E);"></div>
+        <div><div style="font-size:13px;font-weight:700;">Arjun T.</div><div style="font-size:11px;color:var(--muted);">Weekend regular</div></div>
+      </div>
     </div>
-    <div class="rounded-2xl p-6" style="background:#fff;border:1px solid rgba(61,58,46,.1);">
-      <div style="width:100%;aspect-ratio:1;border-radius:14px;background:linear-gradient(135deg,#C1552C,#3D3A2E);margin-bottom:16px;"></div>
-      <h3 class="disp font-bold text-lg mb-1">Slow Egg Bowl</h3>
-      <p style="font-size:13px;color:var(--muted);line-height:1.6;">63° egg, roasted greens, chilli oil, herb crumb.</p>
-      <div class="disp font-bold mt-3" style="color:var(--terracotta);">₹360</div>
+    <div class="card p-7">
+      <div class="flex gap-1 mb-4">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="#D8A24C"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>
+      </div>
+      <p style="font-size:14px;color:var(--charcoal);line-height:1.7;margin-bottom:18px;">"Quiet enough to work from, warm enough to linger. My unofficial second office."</p>
+      <div class="flex items-center gap-3">
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#D8A24C,#C1552C);"></div>
+        <div><div style="font-size:13px;font-weight:700;">Divya M.</div><div style="font-size:11px;color:var(--muted);">Freelancer</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISIT US -->
+<section style="background:var(--cream2);padding:6rem 0;">
+  <div class="max-w-6xl mx-auto px-10 grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <span class="eyebrow" style="background:rgba(193,85,44,.12);color:var(--terracotta-dark);">Visit Us</span>
+      <h2 class="disp font-bold text-4xl mt-4 mb-6" style="color:var(--charcoal);">Come sit a while</h2>
+      <div class="flex items-start gap-3 mb-5">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C1552C" stroke-width="1.8" style="margin-top:2px;flex-shrink:0;"><path d="M12 22s7-7.5 7-13a7 7 0 0 0-14 0c0 5.5 7 13 7 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <div style="font-size:14px;color:var(--charcoal);line-height:1.6;">12 Cathedral Road, Gopalapuram<br>Chennai 600086</div>
+      </div>
+      <div class="flex items-start gap-3 mb-8">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C1552C" stroke-width="1.8" style="margin-top:2px;flex-shrink:0;"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        <div style="font-size:14px;color:var(--charcoal);line-height:1.9;">
+          Mon – Fri &nbsp; 7:30am – 9:00pm<br>
+          Sat – Sun &nbsp; 8:00am – 10:00pm
+        </div>
+      </div>
+      <button class="px-7 py-3.5 rounded-full font-bold text-sm text-white" style="background:var(--terracotta);">Get Directions</button>
+    </div>
+    <div style="border-radius:22px;overflow:hidden;aspect-ratio:4/3;background:
+      linear-gradient(rgba(61,58,46,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(61,58,46,.06) 1px, transparent 1px),
+      linear-gradient(160deg,#EDE0C8,#DDC9A3);
+      background-size:32px 32px, 32px 32px, 100% 100%;
+      position:relative;display:flex;align-items:center;justify-content:center;">
+      <div style="width:52px;height:52px;border-radius:50% 50% 50% 0;background:var(--terracotta);transform:rotate(-45deg);box-shadow:0 12px 24px -8px rgba(156,67,34,.5);display:flex;align-items:center;justify-content:center;">
+        <div style="width:18px;height:18px;border-radius:50%;background:var(--cream);transform:rotate(45deg);"></div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
-<footer style="background:var(--olive);padding:3rem 0;color:var(--cream);">
-  <div class="max-w-6xl mx-auto px-10 flex items-center justify-between flex-wrap gap-4">
-    <div class="disp font-bold text-lg">Copper &amp; Co.</div>
-    <div style="font-size:13px;opacity:.6;">12 Cathedral Road, Chennai · Open 7:30am – 9pm</div>
+<footer style="background:var(--charcoal2);padding:4rem 0 2rem;color:var(--cream);">
+  <div class="max-w-6xl mx-auto px-10">
+    <div class="grid md:grid-cols-3 gap-10 pb-10" style="border-bottom:1px solid rgba(251,247,242,.1);">
+      <div>
+        <div class="disp font-bold text-xl mb-3">Copper &amp; Co.</div>
+        <p style="font-size:13px;color:rgba(251,247,242,.5);line-height:1.7;max-width:260px;">A neighbourhood café for slow mornings, small-batch coffee, and honest food.</p>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;">Explore</div>
+        <div style="font-size:13px;color:rgba(251,247,242,.6);line-height:2.2;">Menu<br>Our Story<br>Gallery<br>Visit Us</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;">Stay in the loop</div>
+        <div class="flex" style="border-radius:99px;overflow:hidden;border:1px solid rgba(251,247,242,.18);max-width:280px;">
+          <input placeholder="you@email.com" style="background:transparent;border:none;padding:11px 16px;font-size:13px;color:var(--cream);flex:1;outline:none;"/>
+          <button class="px-5" style="background:var(--terracotta);font-size:13px;font-weight:700;border:none;color:#fff;">Join</button>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center justify-between flex-wrap gap-3 pt-6" style="font-size:12px;color:rgba(251,247,242,.4);">
+      <span>© 2026 Copper &amp; Co. All rights reserved.</span>
+      <span>12 Cathedral Road, Chennai · Open 7 days</span>
+    </div>
   </div>
 </footer>
 
