@@ -19,6 +19,28 @@ body{ font-family:'Manrope',sans-serif; background:var(--paper); color:#1C1814; 
 .font-brand{ font-family:'Bahnschrift','Barlow Semi Condensed',sans-serif; font-stretch:semi-condensed; letter-spacing:.01em; }
 .brand-mark{ height:30px; width:auto; flex-shrink:0; display:block; fill:var(--bl); }
 
+/* ── CASE STUDY ── */
+.cs-row{ display:grid; grid-template-columns:132px 1fr; gap:20px; align-items:start; padding-bottom:18px; margin-bottom:18px; border-bottom:1px solid rgba(28,24,20,.07); }
+.cs-k{ font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#8F6122; padding-top:3px; }
+.cs-v{ font-size:14px; line-height:1.72; color:#3A342C; }
+.cs-v em{ font-style:normal; font-weight:700; color:#1C1814; }
+.cs-meta{ display:grid; grid-template-columns:96px 1fr; gap:14px; padding:7px 0; }
+.cs-meta dt{ font-size:11px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:rgba(28,24,20,.65); padding-top:2px; }
+.cs-meta dd{ font-size:13.5px; color:#3A342C; margin:0; font-weight:500; }
+
+/* ── CONCEPT CHIP (marks non-client demo work) ── */
+.concept-chip{
+  position:absolute; top:12px; left:12px; z-index:4;
+  font-size:9.5px; font-weight:800; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--paper); background:rgba(10,8,6,.72); backdrop-filter:blur(6px);
+  border:1px solid rgba(250,247,242,.22); border-radius:99px; padding:5px 11px;
+  pointer-events:none;
+}
+@media(max-width:640px){
+  .cs-row{ grid-template-columns:1fr; gap:7px; }
+  .cs-k{ padding-top:0; }
+}
+
 /* ── PROCESS RING (swirling vortex, matches cybercrest reference) ── */
 .proc-grid{ display:grid; grid-template-columns:1fr auto 1fr; grid-template-rows:auto auto; column-gap:48px; row-gap:56px; align-items:center; max-width:980px; margin:0 auto; }
 .proc-ring-cell{ grid-column:2; grid-row:1 / span 2; position:relative; width:300px; height:300px; display:flex; align-items:center; justify-content:center; }
@@ -113,7 +135,7 @@ body{ font-family:'Manrope',sans-serif; background:var(--paper); color:#1C1814; 
 
 /* ── BADGES ── */
 .badge{ font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:4px 12px; border-radius:9999px; display:inline-block; }
-.badge-light{ background:rgba(176,122,46,.1); color:var(--brass); border:1px solid rgba(176,122,46,.22); }
+.badge-light{ background:rgba(176,122,46,.1); color:#7F551C; border:1px solid rgba(176,122,46,.22); }
 .badge-dark{ background:rgba(212,162,76,.1); color:var(--bl); border:1px solid rgba(212,162,76,.25); }
 .badge-ink{ background:#1C1814; color:var(--paper); }
 
@@ -148,8 +170,10 @@ body{ font-family:'Manrope',sans-serif; background:var(--paper); color:#1C1814; 
 .carousel:hover .carousel-arrow{ opacity:1; }
 .carousel-arrow:hover{ background:rgba(176,122,46,.85); }
 .carousel-arrow.prev{ left:10px; } .carousel-arrow.next{ right:10px; }
-.carousel-expand{ position:absolute; top:10px; right:10px; width:30px; height:30px; border-radius:9999px; background:rgba(10,8,6,.65); color:#fff; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .25s; z-index:10; font-size:14px; pointer-events:none; }
+.carousel-expand{ position:absolute; top:10px; right:10px; width:30px; height:30px; border-radius:9999px; background:rgba(10,8,6,.65); color:#fff; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .25s,background .25s; z-index:10; font-size:14px; border:0; cursor:pointer; }
 .carousel:hover .carousel-expand{ opacity:1; }
+.carousel-expand:hover{ background:rgba(176,122,46,.85); }
+.carousel-expand:focus-visible, .carousel-arrow:focus-visible{ opacity:1; }
 
 /* ── LIGHTBOX ── */
 #lb{ position:fixed; inset:0; background:rgba(5,4,2,.97); z-index:200; display:flex; align-items:center; justify-content:center; }
@@ -197,6 +221,23 @@ details[open] summary .chev{ transform:rotate(180deg); }
 .gt{ background:linear-gradient(110deg,#FFE5A0 0%,#D4A24C 45%,#FF9E2A 75%,#B07A2E 100%); -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 0 40px rgba(212,162,76,.45)); }
 
 .sv{ font-family:'Fraunces',serif; }
+
+/* ── FOCUS VISIBILITY (keyboard nav) ── */
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
+  outline:2px solid var(--bl); outline-offset:3px; border-radius:4px;
+}
+
+/* ── REDUCED MOTION ── */
+@media(prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
+  .reveal{ opacity:1 !important; transform:none !important; }
+  .proc-step{ filter:none !important; opacity:1 !important; }
+}
 </style>
 </head>
 <body id="top">
@@ -211,11 +252,11 @@ details[open] summary .chev{ transform:rotate(180deg); }
 
 <!-- ══ LIGHTBOX ══ -->
 <div id="lb" class="hidden" role="dialog" aria-modal="true">
-  <button class="lb-close" id="lbClose">✕</button>
+  <button class="lb-close" id="lbClose" aria-label="Close gallery">✕</button>
   <div style="position:relative;">
     <div class="lb-vp"><div class="lb-track" id="lbTrack"></div></div>
-    <button class="lb-arrow prev" id="lbPrev">‹</button>
-    <button class="lb-arrow next" id="lbNext">›</button>
+    <button class="lb-arrow prev" id="lbPrev" aria-label="Previous image">‹</button>
+    <button class="lb-arrow next" id="lbNext" aria-label="Next image">›</button>
     <div class="lb-dots" id="lbDots"></div>
   </div>
 </div>
@@ -280,7 +321,7 @@ details[open] summary .chev{ transform:rotate(180deg); }
         <div style="font-size:13px;color:rgba(250,247,242,.45);margin-top:4px;font-weight:600;">Reports Automated</div>
       </div>
       <div>
-        <div class="sv text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="7">0</span></div>
+        <div class="sv text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="4">0</span></div>
         <div style="font-size:13px;color:rgba(250,247,242,.45);margin-top:4px;font-weight:600;">Shipped Products</div>
       </div>
       <div>
@@ -318,7 +359,7 @@ details[open] summary .chev{ transform:rotate(180deg); }
   <div class="max-w-6xl mx-auto px-6 md:px-10">
     <div class="mb-16 reveal">
       <span class="badge badge-light mb-4">What We Do</span>
-      <h2 class="font-display text-4xl md:text-5xl font-bold mb-4" style="color:#1C1814;">Five ways we grow<br>your business</h2>
+      <h2 class="font-display text-4xl md:text-5xl font-bold mb-4" style="color:#1C1814;">Six ways we grow<br>your business</h2>
       <p style="color:var(--muted);max-width:480px;line-height:1.75;">From raw data to live dashboards, from manual tasks to zero-touch pipelines.</p>
     </div>
 
@@ -400,20 +441,25 @@ details[open] summary .chev{ transform:rotate(180deg); }
   <div class="max-w-6xl mx-auto px-6 md:px-10">
     <div class="mb-16 reveal">
       <span class="badge badge-dark mb-4">Portfolio</span>
-      <h2 class="font-display text-4xl md:text-5xl font-bold mb-4" style="color:var(--paper);">Products we've shipped</h2>
-      <p style="color:rgba(250,247,242,.5);max-width:480px;line-height:1.75;">Real tools, real users — not mockups. Every product here runs in production.</p>
+      <h2 class="font-display text-4xl md:text-5xl font-bold mb-4" style="color:var(--paper);">Work we've shipped</h2>
+      <p style="color:rgba(250,247,242,.5);max-width:520px;line-height:1.75;">Four products running in production today, and three concept builds that show how we approach a brief. We label which is which — you should know what you're looking at.</p>
     </div>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="mb-8 flex items-center gap-4 reveal">
+      <span style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--bl);white-space:nowrap;">In production</span>
+      <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(212,162,76,.3),transparent);"></span>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
       <div class="glass rounded-2xl overflow-hidden reveal reveal-delay-1">
         <div class="carousel" data-carousel="nexretail">
           <img class="carousel-slide active" src="assets/work/nexretail-1.png" alt="NexRetail Command Center" data-lb-index="0" data-lb-group="nexretail"/>
           <img class="carousel-slide" src="assets/work/nexretail-2.png" alt="NexRetail Agent Hub" data-lb-index="1" data-lb-group="nexretail"/>
           <img class="carousel-slide" src="assets/work/nexretail-3.png" alt="NexRetail Customer Hub" data-lb-index="2" data-lb-group="nexretail"/>
-          <button class="carousel-arrow prev">‹</button>
-          <button class="carousel-arrow next">›</button>
-          <div class="carousel-dots"><button class="active"></button><button></button><button></button></div>
-          <div class="carousel-expand">⤢</div>
+          <button class="carousel-arrow prev" aria-label="Previous NexRetail Intelligence image">‹</button>
+          <button class="carousel-arrow next" aria-label="Next NexRetail Intelligence image">›</button>
+          <div class="carousel-dots"><button class="active" aria-label="Show NexRetail Intelligence image 1"></button><buttonNone aria-label="Show NexRetail Intelligence image 2"></button><buttonNone aria-label="Show NexRetail Intelligence image 3"></button></div>
+          <button class="carousel-expand" aria-label="Open NexRetail Intelligence gallery">⤢</button>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
@@ -430,10 +476,10 @@ details[open] summary .chev{ transform:rotate(180deg); }
           <img class="carousel-slide" src="assets/work/rhema-bible.png" alt="RhemaPresenter Bible" data-lb-index="1" data-lb-group="rhema"/>
           <img class="carousel-slide" src="assets/work/rhema-design.png" alt="RhemaPresenter Design" data-lb-index="2" data-lb-group="rhema"/>
           <img class="carousel-slide" src="assets/work/rhema-ndi.png" alt="RhemaPresenter NDI" data-lb-index="3" data-lb-group="rhema"/>
-          <button class="carousel-arrow prev">‹</button>
-          <button class="carousel-arrow next">›</button>
-          <div class="carousel-dots"><button class="active"></button><button></button><button></button><button></button></div>
-          <div class="carousel-expand">⤢</div>
+          <button class="carousel-arrow prev" aria-label="Previous RhemaPresenter image">‹</button>
+          <button class="carousel-arrow next" aria-label="Next RhemaPresenter image">›</button>
+          <div class="carousel-dots"><button class="active" aria-label="Show RhemaPresenter image 1"></button><buttonNone aria-label="Show RhemaPresenter image 2"></button><buttonNone aria-label="Show RhemaPresenter image 3"></button><buttonNone aria-label="Show RhemaPresenter image 4"></button></div>
+          <button class="carousel-expand" aria-label="Open RhemaPresenter gallery">⤢</button>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
@@ -450,10 +496,10 @@ details[open] summary .chev{ transform:rotate(180deg); }
           <img class="carousel-slide" src="assets/work/sermoncut-app.png" alt="SermonCut AI App" data-lb-index="1" data-lb-group="sermoncut"/>
           <img class="carousel-slide" src="assets/work/sermoncut-features.png" alt="SermonCut Features" data-lb-index="2" data-lb-group="sermoncut"/>
           <img class="carousel-slide" src="assets/work/sermoncut-export.png" alt="SermonCut Export" data-lb-index="3" data-lb-group="sermoncut"/>
-          <button class="carousel-arrow prev">‹</button>
-          <button class="carousel-arrow next">›</button>
-          <div class="carousel-dots"><button class="active"></button><button></button><button></button><button></button></div>
-          <div class="carousel-expand">⤢</div>
+          <button class="carousel-arrow prev" aria-label="Previous SermonCut AI image">‹</button>
+          <button class="carousel-arrow next" aria-label="Next SermonCut AI image">›</button>
+          <div class="carousel-dots"><button class="active" aria-label="Show SermonCut AI image 1"></button><buttonNone aria-label="Show SermonCut AI image 2"></button><buttonNone aria-label="Show SermonCut AI image 3"></button><buttonNone aria-label="Show SermonCut AI image 4"></button></div>
+          <button class="carousel-expand" aria-label="Open SermonCut AI gallery">⤢</button>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
@@ -465,14 +511,42 @@ details[open] summary .chev{ transform:rotate(180deg); }
       </div>
 
       <div class="glass rounded-2xl overflow-hidden reveal reveal-delay-4">
+        <div class="carousel" data-carousel="billing">
+          <img class="carousel-slide active" src="assets/work/billing-1.png" alt="JKR Billing Dashboard" data-lb-index="0" data-lb-group="billing"/>
+          <img class="carousel-slide" src="assets/work/billing-2.png" alt="JKR Billing Invoice Register" data-lb-index="1" data-lb-group="billing"/>
+          <img class="carousel-slide" src="assets/work/billing-3.png" alt="JKR Billing Tax Invoice" data-lb-index="2" data-lb-group="billing"/>
+          <button class="carousel-arrow prev" aria-label="Previous JKR Billing image">‹</button>
+          <button class="carousel-arrow next" aria-label="Next JKR Billing image">›</button>
+          <div class="carousel-dots"><button class="active" aria-label="Show JKR Billing image 1"></button><buttonNone aria-label="Show JKR Billing image 2"></button><buttonNone aria-label="Show JKR Billing image 3"></button></div>
+          <button class="carousel-expand" aria-label="Open JKR Billing gallery">⤢</button>
+        </div>
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <h3 class="font-display text-lg font-bold" style="color:var(--paper);">JKR Billing</h3>
+            <span class="badge" style="flex-shrink:0;background:rgba(250,247,242,.08);color:var(--paper);border:1px solid rgba(250,247,242,.15);">Custom Software</span>
+          </div>
+          <p style="color:rgba(250,247,242,.5);font-size:13px;line-height:1.7;">GST-compliant billing desktop app for a CNC tooling manufacturer — replaced eight years of manual Excel, works fully offline, migrated 2,000+ historical invoices without a single filing lost.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-16 mb-8 flex items-center gap-4 reveal">
+      <span style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(250,247,242,.4);white-space:nowrap;">Concept builds</span>
+      <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(250,247,242,.15),transparent);"></span>
+      <span style="font-size:12px;color:rgba(250,247,242,.35);line-height:1.6;max-width:340px;text-align:right;">Self-initiated demos — fully built and interactive, but not client projects.</span>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="glass rounded-2xl overflow-hidden reveal reveal-delay-1">
         <div class="carousel" data-carousel="pulseboard">
+          <span class="concept-chip">Concept</span>
           <img class="carousel-slide active" src="assets/work/pulseboard-1.png" alt="PulseBoard Overview" data-lb-index="0" data-lb-group="pulseboard"/>
           <img class="carousel-slide" src="assets/work/pulseboard-2.png" alt="PulseBoard Revenue" data-lb-index="1" data-lb-group="pulseboard"/>
           <img class="carousel-slide" src="assets/work/pulseboard-3.png" alt="PulseBoard Customers" data-lb-index="2" data-lb-group="pulseboard"/>
-          <button class="carousel-arrow prev">‹</button>
-          <button class="carousel-arrow next">›</button>
-          <div class="carousel-dots"><button class="active"></button><button></button><button></button></div>
-          <div class="carousel-expand">⤢</div>
+          <button class="carousel-arrow prev" aria-label="Previous PulseBoard image">‹</button>
+          <button class="carousel-arrow next" aria-label="Next PulseBoard image">›</button>
+          <div class="carousel-dots"><button class="active" aria-label="Show PulseBoard image 1"></button><buttonNone aria-label="Show PulseBoard image 2"></button><buttonNone aria-label="Show PulseBoard image 3"></button></div>
+          <button class="carousel-expand" aria-label="Open PulseBoard gallery">⤢</button>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
@@ -485,17 +559,18 @@ details[open] summary .chev{ transform:rotate(180deg); }
 
       <div class="glass rounded-2xl overflow-hidden reveal reveal-delay-1">
         <div class="carousel" data-carousel="relayflow">
+          <span class="concept-chip">Concept</span>
           <img class="carousel-slide active" src="assets/work/relayflow-1.png" alt="RelayFlow Workflow" data-lb-index="0" data-lb-group="relayflow"/>
           <img class="carousel-slide" src="assets/work/relayflow-2.png" alt="RelayFlow Integrations" data-lb-index="1" data-lb-group="relayflow"/>
-          <button class="carousel-arrow prev">‹</button>
-          <button class="carousel-arrow next">›</button>
-          <div class="carousel-dots"><button class="active"></button><button></button></div>
-          <div class="carousel-expand">⤢</div>
+          <button class="carousel-arrow prev" aria-label="Previous RelayFlow image">‹</button>
+          <button class="carousel-arrow next" aria-label="Next RelayFlow image">›</button>
+          <div class="carousel-dots"><button class="active" aria-label="Show RelayFlow image 1"></button><buttonNone aria-label="Show RelayFlow image 2"></button></div>
+          <button class="carousel-expand" aria-label="Open RelayFlow gallery">⤢</button>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
             <h3 class="font-display text-lg font-bold" style="color:var(--paper);">RelayFlow</h3>
-            <span class="badge" style="flex-shrink:0;background:rgba(250,247,242,.08);color:var(--paper);border:1px solid rgba(250,247,242,.15);">Automation</span>
+            <span class="badge badge-dark" style="flex-shrink:0;">Automation</span>
           </div>
           <p style="color:rgba(250,247,242,.5);font-size:13px;line-height:1.7;">No-code workflow automation — new orders trigger WhatsApp alerts, invoice generation, and customer emails automatically. Zero manual follow-up.</p>
         </div>
@@ -503,13 +578,14 @@ details[open] summary .chev{ transform:rotate(180deg); }
 
       <div class="glass rounded-2xl overflow-hidden reveal reveal-delay-2">
         <div class="carousel" data-carousel="copperco">
+          <span class="concept-chip">Concept</span>
           <img class="carousel-slide active" src="assets/work/copperco-1.png" alt="Copper & Co. Homepage" data-lb-index="0" data-lb-group="copperco"/>
           <img class="carousel-slide" src="assets/work/copperco-2.png" alt="Copper & Co. Menu" data-lb-index="1" data-lb-group="copperco"/>
           <img class="carousel-slide" src="assets/work/copperco-3.png" alt="Copper & Co. Gallery" data-lb-index="2" data-lb-group="copperco"/>
-          <button class="carousel-arrow prev">‹</button>
-          <button class="carousel-arrow next">›</button>
-          <div class="carousel-dots"><button class="active"></button><button></button><button></button></div>
-          <div class="carousel-expand">⤢</div>
+          <button class="carousel-arrow prev" aria-label="Previous Copper & Co. image">‹</button>
+          <button class="carousel-arrow next" aria-label="Next Copper & Co. image">›</button>
+          <div class="carousel-dots"><button class="active" aria-label="Show Copper & Co. image 1"></button><buttonNone aria-label="Show Copper & Co. image 2"></button><buttonNone aria-label="Show Copper & Co. image 3"></button></div>
+          <button class="carousel-expand" aria-label="Open Copper & Co. gallery">⤢</button>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
@@ -520,24 +596,6 @@ details[open] summary .chev{ transform:rotate(180deg); }
         </div>
       </div>
 
-      <div class="glass rounded-2xl overflow-hidden reveal reveal-delay-3">
-        <div class="carousel" data-carousel="billing">
-          <img class="carousel-slide active" src="assets/work/billing-1.png" alt="JKR Billing Dashboard" data-lb-index="0" data-lb-group="billing"/>
-          <img class="carousel-slide" src="assets/work/billing-2.png" alt="JKR Billing Invoice Register" data-lb-index="1" data-lb-group="billing"/>
-          <img class="carousel-slide" src="assets/work/billing-3.png" alt="JKR Billing Tax Invoice" data-lb-index="2" data-lb-group="billing"/>
-          <button class="carousel-arrow prev">‹</button>
-          <button class="carousel-arrow next">›</button>
-          <div class="carousel-dots"><button class="active"></button><button></button><button></button></div>
-          <div class="carousel-expand">⤢</div>
-        </div>
-        <div class="p-6">
-          <div class="flex items-start justify-between gap-3 mb-3">
-            <h3 class="font-display text-lg font-bold" style="color:var(--paper);">JKR Billing</h3>
-            <span class="badge" style="flex-shrink:0;background:rgba(250,247,242,.08);color:var(--paper);border:1px solid rgba(250,247,242,.15);">Custom Software</span>
-          </div>
-          <p style="color:rgba(250,247,242,.5);font-size:13px;line-height:1.7;">GST-compliant billing desktop app for a CNC tooling manufacturer — replaced eight years of manual Excel, works fully offline, migrated 2,000+ historical invoices without a single filing lost.</p>
-        </div>
-      </div>
     </div>
 
     <!-- trust stats -->
@@ -547,7 +605,7 @@ details[open] summary .chev{ transform:rotate(180deg); }
         <div style="font-size:12px;color:rgba(250,247,242,.35);margin-top:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">Reports Automated</div>
       </div>
       <div class="reveal reveal-delay-2">
-        <div class="sv text-3xl md:text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="7">0</span></div>
+        <div class="sv text-3xl md:text-4xl font-bold" style="color:var(--bl);"><span class="counter" data-target="4">0</span></div>
         <div style="font-size:12px;color:rgba(250,247,242,.35);margin-top:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">Live Products</div>
       </div>
       <div class="reveal reveal-delay-3">
@@ -558,6 +616,71 @@ details[open] summary .chev{ transform:rotate(180deg); }
         <div class="sv text-3xl md:text-4xl font-bold" style="color:var(--bl);">₹0</div>
         <div style="font-size:12px;color:rgba(250,247,242,.35);margin-top:6px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">Audit Cost</div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CASE STUDY (SURFACE) ══ -->
+<section id="case-study" style="padding:7rem 0;background:var(--surface);position:relative;overflow:hidden;">
+  <div style="position:absolute;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(176,122,46,.10),transparent 65%);top:-220px;right:-180px;filter:blur(70px);pointer-events:none;"></div>
+
+  <div class="max-w-6xl mx-auto px-6 md:px-10" style="position:relative;">
+    <div class="grid lg:grid-cols-12 gap-x-12 gap-y-10">
+
+      <div class="lg:col-span-5 reveal">
+        <span class="badge badge-light mb-5">Case Study</span>
+        <h2 class="font-display font-bold mb-5" style="color:#1C1814;font-size:clamp(1.9rem,2.9vw,2.45rem);line-height:1.1;letter-spacing:-.015em;">Eight years of Excel,<br>replaced in one app.</h2>
+        <p style="color:var(--muted);line-height:1.8;font-size:15px;margin-bottom:28px;max-width:420px;">J.K.R. Engineering makes CNC indexable tooling in Chennai. Every invoice since 2017 lived in a separate Excel workbook — 224 of them. Finding last quarter's numbers meant opening files one by one.</p>
+
+        <dl style="border-top:1px solid rgba(28,24,20,.09);padding-top:18px;margin-bottom:28px;max-width:420px;">
+          <div class="cs-meta"><dt>Client</dt><dd>J.K.R. Engineering, Chennai</dd></div>
+          <div class="cs-meta"><dt>Sector</dt><dd>CNC indexable tooling</dd></div>
+          <div class="cs-meta"><dt>Scope</dt><dd>Billing, quotations, GST reporting</dd></div>
+          <div class="cs-meta"><dt>Built with</dt><dd>Electron · React · SQLite</dd></div>
+        </dl>
+
+        <a href="#contact" class="inline-flex items-center gap-2" style="color:var(--brass);font-weight:700;font-size:14px;text-decoration:none;border-bottom:1.5px solid rgba(176,122,46,.35);padding-bottom:3px;">
+          Start a project like this
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h13M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <div class="lg:col-span-7 reveal reveal-delay-2">
+        <div class="grid sm:grid-cols-3 gap-5 mb-8">
+          <div style="background:#fff;border:1px solid rgba(28,24,20,.07);border-radius:14px;padding:20px 18px;">
+            <div class="sv font-bold" style="color:var(--brass);font-size:1.9rem;line-height:1;"><span class="counter" data-target="2099">0</span></div>
+            <div style="font-size:11.5px;color:var(--muted);margin-top:8px;font-weight:600;line-height:1.45;">invoices migrated,<br>numbering unbroken</div>
+          </div>
+          <div style="background:#fff;border:1px solid rgba(28,24,20,.07);border-radius:14px;padding:20px 18px;">
+            <div class="sv font-bold" style="color:var(--brass);font-size:1.9rem;line-height:1;"><span class="counter" data-target="3105">0</span></div>
+            <div style="font-size:11.5px;color:var(--muted);margin-top:8px;font-weight:600;line-height:1.45;">products mapped to<br>correct HSN codes</div>
+          </div>
+          <div style="background:#fff;border:1px solid rgba(28,24,20,.07);border-radius:14px;padding:20px 18px;">
+            <div class="sv font-bold" style="color:var(--brass);font-size:1.9rem;line-height:1;"><span class="counter" data-target="125">0</span></div>
+            <div style="font-size:11.5px;color:var(--muted);margin-top:8px;font-weight:600;line-height:1.45;">customer records<br>consolidated</div>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid rgba(28,24,20,.07);border-radius:16px;padding:28px 26px;">
+          <div class="cs-row">
+            <span class="cs-k">The problem</span>
+            <span class="cs-v">224 workbooks, no way to answer "what did we bill this month?" without opening every file. GST returns were assembled by hand.</span>
+          </div>
+          <div class="cs-row">
+            <span class="cs-k">What we built</span>
+            <span class="cs-v">A Windows desktop app — invoices, quotations, customers, HSN catalog and GST reports in one place. Quotations convert to invoices in one click.</span>
+          </div>
+          <div class="cs-row">
+            <span class="cs-k">The hard part</span>
+            <span class="cs-v">Their GST maths was non-standard: freight is taxed <em>before</em> GST, discounts deducted before it. We derived the rules from their real invoices rather than assuming, then pinned them with tests.</span>
+          </div>
+          <div class="cs-row" style="border-bottom:none;padding-bottom:0;">
+            <span class="cs-k">The result</span>
+            <span class="cs-v">Runs fully offline — their network drops, billing doesn't. Eight years of history searchable in seconds, and GST summaries export ready for filing.</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -978,6 +1101,7 @@ details[open] summary .chev{ transform:rotate(180deg); }
 (function(){
   const t=document.getElementById('mqTrack');
   if(!t) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   t.innerHTML+=t.innerHTML;
   let x=0;
   const hw=()=>t.scrollWidth/2;
@@ -1019,16 +1143,19 @@ document.querySelectorAll('.foot-link').forEach(a=>{
   }),{threshold:.12});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
+  const noMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fmt=n=>n.toLocaleString('en-IN');
   const done=new WeakSet();
   const cio=new IntersectionObserver(es=>es.forEach(e=>{
     if(!e.isIntersecting||done.has(e.target)) return;
     done.add(e.target);
     const target=+e.target.dataset.target;
+    if(noMotion){ e.target.textContent=fmt(target); return; }
     const start=performance.now();
     (function run(now){
       const p=Math.min((now-start)/1400,1);
       const ease=1-Math.pow(1-p,3);
-      e.target.textContent=Math.round(ease*target);
+      e.target.textContent=fmt(Math.round(ease*target));
       if(p<1) requestAnimationFrame(run);
     })(performance.now());
   }),{threshold:.5});
@@ -1061,6 +1188,11 @@ document.querySelectorAll('.foot-link').forEach(a=>{
     next.addEventListener('click',e=>{e.stopPropagation();goTo(idx+1);startAuto();});
     dots.forEach((d,i)=>d.addEventListener('click',e=>{e.stopPropagation();goTo(i);startAuto();}));
     slides.forEach(s=>s.addEventListener('click',()=>openLB(s.dataset.lbGroup,+s.dataset.lbIndex||0)));
+    const exp=container.querySelector('.carousel-expand');
+    if(exp) exp.addEventListener('click',e=>{
+      e.stopPropagation();
+      openLB(container.dataset.carousel, idx);
+    });
   });
 })();
 
