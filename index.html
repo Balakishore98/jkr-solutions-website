@@ -158,11 +158,13 @@ body{ font-family:'Manrope',sans-serif; background:var(--paper); color:#1C1814; 
 /* ── CAROUSEL ── */
 .carousel{ position:relative; height:15rem; background:#050402; overflow:hidden; }
 @media(min-width:768px){ .carousel{ height:17.5rem; } }
-.carousel-slide{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top; opacity:0; pointer-events:none; cursor:zoom-in; }
-.carousel-slide.active{ pointer-events:auto; animation:fi-in .85s cubic-bezier(.16,1,.3,1) forwards; }
-.carousel-slide.exiting{ animation:fi-out .55s ease-in forwards; }
-@keyframes fi-in{ 0%{opacity:0;transform:scale(1.42);filter:blur(14px) brightness(1.25);} 55%{opacity:1;filter:blur(1.5px) brightness(1.04);} 100%{opacity:1;transform:scale(1);filter:blur(0) brightness(1);} }
-@keyframes fi-out{ 0%{opacity:1;transform:scale(1);filter:blur(0) brightness(1);} 100%{opacity:0;transform:scale(.65);filter:blur(14px) brightness(1.45);} }
+.carousel-slide{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; object-position:top;
+  opacity:0; pointer-events:none; cursor:pointer;
+  transition:opacity .6s ease;
+}
+.carousel-slide.active{ opacity:1; pointer-events:auto; }
 .carousel-dots{ position:absolute; bottom:12px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:10; }
 .carousel-dots button{ width:6px; height:6px; border-radius:9999px; background:rgba(255,255,255,.3); transition:all .25s; padding:0; border:0; cursor:pointer; }
 .carousel-dots button.active{ background:#D4A24C; width:18px; }
@@ -170,13 +172,64 @@ body{ font-family:'Manrope',sans-serif; background:var(--paper); color:#1C1814; 
 .carousel:hover .carousel-arrow{ opacity:1; }
 .carousel-arrow:hover{ background:rgba(176,122,46,.85); }
 .carousel-arrow.prev{ left:10px; } .carousel-arrow.next{ right:10px; }
-.carousel-expand{ position:absolute; top:10px; right:10px; width:30px; height:30px; border-radius:9999px; background:rgba(10,8,6,.65); color:#fff; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .25s,background .25s; z-index:10; font-size:14px; border:0; cursor:pointer; }
+.carousel-expand{ position:absolute; top:10px; right:10px; height:28px; padding:0 13px; border-radius:9999px; background:rgba(10,8,6,.72); border:1px solid rgba(250,247,242,.18); color:#fff; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .25s,background .25s; z-index:10; font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; cursor:pointer; }
 .carousel:hover .carousel-expand{ opacity:1; }
 .carousel-expand:hover{ background:rgba(176,122,46,.85); }
 .carousel-expand:focus-visible, .carousel-arrow:focus-visible{ opacity:1; }
 
-/* ── LIGHTBOX ── */
-#lb{ position:fixed; inset:0; background:rgba(5,4,2,.97); z-index:200; display:flex; align-items:center; justify-content:center; }
+/* ── PROJECT DETAIL MODAL ── */
+#pm{ position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center; padding:24px; }
+#pm.hidden{ display:none; }
+#pm .pm-scrim{ position:absolute; inset:0; background:rgba(5,4,2,.92); backdrop-filter:blur(6px); }
+.pm-panel{
+  position:relative; z-index:2; width:min(1140px,100%); height:min(86vh,720px);
+  background:#0E0C09; border:1px solid rgba(212,162,76,.18); border-radius:20px;
+  overflow:hidden; display:grid; grid-template-columns:1.32fr .88fr;
+  box-shadow:0 40px 120px -30px rgba(0,0,0,.8);
+}
+/* grid children must be allowed to shrink or .pm-body cannot scroll and
+   the row stretches to full content height, pushing the media image down */
+.pm-panel > *{ min-height:0; }
+.pm-media{
+  position:relative; min-height:440px;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:22px 22px 42px;
+  background:radial-gradient(ellipse at 50% 40%, #12100C 0%, #070503 72%);
+  border-right:1px solid rgba(212,162,76,.1);
+}
+#pmShots{ position:relative; width:100%; aspect-ratio:16/10; }
+.pm-shot{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; opacity:0; transition:opacity .45s ease; border-radius:8px; }
+.pm-shot.active{ opacity:1; }
+.pm-nav{ position:absolute; bottom:14px; left:50%; transform:translateX(-50%); display:flex; gap:7px; z-index:3; }
+.pm-nav button{ width:7px; height:7px; border-radius:9999px; background:rgba(255,255,255,.45); border:0; padding:0; cursor:pointer; transition:all .25s; box-shadow:0 0 0 3px rgba(5,4,2,.5); }
+.pm-nav button.active{ background:var(--bl); width:22px; }
+.pm-arrow{ position:absolute; top:50%; transform:translateY(-50%); width:38px; height:38px; border-radius:9999px; background:rgba(10,8,6,.7); border:1px solid rgba(250,247,242,.14); color:#fff; font-size:18px; cursor:pointer; z-index:3; display:flex; align-items:center; justify-content:center; transition:background .25s; }
+.pm-arrow:hover{ background:rgba(176,122,46,.9); }
+.pm-arrow.prev{ left:12px; } .pm-arrow.next{ right:12px; }
+.pm-zoom{ position:absolute; top:12px; left:12px; z-index:3; font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--paper); background:rgba(10,8,6,.7); border:1px solid rgba(250,247,242,.16); border-radius:9999px; padding:6px 12px; cursor:pointer; }
+.pm-zoom:hover{ background:rgba(176,122,46,.9); }
+
+.pm-body{ padding:34px 32px; overflow-y:auto; }
+.pm-body::-webkit-scrollbar{ width:8px; }
+.pm-body::-webkit-scrollbar-thumb{ background:rgba(212,162,76,.25); border-radius:9999px; }
+.pm-close{ position:absolute; top:14px; right:14px; z-index:5; width:36px; height:36px; border-radius:9999px; background:rgba(250,247,242,.08); border:1px solid rgba(250,247,242,.14); color:var(--paper); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .25s; }
+.pm-close:hover{ background:rgba(176,122,46,.75); }
+.pm-feat{ display:flex; gap:11px; align-items:flex-start; padding:9px 0; }
+.pm-feat svg{ flex-shrink:0; margin-top:2px; color:var(--bl); }
+.pm-feat span{ font-size:13.5px; line-height:1.6; color:rgba(250,247,242,.68); }
+.pm-h{ font-size:10.5px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:rgba(250,247,242,.38); margin-bottom:10px; }
+.pm-metric{ background:rgba(212,162,76,.07); border:1px solid rgba(212,162,76,.16); border-radius:12px; padding:14px 12px; text-align:center; }
+.pm-metric b{ font-family:'Fraunces',serif; font-size:1.35rem; color:var(--bl); display:block; line-height:1.1; }
+.pm-metric span{ font-size:10.5px; color:rgba(250,247,242,.5); display:block; margin-top:5px; line-height:1.4; }
+@media(max-width:900px){
+  #pm{ padding:0; }
+  .pm-panel{ grid-template-columns:1fr; max-height:100vh; height:100%; border-radius:0; border:0; overflow-y:auto; }
+  .pm-media{ min-height:260px; height:42vh; position:sticky; top:0; }
+  .pm-body{ padding:26px 22px 40px; overflow-y:visible; }
+}
+
+/* ── LIGHTBOX (full-size image view, opened from the modal) ── */
+#lb{ position:fixed; inset:0; background:rgba(5,4,2,.97); z-index:220; display:flex; align-items:center; justify-content:center; }
 #lb.hidden{ display:none; }
 .lb-vp{ position:relative; width:min(92vw,1100px); aspect-ratio:16/10; overflow:hidden; border-radius:12px; }
 .lb-track{ display:flex; height:100%; transition:transform .5s cubic-bezier(.16,1,.3,1); }
@@ -249,6 +302,42 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
     <path d="M 395.297 1155.15 C 401.201 1146.13 416.728 1131.1 424.908 1122.88 L 469.69 1078.09 C 523.561 1023.62 577.887 969.61 632.661 916.053 C 655.747 935.581 691.511 973.541 713.682 995.714 L 864.475 1146.52 L 1339.78 1621.89 L 1638.88 1921.09 L 1721.24 2003.32 C 1728.74 2010.79 1755.35 2036.37 1760.66 2043.62 C 1760.67 2045.44 1760.77 2046.21 1760.47 2048 L 1290.21 2048 C 1279.01 2041.38 1244.21 2004.74 1232.27 1992.77 L 1127.66 1888.04 L 665.447 1425.76 L 474.993 1235.34 L 420.994 1181.4 C 416.401 1176.81 398.51 1159.46 395.297 1155.15 z"/>
   </symbol>
 </svg>
+
+<!-- ══ PROJECT DETAIL MODAL ══ -->
+<div id="pm" class="hidden" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+  <div class="pm-scrim" id="pmScrim"></div>
+  <div class="pm-panel">
+    <button class="pm-close" id="pmClose" aria-label="Close project details">✕</button>
+    <div class="pm-media">
+      <div id="pmShots"></div>
+      <button class="pm-arrow prev" id="pmPrev" aria-label="Previous screenshot">‹</button>
+      <button class="pm-arrow next" id="pmNext" aria-label="Next screenshot">›</button>
+      <button class="pm-zoom" id="pmZoom">View full size</button>
+      <div class="pm-nav" id="pmNav"></div>
+    </div>
+    <div class="pm-body">
+      <div class="flex items-center gap-2 mb-3" id="pmBadges"></div>
+      <h3 class="font-display font-bold" id="pmTitle" style="color:var(--paper);font-size:1.6rem;line-height:1.15;margin-bottom:12px;"></h3>
+      <p id="pmSummary" style="color:rgba(250,247,242,.6);font-size:14px;line-height:1.75;margin-bottom:24px;"></p>
+      <div id="pmMetricsWrap" style="margin-bottom:24px;">
+        <div class="pm-h">By the numbers</div>
+        <div class="grid grid-cols-3 gap-2.5" id="pmMetrics"></div>
+      </div>
+      <div style="margin-bottom:24px;">
+        <div class="pm-h">What it does</div>
+        <div id="pmFeatures"></div>
+      </div>
+      <div id="pmStackWrap">
+        <div class="pm-h">Built with</div>
+        <div id="pmStack" class="flex flex-wrap gap-2"></div>
+      </div>
+      <a href="#contact" id="pmCta" class="btn-g" style="display:inline-flex;align-items:center;gap:8px;margin-top:26px;padding:12px 22px;border-radius:9999px;font-size:13.5px;font-weight:700;text-decoration:none;">
+        Build something like this
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h13M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
 
 <!-- ══ LIGHTBOX ══ -->
 <div id="lb" class="hidden" role="dialog" aria-modal="true">
@@ -459,7 +548,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
           <button class="carousel-arrow prev" aria-label="Previous NexRetail Intelligence image">‹</button>
           <button class="carousel-arrow next" aria-label="Next NexRetail Intelligence image">›</button>
           <div class="carousel-dots"><button class="active" aria-label="Show NexRetail Intelligence image 1"></button><buttonNone aria-label="Show NexRetail Intelligence image 2"></button><buttonNone aria-label="Show NexRetail Intelligence image 3"></button></div>
-          <button class="carousel-expand" aria-label="Open NexRetail Intelligence gallery">⤢</button>
+          <button class="carousel-expand" aria-label="View NexRetail Intelligence details">View details</button>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
@@ -479,7 +568,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
           <button class="carousel-arrow prev" aria-label="Previous RhemaPresenter image">‹</button>
           <button class="carousel-arrow next" aria-label="Next RhemaPresenter image">›</button>
           <div class="carousel-dots"><button class="active" aria-label="Show RhemaPresenter image 1"></button><buttonNone aria-label="Show RhemaPresenter image 2"></button><buttonNone aria-label="Show RhemaPresenter image 3"></button><buttonNone aria-label="Show RhemaPresenter image 4"></button></div>
-          <button class="carousel-expand" aria-label="Open RhemaPresenter gallery">⤢</button>
+          <button class="carousel-expand" aria-label="View RhemaPresenter details">View details</button>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
@@ -499,7 +588,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
           <button class="carousel-arrow prev" aria-label="Previous SermonCut AI image">‹</button>
           <button class="carousel-arrow next" aria-label="Next SermonCut AI image">›</button>
           <div class="carousel-dots"><button class="active" aria-label="Show SermonCut AI image 1"></button><buttonNone aria-label="Show SermonCut AI image 2"></button><buttonNone aria-label="Show SermonCut AI image 3"></button><buttonNone aria-label="Show SermonCut AI image 4"></button></div>
-          <button class="carousel-expand" aria-label="Open SermonCut AI gallery">⤢</button>
+          <button class="carousel-expand" aria-label="View SermonCut AI details">View details</button>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
@@ -518,7 +607,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
           <button class="carousel-arrow prev" aria-label="Previous JKR Billing image">‹</button>
           <button class="carousel-arrow next" aria-label="Next JKR Billing image">›</button>
           <div class="carousel-dots"><button class="active" aria-label="Show JKR Billing image 1"></button><buttonNone aria-label="Show JKR Billing image 2"></button><buttonNone aria-label="Show JKR Billing image 3"></button></div>
-          <button class="carousel-expand" aria-label="Open JKR Billing gallery">⤢</button>
+          <button class="carousel-expand" aria-label="View JKR Billing details">View details</button>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
@@ -546,7 +635,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
           <button class="carousel-arrow prev" aria-label="Previous PulseBoard image">‹</button>
           <button class="carousel-arrow next" aria-label="Next PulseBoard image">›</button>
           <div class="carousel-dots"><button class="active" aria-label="Show PulseBoard image 1"></button><buttonNone aria-label="Show PulseBoard image 2"></button><buttonNone aria-label="Show PulseBoard image 3"></button></div>
-          <button class="carousel-expand" aria-label="Open PulseBoard gallery">⤢</button>
+          <button class="carousel-expand" aria-label="View PulseBoard details">View details</button>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
@@ -565,7 +654,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
           <button class="carousel-arrow prev" aria-label="Previous RelayFlow image">‹</button>
           <button class="carousel-arrow next" aria-label="Next RelayFlow image">›</button>
           <div class="carousel-dots"><button class="active" aria-label="Show RelayFlow image 1"></button><buttonNone aria-label="Show RelayFlow image 2"></button></div>
-          <button class="carousel-expand" aria-label="Open RelayFlow gallery">⤢</button>
+          <button class="carousel-expand" aria-label="View RelayFlow details">View details</button>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
@@ -585,7 +674,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
           <button class="carousel-arrow prev" aria-label="Previous Copper & Co. image">‹</button>
           <button class="carousel-arrow next" aria-label="Next Copper & Co. image">›</button>
           <div class="carousel-dots"><button class="active" aria-label="Show Copper & Co. image 1"></button><buttonNone aria-label="Show Copper & Co. image 2"></button><buttonNone aria-label="Show Copper & Co. image 3"></button></div>
-          <button class="carousel-expand" aria-label="Open Copper & Co. gallery">⤢</button>
+          <button class="carousel-expand" aria-label="View Copper & Co. details">View details</button>
         </div>
         <div class="p-6">
           <div class="flex items-start justify-between gap-3 mb-3">
@@ -620,7 +709,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
   </div>
 </section>
 
-<!-- ══ CASE STUDY (SURFACE) ══ -->
+<!-- ══ CLIENT STORY (SURFACE) ══ -->
 <section id="case-study" style="padding:7rem 0;background:var(--surface);position:relative;overflow:hidden;">
   <div style="position:absolute;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(176,122,46,.10),transparent 65%);top:-220px;right:-180px;filter:blur(70px);pointer-events:none;"></div>
 
@@ -628,7 +717,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
     <div class="grid lg:grid-cols-12 gap-x-12 gap-y-10">
 
       <div class="lg:col-span-5 reveal">
-        <span class="badge badge-light mb-5">Case Study</span>
+        <span class="badge badge-light mb-5">Client Story</span>
         <h2 class="font-display font-bold mb-5" style="color:#1C1814;font-size:clamp(1.9rem,2.9vw,2.45rem);line-height:1.1;letter-spacing:-.015em;">Eight years of Excel,<br>replaced in one app.</h2>
         <p style="color:var(--muted);line-height:1.8;font-size:15px;margin-bottom:28px;max-width:420px;">J.K.R. Engineering makes CNC indexable tooling in Chennai. Every invoice since 2017 lived in a separate Excel workbook — 224 of them. Finding last quarter's numbers meant opening files one by one.</p>
 
@@ -1171,11 +1260,8 @@ document.querySelectorAll('.foot-link').forEach(a=>{
     const next=container.querySelector('.carousel-arrow.next');
     let idx=0,timer;
     function goTo(i){
-      const p=idx;
-      slides[p].classList.add('exiting');
-      slides[p].classList.remove('active');
-      setTimeout(()=>slides[p].classList.remove('exiting'),700);
-      dots[p].classList.remove('active');
+      slides[idx].classList.remove('active');
+      dots[idx].classList.remove('active');
       idx=(i+slides.length)%slides.length;
       slides[idx].classList.add('active');
       dots[idx].classList.add('active');
@@ -1187,12 +1273,10 @@ document.querySelectorAll('.foot-link').forEach(a=>{
     prev.addEventListener('click',e=>{e.stopPropagation();goTo(idx-1);startAuto();});
     next.addEventListener('click',e=>{e.stopPropagation();goTo(idx+1);startAuto();});
     dots.forEach((d,i)=>d.addEventListener('click',e=>{e.stopPropagation();goTo(i);startAuto();}));
-    slides.forEach(s=>s.addEventListener('click',()=>openLB(s.dataset.lbGroup,+s.dataset.lbIndex||0)));
+    const key=container.dataset.carousel;
+    slides.forEach(s=>s.addEventListener('click',()=>openProject(key)));
     const exp=container.querySelector('.carousel-expand');
-    if(exp) exp.addEventListener('click',e=>{
-      e.stopPropagation();
-      openLB(container.dataset.carousel, idx);
-    });
+    if(exp) exp.addEventListener('click',e=>{ e.stopPropagation(); openProject(key); });
   });
 })();
 
@@ -1263,6 +1347,181 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowLeft')lbNav(lbIdx-1);
   if(e.key==='ArrowRight')lbNav(lbIdx+1);
 });
+
+/* ═══ PROJECT DETAIL MODAL ═══ */
+const PROJECTS={
+  nexretail:{
+    title:'NexRetail Intelligence',
+    badges:[['Dashboard','dark'],['In production','live']],
+    summary:'A full-stack MIS platform for a multi-branch garment retail business. Replaces the morning ritual of stitching together Excel exports — sales, stock, collections and agent performance all land on one screen, refreshed from the source systems.',
+    metrics:[['3','linked hubs'],['Multi','branch view'],['Live','KPI refresh']],
+    features:[
+      'Command-centre view of sales, margin and collections across every branch',
+      'Agent performance tracking with leaderboards and target-vs-achieved',
+      'Customer hub — segmentation, repeat-purchase behaviour and lapsed accounts',
+      'Drill down from a headline number to the individual invoice behind it',
+      'Built as self-contained HTML so it runs on any machine without a server'
+    ],
+    stack:['HTML','CSS','JavaScript','Chart rendering']
+  },
+  rhema:{
+    title:'RhemaPresenter',
+    badges:[['Desktop App','dark'],['In production','live']],
+    summary:'Church presentation software built on Electron. Runs live services — Bible passages, song lyrics and designed slides pushed to a projector or a broadcast feed, driven by one operator under time pressure.',
+    metrics:[['NDI','broadcast out'],['Dual','screen control'],['Live','Bible search']],
+    features:[
+      'Instant Bible lookup and display, typed straight from the operator console',
+      'Slide designer with reusable templates for announcements and sermon points',
+      'NDI output so the live stream mixer receives a clean feed, no capture card',
+      'Separate operator and audience screens — edit the next slide while one is live',
+      'Song and lyrics library with fast search mid-service'
+    ],
+    stack:['Electron','Node.js','NDI']
+  },
+  sermoncut:{
+    title:'SermonCut AI',
+    badges:[['Media Tool','dark'],['In production','live']],
+    summary:'A Tamil sermon editing tool that turns a multi-hour recording into publishable short-form content. It finds the moments worth clipping, cuts them, captions them, and exports in the aspect ratios each platform wants.',
+    metrics:[['Hours','to minutes'],['Auto','captioning'],['Batch','export']],
+    features:[
+      'Automatic highlight detection across a long-form recording',
+      'One-tap generation of YouTube Shorts and vertical reels',
+      'Tamil caption generation burned into the export',
+      'Batch processing so a week of content is queued in one pass',
+      'Export presets sized for YouTube, Instagram and WhatsApp Status'
+    ],
+    stack:['Python','FFmpeg','Speech-to-text']
+  },
+  billing:{
+    title:'JKR Billing',
+    badges:[['Custom Software','dark'],['In production','live']],
+    summary:'A GST-compliant billing desktop application for a CNC indexable tooling manufacturer in Chennai. It replaced eight years of manual Excel invoicing — 224 separate workbooks — with one searchable system that keeps working when the network does not.',
+    metrics:[['2,099','invoices migrated'],['3,105','products mapped'],['125','customers']],
+    features:[
+      'GST-correct invoicing — CGST + SGST in-state, IGST interstate, applied automatically',
+      'Handles their real-world maths: freight taxed before GST, discount deducted before it',
+      'Quotations convert to invoices in one click, numbering stays unbroken',
+      'Reports for GST filing — invoice register, GST summary, HSN summary, customer ledger',
+      'Runs fully offline; automatic Dropbox backups with a verified restore path'
+    ],
+    stack:['Electron','React','TypeScript','SQLite']
+  },
+  pulseboard:{
+    title:'PulseBoard',
+    badges:[['SaaS Dashboard','dark'],['Concept','concept']],
+    summary:'A concept build: the metrics dashboard a SaaS founder actually opens on a Monday morning. Revenue, churn and funnel health in one view, with the cohort detail sitting one click below the headline numbers.',
+    metrics:null,
+    features:[
+      'MRR and ARR tracking with month-over-month movement',
+      'Churn rate and net revenue retention, surfaced next to growth so the trade-off is visible',
+      'Signup funnel from visitor through trial to paid, with drop-off at each step',
+      'Cohort retention heatmap for spotting which month’s signups actually stuck',
+      'Per-customer health scoring and renewal dates'
+    ],
+    stack:['HTML','Tailwind','Hand-built charts']
+  },
+  relayflow:{
+    title:'RelayFlow',
+    badges:[['Automation','dark'],['Concept','concept']],
+    summary:'A concept build showing what workflow automation looks like for an Indian SMB. One trigger — a new order row — fans out into the WhatsApp alert, the invoice PDF and the customer email, with a run log proving each step fired.',
+    metrics:null,
+    features:[
+      'Visual trigger → action chain, readable without any technical background',
+      'Connectors for the tools these businesses actually use — Sheets, WhatsApp, Gmail, Razorpay, Tally',
+      'Run history showing every execution, its status and where a retry happened',
+      'Success rate and time-saved tracked per workflow',
+      'Multiple workflows running in parallel from one dashboard'
+    ],
+    stack:['HTML','Tailwind','SVG flow diagram']
+  },
+  copperco:{
+    title:'Copper & Co.',
+    badges:[['Website Design','dark'],['Concept','concept']],
+    summary:'A concept build for a neighbourhood café — the kind of small business that needs a site to convert a scroll into a booking. Warm identity, the menu doing the selling, and a reservation call-to-action never more than one screen away.',
+    metrics:null,
+    features:[
+      'Illustrated hero with animated steam, hand-coded in SVG rather than stock photography',
+      '"From bean to cup" section that tells the sourcing story without a wall of text',
+      'Menu grid with per-item icons and prices, built to be updated weekly',
+      'Gallery and testimonials arranged to build trust before the booking ask',
+      'Visit-us block with hours, map marker and directions on mobile'
+    ],
+    stack:['HTML','Tailwind','SVG illustration']
+  }
+};
+
+(function(){
+  const pm=document.getElementById('pm');
+  if(!pm) return;
+  const shots=document.getElementById('pmShots'), nav=document.getElementById('pmNav');
+  let pIdx=0, pImgs=[], pKey=null, lastFocus=null;
+
+  function paint(){
+    shots.querySelectorAll('img').forEach((im,i)=>im.classList.toggle('active',i===pIdx));
+    nav.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('active',i===pIdx));
+  }
+  function step(n){ if(!pImgs.length) return; pIdx=(n+pImgs.length)%pImgs.length; paint(); }
+
+  window.openProject=function(key){
+    const p=PROJECTS[key]; if(!p) return;
+    pKey=key; pIdx=0; pImgs=LB_IMGS[key]||[];
+    lastFocus=document.activeElement;
+
+    shots.innerHTML=pImgs.map(i=>`<img class="pm-shot" src="${i.src}" alt="${i.alt}">`).join('');
+    nav.innerHTML=pImgs.map((_,i)=>`<button aria-label="Screenshot ${i+1}"></button>`).join('');
+    nav.querySelectorAll('button').forEach((b,i)=>b.addEventListener('click',()=>step(i)));
+
+    document.getElementById('pmBadges').innerHTML=p.badges.map(([txt,kind])=>{
+      if(kind==='live') return `<span class="badge" style="background:rgba(212,162,76,.12);color:var(--bl);border:1px solid rgba(212,162,76,.3);">${txt}</span>`;
+      if(kind==='concept') return `<span class="badge" style="background:rgba(250,247,242,.06);color:rgba(250,247,242,.6);border:1px solid rgba(250,247,242,.2);">${txt}</span>`;
+      return `<span class="badge badge-dark">${txt}</span>`;
+    }).join('');
+
+    document.getElementById('pmTitle').textContent=p.title;
+    document.getElementById('pmSummary').textContent=p.summary;
+
+    const mw=document.getElementById('pmMetricsWrap');
+    if(p.metrics){
+      mw.style.display='';
+      document.getElementById('pmMetrics').innerHTML=p.metrics
+        .map(([v,k])=>`<div class="pm-metric"><b>${v}</b><span>${k}</span></div>`).join('');
+    } else { mw.style.display='none'; }
+
+    const tick='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    document.getElementById('pmFeatures').innerHTML=p.features
+      .map(f=>`<div class="pm-feat">${tick}<span>${f}</span></div>`).join('');
+
+    document.getElementById('pmStack').innerHTML=p.stack
+      .map(s=>`<span class="badge" style="background:rgba(250,247,242,.05);color:rgba(250,247,242,.6);border:1px solid rgba(250,247,242,.13);">${s}</span>`).join('');
+
+    pm.classList.remove('hidden');
+    document.body.style.overflow='hidden';
+    paint();
+    document.getElementById('pmClose').focus();
+  };
+
+  function closePM(){
+    pm.classList.add('hidden');
+    if(lb.classList.contains('hidden')) document.body.style.overflow='';
+    if(lastFocus) lastFocus.focus();
+  }
+  window.closeProject=closePM;
+
+  document.getElementById('pmClose').addEventListener('click',closePM);
+  document.getElementById('pmScrim').addEventListener('click',closePM);
+  document.getElementById('pmPrev').addEventListener('click',()=>step(pIdx-1));
+  document.getElementById('pmNext').addEventListener('click',()=>step(pIdx+1));
+  document.getElementById('pmZoom').addEventListener('click',()=>{ if(pKey) openLB(pKey,pIdx); });
+  document.getElementById('pmCta').addEventListener('click',closePM);
+
+  document.addEventListener('keydown',e=>{
+    if(pm.classList.contains('hidden')) return;
+    if(!lb.classList.contains('hidden')) return;   // lightbox on top owns the keys
+    if(e.key==='Escape') closePM();
+    if(e.key==='ArrowLeft') step(pIdx-1);
+    if(e.key==='ArrowRight') step(pIdx+1);
+  });
+})();
 
 /* ═══ PRICING TABS ═══ */
 (function(){
