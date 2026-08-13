@@ -29,9 +29,9 @@ with sync_playwright() as pw:
 
     prod = page.locator("#work .grid").nth(0).locator("[data-carousel]")
     conc = page.locator("#work .grid").nth(1).locator("[data-carousel]")
-    check("4 in-production cards", prod.count()==4, prod.count())
-    check("3 concept cards", conc.count()==3, conc.count())
-    check("3 concept chips", page.locator(".concept-chip").count()==3,
+    check("4 client-work cards", prod.count()==4, prod.count())
+    check("3 in-house cards", conc.count()==3, conc.count())
+    check("3 in-house chips", page.locator(".concept-chip").count()==3,
           page.locator(".concept-chip").count())
 
     # honesty: old overclaim must be gone
@@ -50,6 +50,24 @@ with sync_playwright() as pw:
       return false;
     }""")
     check("fisheye keyframes removed", not css_has_fi)
+
+    # ---------- carousel survives auto-advance ----------
+    # Regression: a slides/dots count mismatch used to throw inside the 3.8s
+    # interval, stripping .active and blanking every card permanently.
+    parity = page.evaluate("""() => document.querySelectorAll('[data-carousel]').length
+      && [...document.querySelectorAll('[data-carousel]')].map(c => ({
+           key: c.dataset.carousel,
+           slides: c.querySelectorAll('.carousel-slide').length,
+           dots: c.querySelectorAll('.carousel-dots button').length
+         })).filter(o => o.slides !== o.dots);""")
+    check("every carousel has 1 dot per slide", parity==[], parity)
+
+    page.wait_for_timeout(13000)          # ~3 auto-advances
+    blank = page.evaluate("""() => [...document.querySelectorAll('[data-carousel]')]
+      .filter(c => !c.querySelector('.carousel-slide.active'))
+      .map(c => c.dataset.carousel);""")
+    check("no card blanked after auto-advance", blank==[], blank)
+    check("still no console errors after advancing", len(errors)==0, errors[:3])
 
     # ---------- open detail modal ----------
     page.locator('[data-carousel="billing"] .carousel-expand').click(force=True)
@@ -100,13 +118,13 @@ with sync_playwright() as pw:
     check("body scroll restored",
           page.evaluate("()=>document.body.style.overflow")=="", page.evaluate("()=>document.body.style.overflow"))
 
-    # ---------- concept project: no metrics ----------
+    # ---------- in-house build: no metrics ----------
     page.locator('[data-carousel="copperco"] .carousel-expand').click(force=True)
     page.wait_for_selector("#pm:not(.hidden)", timeout=4000)
-    check("concept modal title", page.inner_text("#pmTitle").strip().startswith("Copper"))
-    check("concept metrics hidden", page.locator("#pmMetricsWrap").is_hidden())
+    check("in-house modal title", page.inner_text("#pmTitle").strip().startswith("Copper"))
+    check("in-house build shows no metrics", page.locator("#pmMetricsWrap").is_hidden())
     badges = page.inner_text("#pmBadges")
-    check("concept badge in modal", "concept" in badges.lower(), badges.replace("\n"," / "))
+    check("in-house badge in modal", "in-house" in badges.lower(), badges.replace("\n"," / "))
     page.keyboard.press("Escape"); page.wait_for_timeout(300)
 
     # ---------- keyboard access ----------
