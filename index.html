@@ -1336,13 +1336,23 @@ function lbRender(){
   lbTrack.style.transform=`translateX(-${lbIdx*100}%)`;
   lbDots.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('active',i===lbIdx));
 }
-function closeLB(){ lb.classList.add('hidden'); document.body.style.overflow=''; lbGrp=null; }
+function closeLB(){
+  lb.classList.add('hidden');
+  lbGrp=null;
+  // the project modal may still be open underneath — only release the
+  // page scroll once nothing is layered on top of it
+  const pmEl=document.getElementById('pm');
+  if(!pmEl||pmEl.classList.contains('hidden')) document.body.style.overflow='';
+}
 document.getElementById('lbClose').addEventListener('click',closeLB);
 document.getElementById('lbPrev').addEventListener('click',()=>lbNav(lbIdx-1));
 document.getElementById('lbNext').addEventListener('click',()=>lbNav(lbIdx+1));
 lb.addEventListener('click',e=>{if(e.target===lb)closeLB();});
 document.addEventListener('keydown',e=>{
   if(lb.classList.contains('hidden'))return;
+  // the lightbox sits above the project modal; swallow the event so a single
+  // Escape does not also close the modal behind it
+  e.stopImmediatePropagation();
   if(e.key==='Escape')closeLB();
   if(e.key==='ArrowLeft')lbNav(lbIdx-1);
   if(e.key==='ArrowRight')lbNav(lbIdx+1);
